@@ -10,7 +10,11 @@ from fasthtml.common import Script, Div
 
 from ..core.manager import ZoneManager
 from ..js.generators import generate_keyboard_script
-from ..htmx.inputs import render_hidden_inputs
+from cjm_fasthtml_keyboard_navigation.htmx.inputs import (
+    render_hidden_inputs,
+    build_include_selector,
+    build_all_zones_include_selector
+)
 from ..htmx.buttons import render_action_buttons
 from .hints import render_keyboard_hints
 
@@ -34,16 +38,46 @@ class KeyboardSystem:
         return tuple(components)
 
 # %% ../../nbs/components/system.ipynb #41a45ed5
+def _build_auto_include_map(
+    manager: ZoneManager,        # the zone manager configuration
+    include_state: bool = False  # include state inputs in selector
+) -> dict[str, str]:             # action button ID -> include selector
+    """Auto-generate include_map based on actions and their zone constraints."""
+    include_map = {}
+    
+    for action in manager.actions:
+        if not action.htmx_trigger:
+            continue
+        
+        btn_id = action.htmx_trigger
+        
+        if action.zone_ids:
+            # Action is zone-specific - include only those zones' inputs
+            selectors = []
+            for zone_id in action.zone_ids:
+                zone = manager.get_zone(zone_id)
+                if zone:
+                    zone_selector = build_include_selector(zone, include_state)
+                    if zone_selector:
+                        selectors.append(zone_selector)
+            include_map[btn_id] = ", ".join(selectors) if selectors else ""
+        else:
+            # Action applies to all zones - include all zones' inputs
+            include_map[btn_id] = build_all_zones_include_selector(manager, include_state)
+    
+    return include_map
+
+
 def render_keyboard_system(
-    manager: ZoneManager,                        # the zone manager configuration
-    url_map: dict[str, str],                     # action button ID -> URL
-    target_map: dict[str, str],                  # action button ID -> target selector
-    include_map: dict[str, str] | None = None,   # action button ID -> include selector
-    swap_map: dict[str, str] | None = None,      # action button ID -> swap value
-    show_hints: bool = True,                     # render keyboard hints UI
-    hints_badge_style: str = "ghost",            # badge style for hints (ghost, outline, soft, dash)
-    include_state_inputs: bool = False           # include state tracking inputs
-) -> KeyboardSystem:                             # complete keyboard system
+    manager: ZoneManager,                         # the zone manager configuration
+    url_map: dict[str, str],                      # action button ID -> URL
+    target_map: dict[str, str],                   # action button ID -> target selector
+    include_map: dict[str, str] | None = None,    # action button ID -> include selector (auto-generated if None)
+    swap_map: dict[str, str] | None = None,       # action button ID -> swap value
+    show_hints: bool = True,                      # render keyboard hints UI
+    hints_badge_style: str = "ghost",             # badge style for hints
+    include_state_inputs: bool = False            # include state tracking inputs
+) -> KeyboardSystem:                              # complete keyboard system
     """Render complete keyboard navigation system."""
     # Generate JavaScript
     script = Script(generate_keyboard_script(manager))
@@ -53,6 +87,10 @@ def render_keyboard_system(
         manager,
         include_state=include_state_inputs
     )
+    
+    # Auto-generate include_map if not provided
+    if include_map is None:
+        include_map = _build_auto_include_map(manager, include_state_inputs)
     
     # Generate action buttons
     action_buttons = render_action_buttons(

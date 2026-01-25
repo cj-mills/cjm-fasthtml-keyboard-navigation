@@ -84,6 +84,7 @@ class FocusZone:
             "itemFocusAttribute": self.item_focus_attribute,
             "zoneFocusClasses": list(self.zone_focus_classes),
             "dataAttributes": list(self.data_attributes),
+            "hiddenInputPrefix": self.hidden_input_prefix or self.id,
             "onFocusChange": self.on_focus_change,
             "onNavigate": self.on_navigate,
             "onZoneEnter": self.on_zone_enter,

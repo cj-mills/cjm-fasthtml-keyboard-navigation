@@ -22,7 +22,9 @@ def render_zone_hidden_inputs(
     inputs = []
     for attr in zone.data_attributes:
         input_id = zone.get_hidden_input_id(attr)
-        inputs.append(Hidden(id=input_id, name=attr, value=""))
+        # Convert hyphens to underscores for Python/FastHTML compatibility
+        name = attr.replace("-", "_")
+        inputs.append(Hidden(id=input_id, name=name, value=""))
     return inputs
 
 # %% ../../nbs/htmx/inputs.ipynb #6262751b
