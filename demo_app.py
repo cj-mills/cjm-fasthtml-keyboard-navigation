@@ -149,6 +149,17 @@ def main():
         "caret_position": 0
     }
 
+    # Demo 4: WASD state
+    wasd_demo_state = DemoState(
+        items=[
+            {"id": "w1", "name": "Move Forward"},
+            {"id": "w2", "name": "Jump"},
+            {"id": "w3", "name": "Attack"},
+            {"id": "w4", "name": "Defend"},
+            {"id": "w5", "name": "Use Item"},
+        ]
+    )
+
     print("\n[1/4] Creating demo configurations...")
 
     # =========================================================================
@@ -996,16 +1007,10 @@ def main():
 
     def render_wasd_list():
         """Render the WASD demo list."""
-        items = [
-            {"id": "w1", "name": "Move Forward"},
-            {"id": "w2", "name": "Jump"},
-            {"id": "w3", "name": "Attack"},
-            {"id": "w4", "name": "Defend"},
-            {"id": "w5", "name": "Use Item"},
-        ]
         return Div(
             Ul(
-                *[render_list_item(item) for item in items],
+                *[render_list_item(item, item["id"] in wasd_demo_state.selected_indices)
+                  for item in wasd_demo_state.items],
                 id="wasd-list",
                 cls=combine_classes(border(), rounded.lg, overflow.hidden, divide.y())
             ),
@@ -1014,8 +1019,12 @@ def main():
 
     @router
     def wasd_action(request, item_id: str = ""):
-        """Handle WASD action."""
-        # Just return the list unchanged for demo
+        """Handle WASD action - toggle item selection."""
+        if item_id:
+            if item_id in wasd_demo_state.selected_indices:
+                wasd_demo_state.selected_indices.discard(item_id)
+            else:
+                wasd_demo_state.selected_indices.add(item_id)
         return render_wasd_list()
 
     # =========================================================================
