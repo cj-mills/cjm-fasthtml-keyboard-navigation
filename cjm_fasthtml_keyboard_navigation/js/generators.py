@@ -491,22 +491,72 @@ function notifyStateChange() {
 
 # %% ../../nbs/js/generators.ipynb #361e9453
 def js_initialization() -> str: # JavaScript initialization code
-    """Generate JavaScript code for initialization."""
+    """Generate JavaScript code for initialization with focus recovery."""
     return '''
-// === Initialization ===
-function initialize() {
-    // Clamp focus indices to valid ranges
-    for (const zone of cfg.zones) {
-        const items = getZoneItems(zone.id);
-        if (items.length > 0) {
-            focusIndices[zone.id] = Math.max(0, Math.min(
-                focusIndices[zone.id] || 0,
-                items.length - 1
-            ));
+// === Focus Recovery ===
+function findItemByDataAttribute(zoneId, attrName, attrValue) {
+    // Find an item in the zone that has the specified data attribute value
+    if (!attrValue) return -1;
+    
+    const items = getZoneItems(zoneId);
+    for (let i = 0; i < items.length; i++) {
+        const itemValue = items[i].getAttribute('data-' + attrName);
+        if (itemValue === attrValue) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function recoverFocusForZone(zoneId) {
+    // Try to find the previously focused item by its data attributes
+    const zone = getZoneConfig(zoneId);
+    if (!zone || !zone.dataAttributes || zone.dataAttributes.length === 0) {
+        return false;
+    }
+    
+    const items = getZoneItems(zoneId);
+    if (items.length === 0) return false;
+    
+    // Try each data attribute to find the item
+    for (const attr of zone.dataAttributes) {
+        const inputId = zone.hiddenInputPrefix + '-' + attr;
+        const input = document.getElementById(inputId);
+        if (input && input.value) {
+            const foundIdx = findItemByDataAttribute(zoneId, attr, input.value);
+            if (foundIdx >= 0) {
+                focusIndices[zoneId] = foundIdx;
+                return true;
+            }
         }
     }
     
-    // Set initial zone and focus
+    return false;
+}
+
+// === Initialization ===
+function initialize() {
+    for (const zone of cfg.zones) {
+        const items = getZoneItems(zone.id);
+        
+        if (items.length > 0) {
+            // Try to recover focus by finding the item with saved data attribute
+            const recovered = recoverFocusForZone(zone.id);
+            
+            if (!recovered) {
+                // Item not found (deleted?), clamp index to bounds
+                focusIndices[zone.id] = Math.max(0, Math.min(
+                    focusIndices[zone.id] || 0,
+                    items.length - 1
+                ));
+            }
+        } else {
+            // No items, reset to 0
+            focusIndices[zone.id] = 0;
+        }
+    }
+    
+    // Set active zone and apply focus
     setActiveZone(activeZoneId, false);
     
     // Initialize state notification

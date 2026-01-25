@@ -51,30 +51,30 @@ graph LR
     components_hints --> core_manager
     components_hints --> core_actions
     components_hints --> core_focus_zone
-    components_system --> core_manager
-    components_system --> htmx_buttons
     components_system --> core_focus_zone
-    components_system --> js_generators
     components_system --> htmx_inputs
     components_system --> components_hints
+    components_system --> htmx_buttons
+    components_system --> core_manager
     components_system --> core_actions
+    components_system --> js_generators
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
-    core_manager --> core_navigation
     core_manager --> core_key_mapping
-    core_manager --> core_focus_zone
+    core_manager --> core_navigation
     core_manager --> core_modes
     core_manager --> core_actions
+    core_manager --> core_focus_zone
     core_modes --> core_navigation
-    htmx_buttons --> core_manager
     htmx_buttons --> core_focus_zone
+    htmx_buttons --> core_manager
     htmx_buttons --> core_actions
     htmx_inputs --> core_manager
     htmx_inputs --> core_focus_zone
     js_generators --> core_manager
-    js_generators --> core_focus_zone
     js_generators --> js_utils
     js_generators --> core_actions
+    js_generators --> core_focus_zone
 ```
 
 *27 cross-module dependencies detected*
@@ -176,20 +176,22 @@ def render_action_button(
     target: str,                 # HTMX target selector
     include: str = "",           # hx-include selector
     swap: str = "outerHTML",     # hx-swap value
-    input_selector: str = "input, textarea, select, [contenteditable]"  # inputs to exclude
+    use_htmx_trigger: bool = False,  # use hx-trigger (False = JS triggerClick only)
+    input_selector: str = "input, textarea, select, [contenteditable]"  # inputs to exclude from trigger
 ) -> Button | None:              # hidden button or None if not HTMX action
     "Render a hidden HTMX button for a keyboard action."
 ```
 
 ``` python
 def render_action_buttons(
-    manager: ZoneManager,              # the zone manager configuration
-    url_map: dict[str, str],           # action button ID -> URL
-    target_map: dict[str, str],        # action button ID -> target selector
-    include_map: dict[str, str] | None = None,  # action button ID -> include selector
-    swap_map: dict[str, str] | None = None,     # action button ID -> swap value
-    container_id: str = "kb-action-buttons"     # container element ID
-) -> Div:                              # container with all action buttons
+    manager: ZoneManager,                         # the zone manager configuration
+    url_map: dict[str, str],                      # action button ID -> URL
+    target_map: dict[str, str],                   # action button ID -> target selector
+    include_map: dict[str, str] | None = None,    # action button ID -> include selector
+    swap_map: dict[str, str] | None = None,       # action button ID -> swap value
+    use_htmx_triggers: bool = False,              # use hx-trigger (False = JS triggerClick only)
+    container_id: str = "kb-action-buttons"       # container element ID
+) -> Div:                                         # container with all action buttons
     "Render all hidden HTMX action buttons for keyboard navigation."
 ```
 
@@ -328,7 +330,7 @@ def js_state_notification() -> str: # JavaScript state notification code
 
 ``` python
 def js_initialization() -> str: # JavaScript initialization code
-    "Generate JavaScript code for initialization."
+    "Generate JavaScript code for initialization with focus recovery."
 ```
 
 ``` python

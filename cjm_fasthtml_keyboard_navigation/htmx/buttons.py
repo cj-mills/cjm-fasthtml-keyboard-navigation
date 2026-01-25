@@ -53,13 +53,18 @@ def render_action_button(
     target: str,                 # HTMX target selector
     include: str = "",           # hx-include selector
     swap: str = "outerHTML",     # hx-swap value
-    input_selector: str = "input, textarea, select, [contenteditable]"  # inputs to exclude
+    use_htmx_trigger: bool = False,  # use hx-trigger (False = JS triggerClick only)
+    input_selector: str = "input, textarea, select, [contenteditable]"  # inputs to exclude from trigger
 ) -> Button | None:              # hidden button or None if not HTMX action
     """Render a hidden HTMX button for a keyboard action."""
     if not action.htmx_trigger:
         return None
     
-    trigger_expr = build_htmx_trigger(action.key, action.modifiers, input_selector)
+    # Only add hx-trigger if explicitly requested
+    # Default is to let JavaScript handle triggering via triggerClick()
+    trigger_expr = None
+    if use_htmx_trigger:
+        trigger_expr = build_htmx_trigger(action.key, action.modifiers, input_selector)
     
     return Button(
         id=action.htmx_trigger,
@@ -73,13 +78,14 @@ def render_action_button(
 
 # %% ../../nbs/htmx/buttons.ipynb #721b0c38
 def render_action_buttons(
-    manager: ZoneManager,              # the zone manager configuration
-    url_map: dict[str, str],           # action button ID -> URL
-    target_map: dict[str, str],        # action button ID -> target selector
-    include_map: dict[str, str] | None = None,  # action button ID -> include selector
-    swap_map: dict[str, str] | None = None,     # action button ID -> swap value
-    container_id: str = "kb-action-buttons"     # container element ID
-) -> Div:                              # container with all action buttons
+    manager: ZoneManager,                         # the zone manager configuration
+    url_map: dict[str, str],                      # action button ID -> URL
+    target_map: dict[str, str],                   # action button ID -> target selector
+    include_map: dict[str, str] | None = None,    # action button ID -> include selector
+    swap_map: dict[str, str] | None = None,       # action button ID -> swap value
+    use_htmx_triggers: bool = False,              # use hx-trigger (False = JS triggerClick only)
+    container_id: str = "kb-action-buttons"       # container element ID
+) -> Div:                                         # container with all action buttons
     """Render all hidden HTMX action buttons for keyboard navigation."""
     include_map = include_map or {}
     swap_map = swap_map or {}
@@ -102,6 +108,7 @@ def render_action_buttons(
             target=target,
             include=include,
             swap=swap,
+            use_htmx_trigger=use_htmx_triggers,
             input_selector=manager.input_selector
         )
         
