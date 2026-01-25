@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "cjm-fasthtml-keyboard-navigation"
+  site-url: "https://cj-mills.github.io/cjm-fasthtml-keyboard-navigation"
+  description: "A declarative keyboard navigation framework for FastHTML applications with multi-zone focus management, mode switching, and HTMX integration."
+  repo-branch: main
+  repo-url: "https://github.com/cj-mills/cjm-fasthtml-keyboard-navigation"
