@@ -48,32 +48,32 @@ graph LR
     js_generators[js.generators<br/>Script Generators]
     js_utils[js.utils<br/>JavaScript Utilities]
 
+    components_hints --> core_manager
     components_hints --> core_actions
     components_hints --> core_focus_zone
-    components_hints --> core_manager
-    components_system --> htmx_inputs
-    components_system --> htmx_buttons
-    components_system --> core_manager
-    components_system --> components_hints
-    components_system --> js_generators
     components_system --> core_focus_zone
+    components_system --> components_hints
+    components_system --> htmx_buttons
+    components_system --> htmx_inputs
+    components_system --> js_generators
+    components_system --> core_manager
     components_system --> core_actions
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
-    core_manager --> core_navigation
+    core_manager --> core_modes
     core_manager --> core_key_mapping
+    core_manager --> core_navigation
     core_manager --> core_focus_zone
     core_manager --> core_actions
-    core_manager --> core_modes
     core_modes --> core_navigation
-    htmx_buttons --> core_manager
     htmx_buttons --> core_focus_zone
+    htmx_buttons --> core_manager
     htmx_buttons --> core_actions
     htmx_inputs --> core_manager
     htmx_inputs --> core_focus_zone
-    js_generators --> core_manager
-    js_generators --> js_utils
     js_generators --> core_focus_zone
+    js_generators --> js_utils
+    js_generators --> core_manager
     js_generators --> core_actions
 ```
 
@@ -176,6 +176,7 @@ def render_action_button(
     target: str,                 # HTMX target selector
     include: str = "",           # hx-include selector
     swap: str = "outerHTML",     # hx-swap value
+    vals: dict | None = None,    # hx-vals dictionary (JSON values to include in request)
     use_htmx_trigger: bool = False,  # use hx-trigger (False = JS triggerClick only)
     input_selector: str = "input, textarea, select, [contenteditable]"  # inputs to exclude from trigger
 ) -> Button | None:              # hidden button or None if not HTMX action
@@ -189,6 +190,7 @@ def render_action_buttons(
     target_map: dict[str, str],                   # action button ID -> target selector
     include_map: dict[str, str] | None = None,    # action button ID -> include selector
     swap_map: dict[str, str] | None = None,       # action button ID -> swap value
+    vals_map: dict[str, dict] | None = None,      # action button ID -> hx-vals dict
     use_htmx_triggers: bool = False,              # use hx-trigger (False = JS triggerClick only)
     container_id: str = "kb-action-buttons"       # container element ID
 ) -> Div:                                         # container with all action buttons
@@ -940,6 +942,7 @@ def render_keyboard_system(
     target_map: dict[str, str],                   # action button ID -> target selector
     include_map: dict[str, str] | None = None,    # action button ID -> include selector (auto-generated if None)
     swap_map: dict[str, str] | None = None,       # action button ID -> swap value
+    vals_map: dict[str, dict] | None = None,      # action button ID -> hx-vals dict
     show_hints: bool = True,                      # render keyboard hints UI
     hints_badge_style: str = "ghost",             # badge style for hints
     include_state_inputs: bool = False            # include state tracking inputs

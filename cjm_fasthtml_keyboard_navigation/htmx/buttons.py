@@ -47,12 +47,16 @@ def build_htmx_trigger(
     return f"keyup[{' && '.join(conditions)}] from:body"
 
 # %% ../../nbs/htmx/buttons.ipynb #ba858f12
+import json
+
+
 def render_action_button(
     action: KeyAction,           # the action configuration
     url: str,                    # POST URL for the action
     target: str,                 # HTMX target selector
     include: str = "",           # hx-include selector
     swap: str = "outerHTML",     # hx-swap value
+    vals: dict | None = None,    # hx-vals dictionary (JSON values to include in request)
     use_htmx_trigger: bool = False,  # use hx-trigger (False = JS triggerClick only)
     input_selector: str = "input, textarea, select, [contenteditable]"  # inputs to exclude from trigger
 ) -> Button | None:              # hidden button or None if not HTMX action
@@ -66,6 +70,9 @@ def render_action_button(
     if use_htmx_trigger:
         trigger_expr = build_htmx_trigger(action.key, action.modifiers, input_selector)
     
+    # Convert vals dict to JSON string for hx-vals
+    vals_str = json.dumps(vals) if vals else None
+    
     return Button(
         id=action.htmx_trigger,
         hx_post=url,
@@ -73,6 +80,7 @@ def render_action_button(
         hx_swap=swap,
         hx_trigger=trigger_expr,
         hx_include=include if include else None,
+        hx_vals=vals_str,
         cls=str(display_tw.hidden)
     )
 
@@ -83,12 +91,14 @@ def render_action_buttons(
     target_map: dict[str, str],                   # action button ID -> target selector
     include_map: dict[str, str] | None = None,    # action button ID -> include selector
     swap_map: dict[str, str] | None = None,       # action button ID -> swap value
+    vals_map: dict[str, dict] | None = None,      # action button ID -> hx-vals dict
     use_htmx_triggers: bool = False,              # use hx-trigger (False = JS triggerClick only)
     container_id: str = "kb-action-buttons"       # container element ID
 ) -> Div:                                         # container with all action buttons
     """Render all hidden HTMX action buttons for keyboard navigation."""
     include_map = include_map or {}
     swap_map = swap_map or {}
+    vals_map = vals_map or {}
     
     buttons = []
     
@@ -101,6 +111,7 @@ def render_action_buttons(
         target = target_map.get(btn_id, "")
         include = include_map.get(btn_id, "")
         swap = swap_map.get(btn_id, "outerHTML")
+        vals = vals_map.get(btn_id, None)
         
         btn = render_action_button(
             action,
@@ -108,6 +119,7 @@ def render_action_buttons(
             target=target,
             include=include,
             swap=swap,
+            vals=vals,
             use_htmx_trigger=use_htmx_triggers,
             input_selector=manager.input_selector
         )

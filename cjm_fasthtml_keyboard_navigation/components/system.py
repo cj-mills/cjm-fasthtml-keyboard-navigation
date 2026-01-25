@@ -74,6 +74,7 @@ def render_keyboard_system(
     target_map: dict[str, str],                   # action button ID -> target selector
     include_map: dict[str, str] | None = None,    # action button ID -> include selector (auto-generated if None)
     swap_map: dict[str, str] | None = None,       # action button ID -> swap value
+    vals_map: dict[str, dict] | None = None,      # action button ID -> hx-vals dict
     show_hints: bool = True,                      # render keyboard hints UI
     hints_badge_style: str = "ghost",             # badge style for hints
     include_state_inputs: bool = False            # include state tracking inputs
@@ -98,7 +99,8 @@ def render_keyboard_system(
         url_map=url_map,
         target_map=target_map,
         include_map=include_map,
-        swap_map=swap_map
+        swap_map=swap_map,
+        vals_map=vals_map
     )
     
     # Generate hints
@@ -141,10 +143,18 @@ def quick_keyboard_system(
         'state_hidden_inputs'
     }
     
+    render_keys = {
+        'include_map', 'swap_map', 'vals_map', 'show_hints',
+        'hints_badge_style', 'include_state_inputs'
+    }
+    
     for key, value in kwargs.items():
         if key in manager_keys:
             manager_kwargs[key] = value
+        elif key in render_keys:
+            render_kwargs[key] = value
         else:
+            # Unknown key - try render_kwargs as fallback
             render_kwargs[key] = value
     
     manager = ZoneManager(
