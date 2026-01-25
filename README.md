@@ -49,32 +49,32 @@ graph LR
     js_utils[js.utils<br/>JavaScript Utilities]
 
     components_hints --> core_actions
-    components_hints --> core_focus_zone
     components_hints --> core_manager
+    components_hints --> core_focus_zone
     components_system --> htmx_buttons
+    components_system --> core_actions
+    components_system --> htmx_inputs
+    components_system --> core_manager
     components_system --> components_hints
     components_system --> js_generators
-    components_system --> htmx_inputs
     components_system --> core_focus_zone
-    components_system --> core_actions
-    components_system --> core_manager
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
-    core_manager --> core_key_mapping
     core_manager --> core_modes
-    core_manager --> core_focus_zone
     core_manager --> core_navigation
     core_manager --> core_actions
+    core_manager --> core_key_mapping
+    core_manager --> core_focus_zone
     core_modes --> core_navigation
-    htmx_buttons --> core_focus_zone
     htmx_buttons --> core_actions
     htmx_buttons --> core_manager
-    htmx_inputs --> core_focus_zone
+    htmx_buttons --> core_focus_zone
     htmx_inputs --> core_manager
+    htmx_inputs --> core_focus_zone
     js_generators --> js_utils
-    js_generators --> core_focus_zone
     js_generators --> core_actions
     js_generators --> core_manager
+    js_generators --> core_focus_zone
 ```
 
 *27 cross-module dependencies detected*
@@ -215,9 +215,9 @@ class FocusZone:
     id: str  # HTML element ID of the container
     item_selector: Optional[str]  # CSS selector for items (None = scroll only)
     navigation: Union[NavigationPattern, LinearVertical] = field(...)
-    item_focus_classes: tuple[str, ...] = ('ring-2', 'ring-primary')  # CSS classes for focused item
+    item_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary))  # CSS classes for focused item
     item_focus_attribute: str = 'data-focused'  # attribute set to "true" on focused item
-    zone_focus_classes: tuple[str, ...] = ('ring-2', 'ring-primary', 'ring-offset-2')
+    zone_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary), str(inset_ring(2)))
     data_attributes: tuple[str, ...] = ()  # data attributes to extract from focused item
     on_focus_change: Optional[str]  # called when focused item changes
     on_navigate: Optional[str]  # called on any navigation (for side effects like audition)
@@ -346,7 +346,12 @@ def generate_keyboard_script(
 
 ``` python
 from cjm_fasthtml_keyboard_navigation.components.hints import (
+    NAV_ICON_MAP,
+    KEY_ICON_MAP,
+    get_key_icon,
     render_hint_badge,
+    create_nav_icon_hint,
+    create_modifier_key_hint,
     render_hint_group,
     group_actions_by_hint_group,
     render_hints_from_actions,
@@ -357,12 +362,40 @@ from cjm_fasthtml_keyboard_navigation.components.hints import (
 #### Functions
 
 ``` python
+def get_key_icon(
+    key_name: str,    # key name to look up (case-insensitive)
+    size: int = 3     # icon size
+) -> FT | None:       # icon component or None if no icon mapping
+    "Get a lucide icon for a key name, if one exists."
+```
+
+``` python
 def render_hint_badge(
-    key_display: str,       # formatted key (e.g., "↑/↓", "Space")
-    description: str,       # action description
-    style: str = "ghost"    # badge style (ghost, outline, soft, dash)
-) -> Div:                   # hint badge component
+    key_display: Union[str, FT],  # formatted key string or icon component
+    description: str,              # action description
+    style: str = "ghost",          # badge style (ghost, outline, soft, dash)
+    auto_icon: bool = False        # auto-convert known keys to icons
+) -> Div:                          # hint badge component
     "Render a single keyboard hint as a badge."
+```
+
+``` python
+def create_nav_icon_hint(
+    icon_name: str,      # lucide icon name (e.g., "arrow-down-up")
+    description: str,    # action description
+    style: str = "ghost" # badge style
+) -> Div:                # hint badge with icon
+    "Create a hint badge with a lucide icon."
+```
+
+``` python
+def create_modifier_key_hint(
+    modifier: str,       # modifier key name (e.g., "shift", "ctrl")
+    key_icon_or_text: Union[str, FT],  # the main key icon or text
+    description: str,    # action description
+    style: str = "ghost" # badge style
+) -> Div:                # hint badge with modifier + key
+    "Create a hint badge with a modifier key and main key."
 ```
 
 ``` python
@@ -395,9 +428,17 @@ def render_keyboard_hints(
     include_navigation: bool = True,           # include navigation hints
     include_zone_switch: bool = True,          # include zone switching hints
     badge_style: str = "ghost",                # badge style
-    container_id: str = "kb-hints"             # container element ID
+    container_id: str = "kb-hints",            # container element ID
+    use_icons: bool = True                     # use lucide icons for nav hints
 ) -> Div:                                      # complete hints component
     "Render complete keyboard hints for a zone manager."
+```
+
+#### Variables
+
+``` python
+NAV_ICON_MAP = {2 items}
+KEY_ICON_MAP = {9 items}
 ```
 
 ### Hidden Inputs (`inputs.ipynb`)
@@ -965,7 +1006,7 @@ def js_input_detection(
 
 ``` python
 def js_focus_ring_helpers(
-    default_classes: tuple[str, ...] = ("ring-2", "ring-primary")  # default focus ring CSS classes
+    default_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary))  # default focus ring CSS classes
 ) -> str:  # JavaScript function definitions
     "Generate JavaScript functions for adding/removing focus ring classes."
 ```
@@ -1001,7 +1042,7 @@ def js_get_modifiers() -> str: # JavaScript function definition
 ``` python
 def js_all_utils(
     input_selector: str = "input, textarea, select, [contenteditable='true']",  # input element selector
-    default_focus_classes: tuple[str, ...] = ("ring-2", "ring-primary"),  # focus ring classes
+    default_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary)),  # focus ring classes
     scroll_behavior: str = "smooth",  # scroll behavior
     scroll_block: str = "nearest"     # scroll block alignment
 ) -> str:  # all utility functions combined

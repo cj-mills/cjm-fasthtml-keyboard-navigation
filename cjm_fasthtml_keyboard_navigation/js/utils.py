@@ -7,6 +7,9 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from cjm_fasthtml_tailwind.utilities.effects import ring
+from cjm_fasthtml_daisyui.utilities.semantic_colors import ring_dui
+
 # %% auto #0
 __all__ = ['js_config_from_dict', 'js_input_detection', 'js_focus_ring_helpers', 'js_scroll_into_view', 'js_hidden_input_update',
            'js_trigger_click', 'js_get_data_attributes', 'js_get_modifiers', 'js_all_utils']
@@ -35,7 +38,7 @@ function isInputFocused(target) {{
 
 # %% ../../nbs/js/utils.ipynb #a3ea32fc
 def js_focus_ring_helpers(
-    default_classes: tuple[str, ...] = ("ring-2", "ring-primary")  # default focus ring CSS classes
+    default_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary))  # default focus ring CSS classes
 ) -> str:  # JavaScript function definitions
     """Generate JavaScript functions for adding/removing focus ring classes."""
     default_list = json.dumps(list(default_classes))
@@ -140,7 +143,7 @@ function modifiersMatch(eventMods, requiredMods) {
 # %% ../../nbs/js/utils.ipynb #6762095f
 def js_all_utils(
     input_selector: str = "input, textarea, select, [contenteditable='true']",  # input element selector
-    default_focus_classes: tuple[str, ...] = ("ring-2", "ring-primary"),  # focus ring classes
+    default_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary)),  # focus ring classes
     scroll_behavior: str = "smooth",  # scroll behavior
     scroll_block: str = "nearest"     # scroll block alignment
 ) -> str:  # all utility functions combined

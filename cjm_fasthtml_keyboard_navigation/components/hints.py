@@ -5,7 +5,8 @@
 # %% ../../nbs/components/hints.ipynb #e5043c09
 from __future__ import annotations
 from collections import defaultdict
-from fasthtml.common import Div, Span
+from typing import Union
+from fasthtml.common import Div, Span, FT
 
 from ..core.actions import KeyAction
 from ..core.manager import ZoneManager
@@ -18,23 +19,112 @@ from cjm_fasthtml_tailwind.utilities.typography import font_size, font_family, f
 from cjm_fasthtml_tailwind.utilities.spacing import m
 from cjm_fasthtml_tailwind.core.base import combine_classes
 
+from cjm_fasthtml_lucide_icons.factory import lucide_icon
+
 # %% auto #0
-__all__ = ['render_hint_badge', 'render_hint_group', 'group_actions_by_hint_group', 'render_hints_from_actions',
+__all__ = ['NAV_ICON_MAP', 'KEY_ICON_MAP', 'get_key_icon', 'render_hint_badge', 'create_nav_icon_hint',
+           'create_modifier_key_hint', 'render_hint_group', 'group_actions_by_hint_group', 'render_hints_from_actions',
            'render_keyboard_hints']
 
 # %% ../../nbs/components/hints.ipynb #1680f700
+# Icon mappings for navigation patterns and common keys
+NAV_ICON_MAP = {
+    "up_down": "arrow-down-up",
+    "left_right": "arrow-left-right",
+}
+
+KEY_ICON_MAP = {
+    "shift": "arrow-big-up",
+    "delete": "trash-2",
+    "del": "trash-2",
+    "enter": "corner-down-left",
+    "return": "corner-down-left",
+    "backspace": "delete",
+    "bksp": "delete",
+    "escape": "x",
+    "esc": "x",
+}
+
+
+def get_key_icon(
+    key_name: str,    # key name to look up (case-insensitive)
+    size: int = 3     # icon size
+) -> FT | None:       # icon component or None if no icon mapping
+    """Get a lucide icon for a key name, if one exists."""
+    icon_name = KEY_ICON_MAP.get(key_name.lower())
+    if icon_name:
+        return lucide_icon(icon_name, size=size)
+    return None
+
+
 def render_hint_badge(
-    key_display: str,       # formatted key (e.g., "↑/↓", "Space")
-    description: str,       # action description
-    style: str = "ghost"    # badge style (ghost, outline, soft, dash)
-) -> Div:                   # hint badge component
+    key_display: Union[str, FT],  # formatted key string or icon component
+    description: str,              # action description
+    style: str = "ghost",          # badge style (ghost, outline, soft, dash)
+    auto_icon: bool = False        # auto-convert known keys to icons
+) -> Div:                          # hint badge component
     """Render a single keyboard hint as a badge."""
     badge_style = getattr(badge_styles, style, badge_styles.ghost)
     
+    # Handle key display
+    if isinstance(key_display, str):
+        # Try to auto-convert to icon if enabled
+        if auto_icon:
+            icon = get_key_icon(key_display)
+            if icon:
+                key_component = icon
+            else:
+                key_component = Span(key_display, cls=combine_classes(font_family.mono, font_weight.bold))
+        else:
+            key_component = Span(key_display, cls=combine_classes(font_family.mono, font_weight.bold))
+    else:
+        key_component = key_display
+    
     return Div(
-        Span(key_display, cls=combine_classes(font_family.mono, font_weight.bold)),
-        Span(description),
-        cls=combine_classes(badge, badge_style, gap(1))
+        key_component,
+        Span(description, cls=m.l(1)),
+        cls=combine_classes(badge, badge_style, flex_display, items.center, gap(1))
+    )
+
+
+def create_nav_icon_hint(
+    icon_name: str,      # lucide icon name (e.g., "arrow-down-up")
+    description: str,    # action description
+    style: str = "ghost" # badge style
+) -> Div:                # hint badge with icon
+    """Create a hint badge with a lucide icon."""
+    icon = lucide_icon(icon_name, size=3)
+    return render_hint_badge(icon, description, style)
+
+
+def create_modifier_key_hint(
+    modifier: str,       # modifier key name (e.g., "shift", "ctrl")
+    key_icon_or_text: Union[str, FT],  # the main key icon or text
+    description: str,    # action description
+    style: str = "ghost" # badge style
+) -> Div:                # hint badge with modifier + key
+    """Create a hint badge with a modifier key and main key."""
+    badge_style = getattr(badge_styles, style, badge_styles.ghost)
+    
+    # Get modifier icon if available
+    mod_icon = get_key_icon(modifier)
+    mod_component = mod_icon if mod_icon else Span(modifier.capitalize(), cls=font_weight.bold)
+    
+    # Handle main key
+    if isinstance(key_icon_or_text, str):
+        main_icon = get_key_icon(key_icon_or_text)
+        if main_icon:
+            key_component = main_icon
+        else:
+            key_component = Span(key_icon_or_text, cls=combine_classes(font_family.mono, font_weight.bold))
+    else:
+        key_component = key_icon_or_text
+    
+    return Div(
+        mod_component,
+        key_component,
+        Span(description, cls=m.l(1)),
+        cls=combine_classes(badge, badge_style, flex_display, items.center, gap(1))
     )
 
 # %% ../../nbs/components/hints.ipynb #01d4eef5
@@ -92,7 +182,8 @@ def render_keyboard_hints(
     include_navigation: bool = True,           # include navigation hints
     include_zone_switch: bool = True,          # include zone switching hints
     badge_style: str = "ghost",                # badge style
-    container_id: str = "kb-hints"             # container element ID
+    container_id: str = "kb-hints",            # container element ID
+    use_icons: bool = True                     # use lucide icons for nav hints
 ) -> Div:                                      # complete hints component
     """Render complete keyboard hints for a zone manager."""
     from cjm_fasthtml_keyboard_navigation.core.key_mapping import format_key_for_display
@@ -101,15 +192,35 @@ def render_keyboard_hints(
     
     # Navigation hints
     if include_navigation:
-        nav_hints = [("↑/↓", "Navigate")]
-        sections.append(render_hint_group("Navigation", nav_hints, badge_style))
+        if use_icons:
+            nav_badge = create_nav_icon_hint(NAV_ICON_MAP["up_down"], "Navigate", badge_style)
+            sections.append(
+                Div(
+                    Span("Navigation", cls=combine_classes(font_size.xs, font_weight.semibold, m.r(2))),
+                    nav_badge,
+                    cls=combine_classes(flex_display, items.center, gap(1), flex_wrap.wrap)
+                )
+            )
+        else:
+            nav_hints = [("↑/↓", "Navigate")]
+            sections.append(render_hint_group("Navigation", nav_hints, badge_style))
     
     # Zone switching hints
     if include_zone_switch and len(manager.zones) > 1:
-        prev_key = format_key_for_display(manager.prev_zone_key)
-        next_key = format_key_for_display(manager.next_zone_key)
-        switch_hints = [(f"{prev_key}/{next_key}", "Switch Panel")]
-        sections.append(render_hint_group("Panels", switch_hints, badge_style))
+        if use_icons:
+            switch_badge = create_nav_icon_hint(NAV_ICON_MAP["left_right"], "Switch Panel", badge_style)
+            sections.append(
+                Div(
+                    Span("Panels", cls=combine_classes(font_size.xs, font_weight.semibold, m.r(2))),
+                    switch_badge,
+                    cls=combine_classes(flex_display, items.center, gap(1), flex_wrap.wrap)
+                )
+            )
+        else:
+            prev_key = format_key_for_display(manager.prev_zone_key)
+            next_key = format_key_for_display(manager.next_zone_key)
+            switch_hints = [(f"{prev_key}/{next_key}", "Switch Panel")]
+            sections.append(render_hint_group("Panels", switch_hints, badge_style))
     
     # Action hints (grouped by hint_group)
     action_hints = render_hints_from_actions(manager.actions, badge_style)

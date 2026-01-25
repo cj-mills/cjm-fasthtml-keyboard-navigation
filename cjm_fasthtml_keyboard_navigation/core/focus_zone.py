@@ -12,6 +12,9 @@ from cjm_fasthtml_keyboard_navigation.core.navigation import (
     LinearVertical
 )
 
+from cjm_fasthtml_tailwind.utilities.effects import ring, inset_ring
+from cjm_fasthtml_daisyui.utilities.semantic_colors import ring_dui
+
 # %% auto #0
 __all__ = ['FocusZone']
 
@@ -32,12 +35,12 @@ class FocusZone:
     )  # navigation pattern for this zone
 
     # Visual feedback - item focus
-    item_focus_classes: tuple[str, ...] = ("ring-2", "ring-primary")  # CSS classes for focused item
+    item_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary))  # CSS classes for focused item
     item_focus_attribute: str = "data-focused"  # attribute set to "true" on focused item
 
     # Visual feedback - zone focus (when zone is active)
     zone_focus_classes: tuple[str, ...] = (
-        "ring-2", "ring-primary", "ring-offset-2"
+        str(ring(2)), str(ring_dui.primary), str(inset_ring(2))
     )  # CSS classes for active zone container
 
     # Data extraction (for HTMX hidden inputs)

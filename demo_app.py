@@ -41,7 +41,7 @@ def main():
     from cjm_fasthtml_daisyui.components.actions.button import btn, btn_colors, btn_sizes
     from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors
     from cjm_fasthtml_daisyui.components.data_display.card import card, card_body
-    from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, border_dui
+    from cjm_fasthtml_daisyui.utilities.semantic_colors import bg_dui, text_dui, border_dui, ring_dui
 
     from cjm_fasthtml_tailwind.utilities.spacing import p, m
     from cjm_fasthtml_tailwind.utilities.sizing import container, max_w, w, h, min_h
@@ -51,7 +51,13 @@ def main():
     )
     from cjm_fasthtml_tailwind.utilities.borders import border, rounded, divide
     from cjm_fasthtml_tailwind.utilities.layout import overflow
+    from cjm_fasthtml_tailwind.utilities.interactivity import cursor
+    from cjm_fasthtml_tailwind.utilities.transitions_and_animation import transition, animate
+    from cjm_fasthtml_tailwind.utilities.effects import shadow, ring, ring_color, inset_ring
     from cjm_fasthtml_tailwind.core.base import combine_classes
+
+    # Lucide icons
+    from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
     # App core utilities
     from cjm_fasthtml_app_core.components.navbar import create_navbar
@@ -154,8 +160,8 @@ def main():
         item_selector="li[data-item-id]",
         navigation=LinearVertical(),
         data_attributes=("item-id",),
-        zone_focus_classes=("ring-2", "ring-primary", "ring-offset-2"),
-        item_focus_classes=("bg-primary/20", "ring-2", "ring-primary"),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.primary), str(inset_ring(2))),
+        item_focus_classes=(str(bg_dui.primary.opacity(20)), str(ring(2)), str(ring_dui.primary)),
     )
 
     simple_actions = (
@@ -201,8 +207,8 @@ def main():
         item_selector="li[data-item-id]",
         navigation=LinearVertical(),
         data_attributes=("item-id",),
-        zone_focus_classes=("ring-2", "ring-primary", "ring-offset-2"),
-        item_focus_classes=("bg-primary/10", "ring-1", "ring-primary"),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.primary), str(inset_ring(2))),
+        item_focus_classes=(str(bg_dui.primary.opacity(10)), str(ring(1)), str(ring_dui.primary)),
         on_focus_change="onSourceFocusChange",
     )
 
@@ -211,8 +217,8 @@ def main():
         item_selector="li[data-item-id]",
         navigation=LinearVertical(),
         data_attributes=("item-id",),
-        zone_focus_classes=("ring-2", "ring-secondary", "ring-offset-2"),
-        item_focus_classes=("bg-secondary/10", "ring-1", "ring-secondary"),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.secondary), str(inset_ring(2))),
+        item_focus_classes=(str(bg_dui.secondary.opacity(10)), str(ring(1)), str(ring_dui.secondary)),
         on_focus_change="onQueueFocusChange",
     )
 
@@ -265,8 +271,8 @@ def main():
         item_selector="div[data-segment-id]",
         navigation=LinearVertical(),
         data_attributes=("segment-id",),
-        zone_focus_classes=("ring-2", "ring-primary"),
-        item_focus_classes=("border-primary", "bg-primary/5", "shadow-md"),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.primary)),
+        item_focus_classes=(str(border_dui.primary), str(bg_dui.primary.opacity(5)), str(shadow.md)),
     )
 
     split_mode = KeyboardMode(
@@ -313,8 +319,8 @@ def main():
         item_selector="li[data-item-id]",
         navigation=LinearVertical(),
         data_attributes=("item-id",),
-        zone_focus_classes=("ring-2", "ring-accent", "ring-offset-2"),
-        item_focus_classes=("bg-accent/20", "ring-2", "ring-accent"),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.accent), str(inset_ring(2))),
+        item_focus_classes=(str(bg_dui.accent.opacity(20)), str(ring(2)), str(ring_dui.accent)),
     )
 
     wasd_actions = (
@@ -345,15 +351,16 @@ def main():
     def render_list_item(item, is_selected=False, item_attr="data-item-id"):
         """Render a list item for the demos."""
         selected_cls = combine_classes(bg_dui.primary, text_dui.primary_content) if is_selected else ""
+        check_icon = lucide_icon("check", size=4, cls=str(text_dui.success)) if is_selected else ""
         return Li(
             Div(
                 Span(item.get("name", item.get("id", "Item")), cls=grow()),
-                Span("✓", cls=combine_classes(text_dui.success, font_weight.bold)) if is_selected else "",
+                check_icon,
                 cls=combine_classes(flex_display, items.center, gap(2))
             ),
             cls=combine_classes(
                 p(3), border.b(), border_dui.base_300,
-                "cursor-pointer", "transition-colors",
+                cursor.pointer, transition.colors,
                 selected_cls
             ),
             **{item_attr: item["id"]}
@@ -361,7 +368,8 @@ def main():
 
     def render_segment_card(segment, index, is_active=False, mode="navigation", caret_pos=0):
         """Render a segment card for mode switching demo."""
-        active_cls = "border-primary bg-primary/5 shadow-md" if is_active else "border-base-300"
+        active_cls = combine_classes(border_dui.primary, bg_dui.primary.opacity(5), shadow.md) if is_active else border_dui.base_300
+        caret_cls = combine_classes(text_dui.error, font_weight.bold, animate.pulse)
 
         content = segment["text"]
         if is_active and mode == "split":
@@ -370,10 +378,10 @@ def main():
             word_spans = []
             for i, word in enumerate(words):
                 if i == caret_pos:
-                    word_spans.append(Span("|", cls="text-error font-bold animate-pulse"))
+                    word_spans.append(Span("|", cls=caret_cls))
                 word_spans.append(Span(word + " "))
             if caret_pos >= len(words):
-                word_spans.append(Span("|", cls="text-error font-bold animate-pulse"))
+                word_spans.append(Span("|", cls=caret_cls))
             content = word_spans
 
         return Div(
@@ -386,7 +394,7 @@ def main():
                 cls=combine_classes(font_size.lg)
             ),
             cls=combine_classes(
-                card, p(4), border(2), "transition-all",
+                card, p(4), border(2), transition.all,
                 active_cls
             ),
             **{"data-segment-id": segment["id"]}
@@ -418,13 +426,24 @@ def main():
                             P("Single zone with arrow key navigation and selection.",
                               cls=combine_classes(text_dui.base_content, m.b(4))),
                             Div(
-                                Span("↑/↓ Navigate", cls=combine_classes(badge, badge_colors.primary, m.r(2))),
-                                Span("Space Select", cls=combine_classes(badge, badge_colors.secondary)),
-                                cls=m.b(4)
+                                Span(
+                                    lucide_icon("arrow-down-up", size=3),
+                                    Span("Navigate", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.primary, m.r(2), flex_display, items.center)
+                                ),
+                                Span(
+                                    Span("Space", cls=combine_classes(font_family.mono, font_weight.bold)),
+                                    Span("Select", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.secondary, flex_display, items.center)
+                                ),
+                                cls=combine_classes(flex_display, items.center, m.b(4))
                             ),
-                            A("Try Demo →",
-                              href=demo_simple.to(),
-                              cls=combine_classes(btn, btn_colors.primary)),
+                            A(
+                                Span("Try Demo", cls=m.r(1)),
+                                lucide_icon("arrow-right", size=4),
+                                href=demo_simple.to(),
+                                cls=combine_classes(btn, btn_colors.primary, flex_display, items.center)
+                            ),
                             cls=card_body
                         ),
                         cls=combine_classes(card, bg_dui.base_200)
@@ -438,13 +457,25 @@ def main():
                             P("Two zones with panel switching and cross-panel actions.",
                               cls=combine_classes(text_dui.base_content, m.b(4))),
                             Div(
-                                Span("←/→ Switch", cls=combine_classes(badge, badge_colors.primary, m.r(2))),
-                                Span("Shift+↑/↓ Reorder", cls=combine_classes(badge, badge_colors.secondary)),
-                                cls=m.b(4)
+                                Span(
+                                    lucide_icon("arrow-left-right", size=3),
+                                    Span("Switch", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.primary, m.r(2), flex_display, items.center)
+                                ),
+                                Span(
+                                    lucide_icon("arrow-big-up", size=3),
+                                    lucide_icon("arrow-down-up", size=3),
+                                    Span("Reorder", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.secondary, flex_display, items.center)
+                                ),
+                                cls=combine_classes(flex_display, items.center, m.b(4))
                             ),
-                            A("Try Demo →",
-                              href=demo_dual.to(),
-                              cls=combine_classes(btn, btn_colors.secondary)),
+                            A(
+                                Span("Try Demo", cls=m.r(1)),
+                                lucide_icon("arrow-right", size=4),
+                                href=demo_dual.to(),
+                                cls=combine_classes(btn, btn_colors.secondary, flex_display, items.center)
+                            ),
                             cls=card_body
                         ),
                         cls=combine_classes(card, bg_dui.base_200)
@@ -458,13 +489,26 @@ def main():
                             P("Navigation mode → Split mode with Enter/Escape.",
                               cls=combine_classes(text_dui.base_content, m.b(4))),
                             Div(
-                                Span("Enter → Split", cls=combine_classes(badge, badge_colors.primary, m.r(2))),
-                                Span("Esc → Exit", cls=combine_classes(badge, badge_colors.secondary)),
-                                cls=m.b(4)
+                                Span(
+                                    lucide_icon("corner-down-left", size=3),
+                                    lucide_icon("move-right", size=3),
+                                    Span("Split", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.primary, m.r(2), flex_display, items.center)
+                                ),
+                                Span(
+                                    lucide_icon("x", size=3),
+                                    lucide_icon("move-right", size=3),
+                                    Span("Exit", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.secondary, flex_display, items.center)
+                                ),
+                                cls=combine_classes(flex_display, items.center, m.b(4))
                             ),
-                            A("Try Demo →",
-                              href=demo_modes.to(),
-                              cls=combine_classes(btn, btn_colors.accent)),
+                            A(
+                                Span("Try Demo", cls=m.r(1)),
+                                lucide_icon("arrow-right", size=4),
+                                href=demo_modes.to(),
+                                cls=combine_classes(btn, btn_colors.accent, flex_display, items.center)
+                            ),
                             cls=card_body
                         ),
                         cls=combine_classes(card, bg_dui.base_200)
@@ -480,11 +524,14 @@ def main():
                             Div(
                                 Span("WASD", cls=combine_classes(badge, badge_colors.primary, m.r(2))),
                                 Span("Vim (hjkl)", cls=combine_classes(badge, badge_colors.secondary)),
-                                cls=m.b(4)
+                                cls=combine_classes(flex_display, items.center, m.b(4))
                             ),
-                            A("Try Demo →",
-                              href=demo_wasd.to(),
-                              cls=combine_classes(btn, btn_colors.info)),
+                            A(
+                                Span("Try Demo", cls=m.r(1)),
+                                lucide_icon("arrow-right", size=4),
+                                href=demo_wasd.to(),
+                                cls=combine_classes(btn, btn_colors.info, flex_display, items.center)
+                            ),
                             cls=card_body
                         ),
                         cls=combine_classes(card, bg_dui.base_200)
@@ -501,14 +548,20 @@ def main():
                 Div(
                     H2("Features", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(4))),
                     Div(
-                        Div("✓ Multi-zone focus management", cls=m.b(2)),
-                        Div("✓ Declarative action bindings", cls=m.b(2)),
-                        Div("✓ Mode system with transitions", cls=m.b(2)),
-                        Div("✓ HTMX + JS callback support", cls=m.b(2)),
-                        Div("✓ Custom key mappings (WASD, Vim, etc.)", cls=m.b(2)),
-                        Div("✓ State persistence support", cls=m.b(2)),
-                        Div("✓ Keyboard hints UI", cls=m.b(2)),
-                        Div("✓ Grid navigation ready", cls=m.b(2)),
+                        *[Div(
+                            lucide_icon("check", size=4, cls=str(text_dui.success)),
+                            Span(feature, cls=m.l(2)),
+                            cls=combine_classes(flex_display, items.center, m.b(2))
+                        ) for feature in [
+                            "Multi-zone focus management",
+                            "Declarative action bindings",
+                            "Mode system with transitions",
+                            "HTMX + JS callback support",
+                            "Custom key mappings (WASD, Vim, etc.)",
+                            "State persistence support",
+                            "Keyboard hints UI",
+                            "Grid navigation ready",
+                        ]],
                         cls=combine_classes(text_align.left, max_w.md, m.x.auto)
                     ),
                     cls=m.b(8)
