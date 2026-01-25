@@ -33,12 +33,22 @@ def render_hidden_inputs(
     include_state: bool = False,     # include state tracking inputs
     container_id: str = "kb-hidden-inputs"  # container element ID
 ) -> Div:                            # container with all hidden inputs
-    """Render all hidden inputs for keyboard navigation."""
-    inputs = []
+    """Render all hidden inputs for keyboard navigation.
     
-    # Zone data attribute inputs
+    Deduplicates inputs by ID - zones with the same hidden_input_prefix
+    will share inputs rather than creating duplicates.
+    """
+    inputs = []
+    seen_ids = set()
+    
+    # Zone data attribute inputs (deduplicated by ID)
     for zone in manager.zones:
-        inputs.extend(render_zone_hidden_inputs(zone))
+        for attr in zone.data_attributes:
+            input_id = zone.get_hidden_input_id(attr)
+            if input_id not in seen_ids:
+                seen_ids.add(input_id)
+                name = attr.replace("-", "_")
+                inputs.append(Hidden(id=input_id, name=name, value=""))
     
     # State tracking inputs (if enabled)
     if include_state or manager.state_hidden_inputs:
@@ -79,13 +89,20 @@ def build_all_zones_include_selector(
     manager: ZoneManager,         # the zone manager
     include_state: bool = False   # include state inputs
 ) -> str:                         # CSS selector for all zones
-    """Build hx-include selector for all zones' hidden inputs."""
+    """Build hx-include selector for all zones' hidden inputs.
+    
+    Deduplicates selectors - zones with the same hidden_input_prefix
+    will only include each input once.
+    """
     selectors = []
+    seen_ids = set()
     
     for zone in manager.zones:
         for attr in zone.data_attributes:
             input_id = zone.get_hidden_input_id(attr)
-            selectors.append(f"#{input_id}")
+            if input_id not in seen_ids:
+                seen_ids.add(input_id)
+                selectors.append(f"#{input_id}")
     
     if include_state:
         selectors.extend([

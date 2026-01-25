@@ -48,33 +48,33 @@ graph LR
     js_generators[js.generators<br/>Script Generators]
     js_utils[js.utils<br/>JavaScript Utilities]
 
-    components_hints --> core_manager
     components_hints --> core_actions
+    components_hints --> core_manager
     components_hints --> core_focus_zone
-    components_system --> core_focus_zone
+    components_system --> htmx_inputs
     components_system --> components_hints
     components_system --> htmx_buttons
-    components_system --> htmx_inputs
-    components_system --> js_generators
-    components_system --> core_manager
+    components_system --> core_focus_zone
     components_system --> core_actions
+    components_system --> core_manager
+    components_system --> js_generators
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
-    core_manager --> core_modes
     core_manager --> core_key_mapping
     core_manager --> core_navigation
+    core_manager --> core_modes
     core_manager --> core_focus_zone
     core_manager --> core_actions
     core_modes --> core_navigation
     htmx_buttons --> core_focus_zone
-    htmx_buttons --> core_manager
     htmx_buttons --> core_actions
-    htmx_inputs --> core_manager
+    htmx_buttons --> core_manager
     htmx_inputs --> core_focus_zone
-    js_generators --> core_focus_zone
+    htmx_inputs --> core_manager
     js_generators --> js_utils
-    js_generators --> core_manager
+    js_generators --> core_focus_zone
     js_generators --> core_actions
+    js_generators --> core_manager
 ```
 
 *27 cross-module dependencies detected*
@@ -475,7 +475,12 @@ def render_hidden_inputs(
     include_state: bool = False,     # include state tracking inputs
     container_id: str = "kb-hidden-inputs"  # container element ID
 ) -> Div:                            # container with all hidden inputs
-    "Render all hidden inputs for keyboard navigation."
+    """
+    Render all hidden inputs for keyboard navigation.
+    
+    Deduplicates inputs by ID - zones with the same hidden_input_prefix
+    will share inputs rather than creating duplicates.
+    """
 ```
 
 ``` python
@@ -491,7 +496,12 @@ def build_all_zones_include_selector(
     manager: ZoneManager,         # the zone manager
     include_state: bool = False   # include state inputs
 ) -> str:                         # CSS selector for all zones
-    "Build hx-include selector for all zones' hidden inputs."
+    """
+    Build hx-include selector for all zones' hidden inputs.
+    
+    Deduplicates selectors - zones with the same hidden_input_prefix
+    will only include each input once.
+    """
 ```
 
 ### Key Mapping (`key_mapping.ipynb`)
