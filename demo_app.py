@@ -275,11 +275,15 @@ def main():
         item_focus_classes=(str(border_dui.primary), str(bg_dui.primary.opacity(5)), str(shadow.md)),
     )
 
+    # Note: In a full implementation, split mode would have LinearHorizontal navigation
+    # for caret movement within segments. Since caret tracking isn't implemented,
+    # we use ScrollOnly to disable navigation in split mode.
+    from cjm_fasthtml_keyboard_navigation.core.navigation import ScrollOnly
     split_mode = KeyboardMode(
         name="split",
         enter_key="Enter",
         exit_key="Escape",
-        navigation_override=LinearHorizontal(),
+        navigation_override=ScrollOnly(),  # Disables navigation (no caret tracking)
         on_enter="enterSplitMode",
         on_exit="exitSplitMode",
         indicator_text="Split Mode",
@@ -368,7 +372,8 @@ def main():
 
     def render_segment_card(segment, index, is_active=False, mode="navigation", caret_pos=0):
         """Render a segment card for mode switching demo."""
-        active_cls = combine_classes(border_dui.primary, bg_dui.primary.opacity(5), shadow.md) if is_active else border_dui.base_300
+        # Always use base border color - JavaScript handles focus styling
+        # This prevents conflict between server-side active_cls and JS focus classes
         caret_cls = combine_classes(text_dui.error, font_weight.bold, animate.pulse)
 
         content = segment["text"]
@@ -395,7 +400,7 @@ def main():
             ),
             cls=combine_classes(
                 card, p(4), border(2), transition.all,
-                active_cls
+                border_dui.base_300  # Base color - JS adds focus styling
             ),
             **{"data-segment-id": segment["id"]}
         )
@@ -834,7 +839,7 @@ def main():
                 Div(
                     H1("Mode Switching",
                        cls=combine_classes(font_size._2xl, font_weight.bold)),
-                    P("Press Enter to enter split mode, Escape to exit. Use ←/→ to move caret in split mode.",
+                    P("Press Enter to enter Split mode, Escape to exit. Use ↑/↓ to navigate segments. (Caret movement not implemented in demo)",
                       cls=combine_classes(text_dui.base_content, font_size.sm)),
                     cls=combine_classes(m.b(4))
                 ),

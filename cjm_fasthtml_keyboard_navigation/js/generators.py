@@ -385,6 +385,15 @@ def js_keyboard_handler() -> str: # JavaScript keyboard handler code
     """Generate JavaScript code for keyboard event handling."""
     return '''
 // === Keyboard Handler ===
+function getEffectiveNavigationDirections() {
+    // Get directions supported by the effective navigation pattern
+    const pattern = getNavigationPattern(activeZoneId);
+    if (pattern === 'linear_vertical') return ['up', 'down'];
+    if (pattern === 'linear_horizontal') return ['left', 'right'];
+    if (pattern === 'grid') return ['up', 'down', 'left', 'right'];
+    return [];
+}
+
 function handleKeydown(e) {
     // Skip if input focused
     if (cfg.settings.skipWhenInputFocused && isInputFocused(e.target)) {
@@ -394,8 +403,13 @@ function handleKeydown(e) {
     const key = e.key;
     const mods = getModifiers(e);
     
-    // Check zone switching
-    if (modifiersMatch(mods, cfg.zoneSwitching.modifiers)) {
+    // Get effective navigation directions (considering mode overrides)
+    const navDirections = getEffectiveNavigationDirections();
+    const keyDirection = cfg.keyMapping[key];
+    const keyUsedForNavigation = keyDirection && navDirections.includes(keyDirection);
+    
+    // Check zone switching (skip if key is used for navigation in current mode)
+    if (!keyUsedForNavigation && modifiersMatch(mods, cfg.zoneSwitching.modifiers)) {
         if (key === cfg.zoneSwitching.prevKey) {
             e.preventDefault();
             switchZone('prev');
@@ -433,12 +447,11 @@ function handleKeydown(e) {
         }
     }
     
-    // Check navigation (only if no modifiers for zone switch)
-    const direction = cfg.keyMapping[key];
-    if (direction && mods.size === 0) {
+    // Check navigation (only if no modifiers)
+    if (keyDirection && mods.size === 0) {
         const zone = getZoneConfig(activeZoneId);
         if (zone && zone.itemSelector) {
-            if (navigate(direction)) {
+            if (navigate(keyDirection)) {
                 e.preventDefault();
                 return;
             }
@@ -564,7 +577,15 @@ function initialize() {
 }
 
 // === Event Listeners ===
-document.addEventListener('keydown', handleKeydown);
+// Use a unique key to track if we've already added the listener
+// This prevents duplicate listeners when navigating via HTMX
+const listenerKey = 'kbNavListenerAdded_' + cfg.initialZoneId;
+if (!window[listenerKey]) {
+    document.addEventListener('keydown', handleKeydown);
+    window[listenerKey] = true;
+}
+
+// Always re-register the settle event listener (it's on body, not document)
 document.body.addEventListener(cfg.settings.htmxSettleEvent, initialize);
 
 // Initial setup

@@ -51,30 +51,30 @@ graph LR
     components_hints --> core_manager
     components_hints --> core_actions
     components_hints --> core_focus_zone
-    components_system --> core_focus_zone
-    components_system --> htmx_inputs
-    components_system --> components_hints
-    components_system --> htmx_buttons
-    components_system --> core_manager
     components_system --> core_actions
     components_system --> js_generators
+    components_system --> core_focus_zone
+    components_system --> components_hints
+    components_system --> core_manager
+    components_system --> htmx_inputs
+    components_system --> htmx_buttons
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
+    core_manager --> core_actions
+    core_manager --> core_focus_zone
     core_manager --> core_key_mapping
     core_manager --> core_navigation
     core_manager --> core_modes
-    core_manager --> core_actions
-    core_manager --> core_focus_zone
     core_modes --> core_navigation
+    htmx_buttons --> core_actions
     htmx_buttons --> core_focus_zone
     htmx_buttons --> core_manager
-    htmx_buttons --> core_actions
-    htmx_inputs --> core_manager
     htmx_inputs --> core_focus_zone
-    js_generators --> core_manager
-    js_generators --> js_utils
+    htmx_inputs --> core_manager
     js_generators --> core_actions
     js_generators --> core_focus_zone
+    js_generators --> js_utils
+    js_generators --> core_manager
 ```
 
 *27 cross-module dependencies detected*
