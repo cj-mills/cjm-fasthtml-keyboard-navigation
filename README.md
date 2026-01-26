@@ -49,32 +49,32 @@ graph LR
     js_utils[js.utils<br/>JavaScript Utilities]
 
     components_hints --> core_actions
-    components_hints --> core_manager
     components_hints --> core_focus_zone
+    components_hints --> core_manager
     components_system --> htmx_inputs
-    components_system --> components_hints
     components_system --> htmx_buttons
-    components_system --> core_focus_zone
     components_system --> core_actions
     components_system --> core_manager
     components_system --> js_generators
+    components_system --> core_focus_zone
+    components_system --> components_hints
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
-    core_manager --> core_key_mapping
     core_manager --> core_navigation
+    core_manager --> core_key_mapping
+    core_manager --> core_actions
     core_manager --> core_modes
     core_manager --> core_focus_zone
-    core_manager --> core_actions
     core_modes --> core_navigation
-    htmx_buttons --> core_focus_zone
     htmx_buttons --> core_actions
     htmx_buttons --> core_manager
+    htmx_buttons --> core_focus_zone
     htmx_inputs --> core_focus_zone
     htmx_inputs --> core_manager
-    js_generators --> js_utils
-    js_generators --> core_focus_zone
     js_generators --> core_actions
+    js_generators --> js_utils
     js_generators --> core_manager
+    js_generators --> core_focus_zone
 ```
 
 *27 cross-module dependencies detected*
@@ -272,6 +272,7 @@ from cjm_fasthtml_keyboard_navigation.js.generators import (
     js_keyboard_handler,
     js_state_notification,
     js_initialization,
+    js_global_api,
     generate_keyboard_script
 )
 ```
@@ -333,6 +334,11 @@ def js_state_notification() -> str: # JavaScript state notification code
 ``` python
 def js_initialization() -> str: # JavaScript initialization code
     "Generate JavaScript code for initialization with focus recovery."
+```
+
+``` python
+def js_global_api() -> str:  # JavaScript global API exposure code
+    "Generate JavaScript code to expose mode control functions globally."
 ```
 
 ``` python

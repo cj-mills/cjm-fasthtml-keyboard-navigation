@@ -13,7 +13,7 @@ from cjm_fasthtml_keyboard_navigation.js.utils import (
 
 # %% auto #0
 __all__ = ['js_zone_state', 'js_focus_management', 'js_zone_switching', 'js_navigation', 'js_mode_management',
-           'js_action_dispatch', 'js_keyboard_handler', 'js_state_notification', 'js_initialization',
+           'js_action_dispatch', 'js_keyboard_handler', 'js_state_notification', 'js_initialization', 'js_global_api',
            'generate_keyboard_script']
 
 # %% ../../nbs/js/generators.ipynb #e358ee5c
@@ -592,6 +592,21 @@ document.body.addEventListener(cfg.settings.htmxSettleEvent, initialize);
 initialize();
 '''.strip()
 
+# %% ../../nbs/js/generators.ipynb #fi4q3bjj9z7
+def js_global_api() -> str:  # JavaScript global API exposure code
+    """Generate JavaScript code to expose mode control functions globally."""
+    return '''
+// === Global API ===
+// Expose mode control for programmatic access (e.g., syncing after HTMX swaps)
+window.kbNav = window.kbNav || {};
+window.kbNav.enterMode = enterMode;
+window.kbNav.exitMode = exitMode;
+window.kbNav.getState = getState;
+window.kbNav.setActiveZone = setActiveZone;
+window.kbNav.setItemFocus = setItemFocus;
+window.kbNav.initialize = initialize;
+'''.strip()
+
 # %% ../../nbs/js/generators.ipynb #22815c29
 def generate_keyboard_script(
     manager: ZoneManager  # the zone manager configuration
@@ -626,6 +641,8 @@ def generate_keyboard_script(
         js_keyboard_handler(),
         "",
         js_initialization(),
+        "",
+        js_global_api(),
         "",
         "})();",
     ]
