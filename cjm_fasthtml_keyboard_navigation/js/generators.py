@@ -463,10 +463,13 @@ function handleKeydown(e) {
     if (keyDirection && mods.size === 0) {
         const zone = getZoneConfig(activeZoneId);
         if (zone && zone.itemSelector) {
-            if (navigate(keyDirection)) {
+            // Always prevent default for navigation keys to avoid browser scroll
+            // This must happen even if navigate() returns false due to throttling
+            if (navDirections.includes(keyDirection)) {
                 e.preventDefault();
-                return;
             }
+            navigate(keyDirection);
+            return;
         }
     }
     
