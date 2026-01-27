@@ -459,15 +459,13 @@ function handleKeydown(e) {
         }
     }
     
-    // Check navigation (only if no modifiers)
-    if (keyDirection && mods.size === 0) {
+    // Check navigation (only if no modifiers AND direction is supported by current pattern)
+    // This ensures unsupported directions (e.g., left/right when ScrollOnly is active)
+    // fall through to the action check below
+    if (keyDirection && mods.size === 0 && navDirections.includes(keyDirection)) {
         const zone = getZoneConfig(activeZoneId);
         if (zone && zone.itemSelector) {
-            // Always prevent default for navigation keys to avoid browser scroll
-            // This must happen even if navigate() returns false due to throttling
-            if (navDirections.includes(keyDirection)) {
-                e.preventDefault();
-            }
+            e.preventDefault();
             navigate(keyDirection);
             return;
         }
