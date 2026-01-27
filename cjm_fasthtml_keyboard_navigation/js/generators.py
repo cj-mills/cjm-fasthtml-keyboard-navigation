@@ -208,6 +208,9 @@ def js_navigation() -> str: # JavaScript navigation code
     """Generate JavaScript code for item navigation."""
     return '''
 // === Navigation ===
+// Track last navigation time per zone for throttling
+let lastNavigationTime = {};
+
 function getNavigationPattern(zoneId) {
     // Check if mode overrides navigation
     const modeConfig = getModeConfig(currentMode);
@@ -222,6 +225,15 @@ function getNavigationPattern(zoneId) {
 function navigate(direction) {
     const zone = getZoneConfig(activeZoneId);
     if (!zone || !zone.itemSelector) return false;
+    
+    // Throttle check
+    const throttleMs = zone.navigationThrottleMs || 0;
+    if (throttleMs > 0) {
+        const now = Date.now();
+        const lastTime = lastNavigationTime[activeZoneId] || 0;
+        if (now - lastTime < throttleMs) return false;
+        lastNavigationTime[activeZoneId] = now;
+    }
     
     const items = getZoneItems(activeZoneId);
     if (items.length === 0) return false;

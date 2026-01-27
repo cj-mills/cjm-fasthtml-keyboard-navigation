@@ -33,6 +33,7 @@ class FocusZone:
     navigation: Union[NavigationPattern, LinearVertical] = field(
         default_factory=LinearVertical
     )  # navigation pattern for this zone
+    navigation_throttle_ms: int = 0  # minimum ms between navigation events (0 = no throttle)
 
     # Visual feedback - item focus
     item_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary))  # CSS classes for focused item
@@ -80,6 +81,7 @@ class FocusZone:
             "id": self.id,
             "itemSelector": self.item_selector,
             "navigationPattern": self.navigation.name,
+            "navigationThrottleMs": self.navigation_throttle_ms,
             "itemFocusClasses": list(self.item_focus_classes),
             "itemFocusAttribute": self.item_focus_attribute,
             "zoneFocusClasses": list(self.zone_focus_classes),

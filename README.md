@@ -48,33 +48,33 @@ graph LR
     js_generators[js.generators<br/>Script Generators]
     js_utils[js.utils<br/>JavaScript Utilities]
 
-    components_hints --> core_actions
     components_hints --> core_focus_zone
     components_hints --> core_manager
-    components_system --> htmx_inputs
-    components_system --> htmx_buttons
-    components_system --> core_actions
-    components_system --> core_manager
-    components_system --> js_generators
+    components_hints --> core_actions
     components_system --> core_focus_zone
+    components_system --> htmx_inputs
     components_system --> components_hints
+    components_system --> core_actions
+    components_system --> js_generators
+    components_system --> htmx_buttons
+    components_system --> core_manager
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
     core_manager --> core_navigation
-    core_manager --> core_key_mapping
-    core_manager --> core_actions
-    core_manager --> core_modes
     core_manager --> core_focus_zone
+    core_manager --> core_key_mapping
+    core_manager --> core_modes
+    core_manager --> core_actions
     core_modes --> core_navigation
+    htmx_buttons --> core_focus_zone
     htmx_buttons --> core_actions
     htmx_buttons --> core_manager
-    htmx_buttons --> core_focus_zone
     htmx_inputs --> core_focus_zone
     htmx_inputs --> core_manager
-    js_generators --> core_actions
-    js_generators --> js_utils
-    js_generators --> core_manager
     js_generators --> core_focus_zone
+    js_generators --> js_utils
+    js_generators --> core_actions
+    js_generators --> core_manager
 ```
 
 *27 cross-module dependencies detected*
@@ -219,6 +219,7 @@ class FocusZone:
     id: str  # HTML element ID of the container
     item_selector: Optional[str]  # CSS selector for items (None = scroll only)
     navigation: Union[NavigationPattern, LinearVertical] = field(...)
+    navigation_throttle_ms: int = 0  # minimum ms between navigation events (0 = no throttle)
     item_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary))  # CSS classes for focused item
     item_focus_attribute: str = 'data-focused'  # attribute set to "true" on focused item
     zone_focus_classes: tuple[str, ...] = (str(ring(2)), str(ring_dui.primary), str(inset_ring(2)))
@@ -299,6 +300,9 @@ def js_navigation() -> str: # JavaScript navigation code
     """Generate JavaScript code for item navigation."""
     return '''
 // === Navigation ===
+// Track last navigation time per zone for throttling
+let lastNavigationTime = {};
+
 function getNavigationPattern(zoneId) {
     // Check if mode overrides navigation
     const modeConfig = getModeConfig(currentMode);
