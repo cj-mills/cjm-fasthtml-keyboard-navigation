@@ -407,6 +407,10 @@ function getEffectiveNavigationDirections() {
 }
 
 function handleKeydown(e) {
+    // Skip if no zone containers exist in the DOM
+    // (e.g., this keyboard system's step was replaced by HTMX navigation)
+    if (!cfg.zones.some(z => document.getElementById(z.id))) return;
+
     // Skip if input focused
     if (cfg.settings.skipWhenInputFocused && isInputFocused(e.target)) {
         return;
