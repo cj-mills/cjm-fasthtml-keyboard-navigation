@@ -564,8 +564,17 @@ function recoverFocusForZone(zoneId) {
     return false;
 }
 
+// === DOM Existence Check ===
+function anyZoneInDOM() {
+    return cfg.zones.some(z => document.getElementById(z.id));
+}
+
 // === Initialization ===
 function initialize() {
+    // Skip if no zone containers exist in the DOM
+    // (e.g., this keyboard system's step was replaced by HTMX navigation)
+    if (!anyZoneInDOM()) return;
+
     for (const zone of cfg.zones) {
         const items = getZoneItems(zone.id);
         
@@ -603,7 +612,9 @@ if (!window[listenerKey]) {
 }
 
 // Always re-register the settle event listener (it's on body, not document)
-document.body.addEventListener(cfg.settings.htmxSettleEvent, initialize);
+document.body.addEventListener(cfg.settings.htmxSettleEvent, function() {
+    if (anyZoneInDOM()) initialize();
+});
 
 // Initial setup
 initialize();
