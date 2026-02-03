@@ -603,18 +603,27 @@ function initialize() {
 }
 
 // === Event Listeners ===
-// Use a unique key to track if we've already added the listener
-// This prevents duplicate listeners when navigating via HTMX
-const listenerKey = 'kbNavListenerAdded_' + cfg.initialZoneId;
-if (!window[listenerKey]) {
-    document.addEventListener('keydown', handleKeydown);
-    window[listenerKey] = true;
-}
+// Store handler references globally so we can remove old listeners
+// when the script re-runs (e.g., HTMX step navigation re-inserts the script)
+const handlerKey = 'kbNavHandler_' + cfg.initialZoneId;
+const settleKey = 'kbNavSettleHandler_' + cfg.initialZoneId;
 
-// Always re-register the settle event listener (it's on body, not document)
-document.body.addEventListener(cfg.settings.htmxSettleEvent, function() {
+// Remove old keydown listener if it exists (prevents stale closure references)
+if (window[handlerKey]) {
+    document.removeEventListener('keydown', window[handlerKey]);
+}
+window[handlerKey] = handleKeydown;
+document.addEventListener('keydown', handleKeydown);
+
+// Remove old settle listener if it exists (prevents accumulation)
+if (window[settleKey]) {
+    document.body.removeEventListener(cfg.settings.htmxSettleEvent, window[settleKey]);
+}
+const settleHandler = function() {
     if (anyZoneInDOM()) initialize();
-});
+};
+window[settleKey] = settleHandler;
+document.body.addEventListener(cfg.settings.htmxSettleEvent, settleHandler);
 
 // Initial setup
 initialize();
