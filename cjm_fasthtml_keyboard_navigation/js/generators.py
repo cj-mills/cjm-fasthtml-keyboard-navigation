@@ -524,22 +524,8 @@ def js_initialization() -> str: # JavaScript initialization code
     """Generate JavaScript code for initialization with focus recovery."""
     return '''
 // === Focus Recovery ===
-function findItemByDataAttribute(zoneId, attrName, attrValue) {
-    // Find an item in the zone that has the specified data attribute value
-    if (!attrValue) return -1;
-    
-    const items = getZoneItems(zoneId);
-    for (let i = 0; i < items.length; i++) {
-        const itemValue = items[i].getAttribute('data-' + attrName);
-        if (itemValue === attrValue) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 function recoverFocusForZone(zoneId) {
-    // Try to find the previously focused item by its data attributes
+    // Try to find the previously focused item by matching ALL saved data attributes
     const zone = getZoneConfig(zoneId);
     if (!zone || !zone.dataAttributes || zone.dataAttributes.length === 0) {
         return false;
@@ -548,16 +534,33 @@ function recoverFocusForZone(zoneId) {
     const items = getZoneItems(zoneId);
     if (items.length === 0) return false;
     
-    // Try each data attribute to find the item
+    // Collect saved values from hidden inputs
+    const savedValues = {};
+    let hasAnyValue = false;
     for (const attr of zone.dataAttributes) {
-        const inputId = zone.hiddenInputPrefix + '-' + attr;
+        const inputId = (zone.hiddenInputPrefix || zoneId) + '-' + attr;
         const input = document.getElementById(inputId);
         if (input && input.value) {
-            const foundIdx = findItemByDataAttribute(zoneId, attr, input.value);
-            if (foundIdx >= 0) {
-                focusIndices[zoneId] = foundIdx;
-                return true;
+            savedValues[attr] = input.value;
+            hasAnyValue = true;
+        }
+    }
+    
+    if (!hasAnyValue) return false;
+    
+    // Find the item where ALL saved data attributes match
+    for (let i = 0; i < items.length; i++) {
+        let allMatch = true;
+        for (const [attr, value] of Object.entries(savedValues)) {
+            const itemValue = items[i].getAttribute('data-' + attr);
+            if (itemValue !== value) {
+                allMatch = false;
+                break;
             }
+        }
+        if (allMatch) {
+            focusIndices[zoneId] = i;
+            return true;
         }
     }
     
