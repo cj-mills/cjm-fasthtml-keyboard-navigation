@@ -10,6 +10,7 @@ from cjm_fasthtml_keyboard_navigation.js.utils import (
     js_config_from_dict,
     js_all_utils
 )
+from .coordinator import js_coordinator_setup
 
 # %% auto #0
 __all__ = ['js_zone_state', 'js_focus_management', 'js_zone_switching', 'js_navigation', 'js_mode_management',
@@ -406,18 +407,33 @@ function getEffectiveNavigationDirections() {
     return [];
 }
 
+const NOT_HANDLED = { handled: false };
+
 function handleKeydown(e) {
     // Skip if no zone containers exist in the DOM
-    // (e.g., this keyboard system's step was replaced by HTMX navigation)
-    if (!cfg.zones.some(z => document.getElementById(z.id))) return;
+    if (!anyZoneInDOM()) return NOT_HANDLED;
 
     // Skip if input focused
     if (cfg.settings.skipWhenInputFocused && isInputFocused(e.target)) {
-        return;
+        return NOT_HANDLED;
     }
     
     const key = e.key;
     const mods = getModifiers(e);
+    
+    // --- Escape handling (layered: mode exit → system deactivation) ---
+    if (key === 'Escape' && mods.size === 0) {
+        // If in a non-default mode, exit mode first
+        if (currentMode !== cfg.defaultMode) {
+            exitMode();
+            return { handled: true, preventDefault: true };
+        }
+        // If this system has a parent, deactivate self (return to parent)
+        if (window.kbCoordinator && window.kbCoordinator.hasParent(cfg.systemId)) {
+            window.kbCoordinator.deactivateChild(cfg.systemId);
+            return { handled: true, preventDefault: true };
+        }
+    }
     
     // Get effective navigation directions (considering mode overrides)
     const navDirections = getEffectiveNavigationDirections();
@@ -427,26 +443,23 @@ function handleKeydown(e) {
     // Check zone switching (skip if key is used for navigation in current mode)
     if (!keyUsedForNavigation && modifiersMatch(mods, cfg.zoneSwitching.modifiers)) {
         if (key === cfg.zoneSwitching.prevKey) {
-            e.preventDefault();
             switchZone('prev');
-            return;
+            return { handled: true, preventDefault: true };
         }
         if (key === cfg.zoneSwitching.nextKey) {
-            e.preventDefault();
             switchZone('next');
-            return;
+            return { handled: true, preventDefault: true };
         }
     }
     
     // Check mode entry/exit
     const currentModeConfig = getModeConfig(currentMode);
     
-    // Check mode exit
-    if (currentModeConfig && currentModeConfig.exitKey === key) {
+    // Check mode exit (non-Escape exit keys)
+    if (currentModeConfig && currentModeConfig.exitKey === key && key !== 'Escape') {
         if (modifiersMatch(mods, currentModeConfig.exitModifiers || [])) {
-            e.preventDefault();
             exitMode();
-            return;
+            return { handled: true, preventDefault: true };
         }
     }
     
@@ -455,34 +468,36 @@ function handleKeydown(e) {
         if (mode.enterKey === key && mode.name !== currentMode) {
             if (modifiersMatch(mods, mode.enterModifiers || [])) {
                 if (isModeAvailable(mode.name)) {
-                    e.preventDefault();
                     enterMode(mode.name);
-                    return;
+                    return { handled: true, preventDefault: true };
                 }
             }
         }
     }
     
     // Check navigation (only if no modifiers AND direction is supported by current pattern)
-    // This ensures unsupported directions (e.g., left/right when ScrollOnly is active)
-    // fall through to the action check below
     if (keyDirection && mods.size === 0 && navDirections.includes(keyDirection)) {
         const zone = getZoneConfig(activeZoneId);
         if (zone && zone.itemSelector) {
-            e.preventDefault();
-            navigate(keyDirection);
-            return;
+            const moved = navigate(keyDirection);
+            if (moved) {
+                return { handled: true, preventDefault: true };
+            }
         }
     }
     
     // Check actions
     const action = findMatchingAction(key, mods);
     if (action) {
-        if (action.preventDefault) e.preventDefault();
-        if (action.stopPropagation) e.stopPropagation();
         executeAction(action);
-        return;
+        return {
+            handled: true,
+            preventDefault: action.preventDefault,
+            stopPropagation: action.stopPropagation,
+        };
     }
+    
+    return NOT_HANDLED;
 }
 '''.strip()
 
@@ -575,7 +590,6 @@ function anyZoneInDOM() {
 // === Initialization ===
 function initialize() {
     // Skip if no zone containers exist in the DOM
-    // (e.g., this keyboard system's step was replaced by HTMX navigation)
     if (!anyZoneInDOM()) return;
 
     for (const zone of cfg.zones) {
@@ -605,25 +619,29 @@ function initialize() {
     notifyStateChange();
 }
 
-// === Event Listeners ===
-// Store handler references globally so we can remove old listeners
-// when the script re-runs (e.g., HTMX step navigation re-inserts the script)
-const handlerKey = 'kbNavHandler_' + cfg.initialZoneId;
-const settleKey = 'kbNavSettleHandler_' + cfg.initialZoneId;
+// === Register with Coordinator ===
+window.kbCoordinator.register(cfg.systemId, {
+    handle: handleKeydown,
+    initialize: initialize,
+    getState: getState,
+    config: cfg,
+    onActivate: null,
+    onDeactivate: null,
+});
 
-// Remove old keydown listener if it exists (prevents stale closure references)
-if (window[handlerKey]) {
-    document.removeEventListener('keydown', window[handlerKey]);
-}
-window[handlerKey] = handleKeydown;
-document.addEventListener('keydown', handleKeydown);
+// === Settle Handler ===
+const settleKey = 'kbNavSettleHandler_' + cfg.systemId;
 
 // Remove old settle listener if it exists (prevents accumulation)
 if (window[settleKey]) {
     document.body.removeEventListener(cfg.settings.htmxSettleEvent, window[settleKey]);
 }
 const settleHandler = function() {
-    if (anyZoneInDOM()) initialize();
+    if (anyZoneInDOM()) {
+        initialize();
+        // Clean up stale active children
+        window.kbCoordinator.validateActiveChildren();
+    }
 };
 window[settleKey] = settleHandler;
 document.body.addEventListener(cfg.settings.htmxSettleEvent, settleHandler);
@@ -634,11 +652,21 @@ initialize();
 
 # %% ../../nbs/js/generators.ipynb #fi4q3bjj9z7
 def js_global_api() -> str:  # JavaScript global API exposure code
-    """Generate JavaScript code to expose mode control functions globally."""
+    """Generate JavaScript code to expose control functions globally."""
     return '''
 // === Global API ===
-// Expose mode control for programmatic access (e.g., syncing after HTMX swaps)
+// Per-system API keyed by systemId (for multi-system pages)
 window.kbNav = window.kbNav || {};
+window.kbNav[cfg.systemId] = {
+    enterMode: enterMode,
+    exitMode: exitMode,
+    getState: getState,
+    setActiveZone: setActiveZone,
+    setItemFocus: setItemFocus,
+    initialize: initialize,
+};
+
+// Backward-compatible flat API (last system to register wins)
 window.kbNav.enterMode = enterMode;
 window.kbNav.exitMode = exitMode;
 window.kbNav.getState = getState;
@@ -657,6 +685,8 @@ def generate_keyboard_script(
     parts = [
         "(function() {",
         "'use strict';",
+        "",
+        js_coordinator_setup(),
         "",
         js_config_from_dict(config),
         "",

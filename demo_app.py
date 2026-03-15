@@ -22,6 +22,12 @@ This demo showcases the keyboard navigation framework:
    - Vim keys (hjkl)
    - Combined mappings
 
+5. Hierarchical Systems:
+   - Parent system with ghost zones for target navigation
+   - Two child systems (independent lists)
+   - Escape to deactivate child, Enter to activate
+   - Single keydown listener via coordinator
+
 Run with: python demo_app.py
 """
 
@@ -553,6 +559,37 @@ def main():
                         cls=combine_classes(card, bg_dui.base_200)
                     ),
 
+                    # Hierarchy card
+                    Div(
+                        Div(
+                            H2("Hierarchical Systems",
+                               cls=combine_classes(font_size.xl, font_weight.semibold, m.b(2))),
+                            P("Parent-child keyboard coordination with Escape/Enter activation.",
+                              cls=combine_classes(text_dui.base_content, m.b(4))),
+                            Div(
+                                Span(
+                                    lucide_icon("layers", size=3),
+                                    Span("Hierarchy", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.primary, m.r(2), flex_display, items.center)
+                                ),
+                                Span(
+                                    Span("Esc", cls=combine_classes(font_family.mono, font_weight.bold)),
+                                    Span("Deactivate", cls=m.l(1)),
+                                    cls=combine_classes(badge, badge_colors.warning, flex_display, items.center)
+                                ),
+                                cls=combine_classes(flex_display, items.center, m.b(4))
+                            ),
+                            A(
+                                Span("Try Demo", cls=m.r(1)),
+                                lucide_icon("arrow-right", size=4),
+                                href=demo_hierarchy.to(),
+                                cls=combine_classes(btn, btn_colors.warning, flex_display, items.center)
+                            ),
+                            cls=card_body
+                        ),
+                        cls=combine_classes(card, bg_dui.base_200)
+                    ),
+
                     cls=combine_classes(
                         grid_display, grid_cols(1),
                         grid_cols(2).md,
@@ -574,6 +611,7 @@ def main():
                             "Mode system with transitions",
                             "HTMX + JS callback support",
                             "Custom key mappings (WASD, Vim, etc.)",
+                            "Hierarchical keyboard systems with coordinator",
                             "State persistence support",
                             "Keyboard hints UI",
                             "Grid navigation ready",
@@ -1028,6 +1066,375 @@ def main():
         return render_wasd_list()
 
     # =========================================================================
+    # Demo 5: Hierarchical Systems
+    # =========================================================================
+
+    # State for child lists
+    child_a_state = DemoState(
+        items=[
+            {"id": "a1", "name": "Alpha Item 1"},
+            {"id": "a2", "name": "Alpha Item 2"},
+            {"id": "a3", "name": "Alpha Item 3"},
+            {"id": "a4", "name": "Alpha Item 4"},
+            {"id": "a5", "name": "Alpha Item 5"},
+        ]
+    )
+
+    child_b_state = DemoState(
+        items=[
+            {"id": "b1", "name": "Beta Item 1"},
+            {"id": "b2", "name": "Beta Item 2"},
+            {"id": "b3", "name": "Beta Item 3"},
+            {"id": "b4", "name": "Beta Item 4"},
+        ]
+    )
+
+    # --- Child system A: vertical list ---
+    child_a_zone = FocusZone(
+        id="child-a-list",
+        item_selector="li[data-item-id]",
+        navigation=LinearVertical(),
+        data_attributes=("item-id",),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.primary), str(inset_ring(2))),
+        item_focus_classes=(str(bg_dui.primary.opacity(20)), str(ring(1)), str(ring_dui.primary)),
+    )
+    child_a_actions = (
+        KeyAction(
+            key=" ",
+            htmx_trigger="child-a-toggle-btn",
+            description="Toggle selection",
+            hint_group="Selection",
+        ),
+        KeyAction(
+            key="Enter",
+            htmx_trigger="child-a-toggle-btn",
+            description="Toggle selection",
+            hint_group="Selection",
+            show_in_hints=False,
+        ),
+    )
+    child_a_manager = ZoneManager(
+        zones=(child_a_zone,),
+        actions=child_a_actions,
+        system_id="child-a",
+    )
+
+    # --- Child system B: vertical list ---
+    child_b_zone = FocusZone(
+        id="child-b-list",
+        item_selector="li[data-item-id]",
+        navigation=LinearVertical(),
+        data_attributes=("item-id",),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.secondary), str(inset_ring(2))),
+        item_focus_classes=(str(bg_dui.secondary.opacity(20)), str(ring(1)), str(ring_dui.secondary)),
+    )
+    child_b_actions = (
+        KeyAction(
+            key=" ",
+            htmx_trigger="child-b-toggle-btn",
+            description="Toggle selection",
+            hint_group="Selection",
+        ),
+        KeyAction(
+            key="Enter",
+            htmx_trigger="child-b-toggle-btn",
+            description="Toggle selection",
+            hint_group="Selection",
+            show_in_hints=False,
+        ),
+    )
+    child_b_manager = ZoneManager(
+        zones=(child_b_zone,),
+        actions=child_b_actions,
+        system_id="child-b",
+    )
+
+    # --- Parent system: ghost zones for target navigation ---
+    from cjm_fasthtml_keyboard_navigation.core.navigation import ScrollOnly
+
+    ghost_zone_a = FocusZone(
+        id="ghost-a",
+        item_selector=None,
+        navigation=ScrollOnly(),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.primary)),
+    )
+    ghost_zone_b = FocusZone(
+        id="ghost-b",
+        item_selector=None,
+        navigation=ScrollOnly(),
+        zone_focus_classes=(str(ring(2)), str(ring_dui.secondary)),
+    )
+
+    parent_actions = (
+        # Enter activates the child corresponding to the active ghost zone
+        KeyAction(
+            key="Enter",
+            js_callback="activateHighlightedChild",
+            description="Activate area",
+            hint_group="Navigation",
+        ),
+    )
+    parent_manager = ZoneManager(
+        zones=(ghost_zone_a, ghost_zone_b),
+        actions=parent_actions,
+        system_id="hierarchy-parent",
+        prev_zone_key="ArrowLeft",
+        next_zone_key="ArrowRight",
+    )
+
+    def render_child_a_list():
+        """Render child A list."""
+        return Div(
+            Ul(
+                *[render_list_item(item, item["id"] in child_a_state.selected_indices)
+                  for item in child_a_state.items],
+                id="child-a-list",
+                cls=combine_classes(border(), rounded.lg, overflow.hidden, divide.y())
+            ),
+            id="child-a-container"
+        )
+
+    def render_child_b_list():
+        """Render child B list."""
+        return Div(
+            Ul(
+                *[render_list_item(item, item["id"] in child_b_state.selected_indices)
+                  for item in child_b_state.items],
+                id="child-b-list",
+                cls=combine_classes(border(), rounded.lg, overflow.hidden, divide.y())
+            ),
+            id="child-b-container"
+        )
+
+    @router
+    def child_a_toggle(request, item_id: str = ""):
+        """Toggle selection in child A."""
+        if item_id:
+            if item_id in child_a_state.selected_indices:
+                child_a_state.selected_indices.discard(item_id)
+            else:
+                child_a_state.selected_indices.add(item_id)
+        return render_child_a_list()
+
+    @router
+    def child_b_toggle(request, item_id: str = ""):
+        """Toggle selection in child B."""
+        if item_id:
+            if item_id in child_b_state.selected_indices:
+                child_b_state.selected_indices.discard(item_id)
+            else:
+                child_b_state.selected_indices.add(item_id)
+        return render_child_b_list()
+
+    @router
+    def demo_hierarchy(request):
+        """Hierarchical keyboard systems demo."""
+
+        def demo_content():
+            # Render all three keyboard systems
+            parent_system = render_keyboard_system(
+                parent_manager,
+                url_map={},
+                target_map={},
+                show_hints=False,
+            )
+
+            child_a_system = render_keyboard_system(
+                child_a_manager,
+                url_map={
+                    "child-a-toggle-btn": child_a_toggle.to(),
+                },
+                target_map={
+                    "child-a-toggle-btn": "#child-a-container",
+                },
+                show_hints=False,
+            )
+
+            child_b_system = render_keyboard_system(
+                child_b_manager,
+                url_map={
+                    "child-b-toggle-btn": child_b_toggle.to(),
+                },
+                target_map={
+                    "child-b-toggle-btn": "#child-b-container",
+                },
+                show_hints=False,
+            )
+
+            # Status indicator (updated by JS)
+            status_indicator = Div(
+                Span("Active: ", cls=font_weight.semibold),
+                Span("Parent (navigating between areas)", id="hierarchy-status"),
+                cls=combine_classes(
+                    p(3), m.b(4), rounded.lg, bg_dui.base_200,
+                    font_size.sm, font_family.mono,
+                )
+            )
+
+            # Hierarchy setup + activation logic
+            hierarchy_js = Script("""
+            (function() {
+                const coord = window.kbCoordinator;
+
+                // Establish hierarchy
+                coord.setParent('child-a', 'hierarchy-parent');
+                coord.setParent('child-b', 'hierarchy-parent');
+
+                // Map ghost zones to child system IDs
+                const ghostToChild = {
+                    'ghost-a': 'child-a',
+                    'ghost-b': 'child-b',
+                };
+
+                const childLabels = {
+                    'child-a': 'Child A (Alpha list)',
+                    'child-b': 'Child B (Beta list)',
+                };
+
+                function updateStatus(text) {
+                    const el = document.getElementById('hierarchy-status');
+                    if (el) el.textContent = text;
+                }
+
+                // Activate highlighted child when Enter is pressed at parent level
+                window.activateHighlightedChild = function(item, index, zoneId, mode) {
+                    const childId = ghostToChild[zoneId];
+                    if (childId) {
+                        coord.setActiveChild('hierarchy-parent', childId);
+                        updateStatus(childLabels[childId] + ' — press Escape to return');
+                    }
+                };
+
+                // Visual feedback on child activation/deactivation
+                const childASys = coord._systems['child-a'];
+                const childBSys = coord._systems['child-b'];
+
+                if (childASys) {
+                    childASys.onActivate = function() {
+                        const el = document.getElementById('ghost-a');
+                        if (el) { el.classList.add('ring-2', 'ring-primary'); }
+                    };
+                    childASys.onDeactivate = function() {
+                        const el = document.getElementById('ghost-a');
+                        if (el) { el.classList.remove('ring-2', 'ring-primary'); }
+                        updateStatus('Parent (navigating between areas)');
+                    };
+                }
+
+                if (childBSys) {
+                    childBSys.onActivate = function() {
+                        const el = document.getElementById('ghost-b');
+                        if (el) { el.classList.add('ring-2', 'ring-secondary'); }
+                    };
+                    childBSys.onDeactivate = function() {
+                        const el = document.getElementById('ghost-b');
+                        if (el) { el.classList.remove('ring-2', 'ring-secondary'); }
+                        updateStatus('Parent (navigating between areas)');
+                    };
+                }
+
+                // Start with no active child (parent navigates between ghost zones)
+                updateStatus('Parent (navigating between areas) — use ←/→ then Enter');
+            })();
+            """)
+
+            return Div(
+                # Header
+                Div(
+                    H1("Hierarchical Systems",
+                       cls=combine_classes(font_size._2xl, font_weight.bold)),
+                    P("Parent with two child systems. Escape deactivates child, Enter activates.",
+                      cls=combine_classes(text_dui.base_content, font_size.sm)),
+                    cls=combine_classes(m.b(4))
+                ),
+
+                # Instructions
+                Div(
+                    Div(
+                        Span("←/→", cls=combine_classes(badge, badge_colors.accent, m.r(2))),
+                        Span("Navigate between areas (at parent level)"),
+                        cls=combine_classes(m.b(1))
+                    ),
+                    Div(
+                        Span("Enter", cls=combine_classes(badge, badge_colors.primary, m.r(2))),
+                        Span("Activate highlighted area"),
+                        cls=combine_classes(m.b(1))
+                    ),
+                    Div(
+                        Span("Escape", cls=combine_classes(badge, badge_colors.warning, m.r(2))),
+                        Span("Deactivate child, return to parent"),
+                        cls=combine_classes(m.b(1))
+                    ),
+                    Div(
+                        Span("↑/↓", cls=combine_classes(badge, badge_colors.info, m.r(2))),
+                        Span("Navigate items (when child is active)"),
+                        cls=combine_classes(m.b(1))
+                    ),
+                    Div(
+                        Span("Space", cls=combine_classes(badge, badge_colors.success, m.r(2))),
+                        Span("Toggle selection (when child is active)"),
+                    ),
+                    cls=combine_classes(m.b(4), p(4), bg_dui.base_200, rounded.lg, font_size.sm)
+                ),
+
+                # Status
+                status_indicator,
+
+                # Two child panels side by side
+                Div(
+                    # Child A panel with ghost zone wrapper
+                    Div(
+                        H3("Alpha List", cls=combine_classes(
+                            font_weight.semibold, m.b(2), text_dui.primary)),
+                        render_child_a_list(),
+                        id="ghost-a",
+                        cls=combine_classes(
+                            p(4), rounded.lg, border(), border_dui.base_300,
+                            transition.all,
+                        )
+                    ),
+                    # Child B panel with ghost zone wrapper
+                    Div(
+                        H3("Beta List", cls=combine_classes(
+                            font_weight.semibold, m.b(2), text_dui.secondary)),
+                        render_child_b_list(),
+                        id="ghost-b",
+                        cls=combine_classes(
+                            p(4), rounded.lg, border(), border_dui.base_300,
+                            transition.all,
+                        )
+                    ),
+                    cls=combine_classes(
+                        grid_display, grid_cols(2), gap(4), m.b(4),
+                    )
+                ),
+
+                # All three keyboard systems
+                parent_system.script,
+                parent_system.hidden_inputs,
+                parent_system.action_buttons,
+
+                child_a_system.script,
+                child_a_system.hidden_inputs,
+                child_a_system.action_buttons,
+
+                child_b_system.script,
+                child_b_system.hidden_inputs,
+                child_b_system.action_buttons,
+
+                # Hierarchy wiring (must come after all systems are registered)
+                hierarchy_js,
+
+                cls=combine_classes(container, max_w._4xl, m.x.auto, p(6))
+            )
+
+        return handle_htmx_request(
+            request,
+            demo_content,
+            wrap_fn=lambda content: wrap_with_layout(content, navbar=navbar)
+        )
+
+    # =========================================================================
     # Navigation
     # =========================================================================
 
@@ -1040,6 +1447,7 @@ def main():
             ("Dual Panel", demo_dual),
             ("Modes", demo_modes),
             ("WASD", demo_wasd),
+            ("Hierarchy", demo_hierarchy),
         ],
         home_route=index,
         theme_selector=True
@@ -1093,6 +1501,7 @@ if __name__ == "__main__":
     print(f"  http://{display_host}:{port}/demo_dual     - Dual panel navigation")
     print(f"  http://{display_host}:{port}/demo_modes    - Mode switching demo")
     print(f"  http://{display_host}:{port}/demo_wasd     - Custom key mappings")
+    print(f"  http://{display_host}:{port}/demo_hierarchy - Hierarchical systems")
     print("\n" + "=" * 70 + "\n")
 
     # Open browser after a short delay

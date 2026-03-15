@@ -25,11 +25,12 @@ pip install cjm_fasthtml_keyboard_navigation
     ├── htmx/ (2)
     │   ├── buttons.ipynb  # Generate hidden HTMX action buttons triggered by keyboard events.
     │   └── inputs.ipynb   # Generate hidden inputs for HTMX integration with keyboard navigation.
-    └── js/ (2)
-        ├── generators.ipynb  # Generate complete keyboard navigation JavaScript from configuration.
-        └── utils.ipynb       # Core JavaScript utility generators for keyboard navigation.
+    └── js/ (3)
+        ├── coordinator.ipynb  # Global coordinator for hierarchical keyboard system management with single-listener event dispatch.
+        ├── generators.ipynb   # Generate complete keyboard navigation JavaScript from configuration.
+        └── utils.ipynb        # Core JavaScript utility generators for keyboard navigation.
 
-Total: 12 notebooks across 4 directories
+Total: 13 notebooks across 4 directories
 
 ## Module Dependencies
 
@@ -45,39 +46,41 @@ graph LR
     core_navigation[core.navigation<br/>Navigation Patterns]
     htmx_buttons[htmx.buttons<br/>Action Buttons]
     htmx_inputs[htmx.inputs<br/>Hidden Inputs]
+    js_coordinator[js.coordinator<br/>Keyboard Coordinator]
     js_generators[js.generators<br/>Script Generators]
     js_utils[js.utils<br/>JavaScript Utilities]
 
-    components_hints --> core_focus_zone
     components_hints --> core_manager
     components_hints --> core_actions
-    components_system --> js_generators
+    components_hints --> core_focus_zone
     components_system --> htmx_inputs
     components_system --> core_manager
-    components_system --> htmx_buttons
-    components_system --> core_actions
-    components_system --> components_hints
+    components_system --> js_generators
     components_system --> core_focus_zone
+    components_system --> components_hints
+    components_system --> core_actions
+    components_system --> htmx_buttons
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
-    core_manager --> core_key_mapping
     core_manager --> core_navigation
+    core_manager --> core_key_mapping
     core_manager --> core_modes
-    core_manager --> core_actions
     core_manager --> core_focus_zone
+    core_manager --> core_actions
     core_modes --> core_navigation
     htmx_buttons --> core_manager
-    htmx_buttons --> core_actions
     htmx_buttons --> core_focus_zone
+    htmx_buttons --> core_actions
     htmx_inputs --> core_manager
     htmx_inputs --> core_focus_zone
     js_generators --> js_utils
     js_generators --> core_manager
-    js_generators --> core_actions
     js_generators --> core_focus_zone
+    js_generators --> core_actions
+    js_generators --> js_coordinator
 ```
 
-*27 cross-module dependencies detected*
+*28 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -195,6 +198,26 @@ def render_action_buttons(
     container_id: str = "kb-action-buttons"       # container element ID
 ) -> Div:                                         # container with all action buttons
     "Render all hidden HTMX action buttons for keyboard navigation."
+```
+
+### Keyboard Coordinator (`coordinator.ipynb`)
+
+> Global coordinator for hierarchical keyboard system management with
+> single-listener event dispatch.
+
+#### Import
+
+``` python
+from cjm_fasthtml_keyboard_navigation.js.coordinator import (
+    js_coordinator_setup
+)
+```
+
+#### Functions
+
+``` python
+def js_coordinator_setup() -> str: # JavaScript coordinator singleton code
+    "Generate the global keyboard coordinator singleton."
 ```
 
 ### Focus Zone (`focus_zone.ipynb`)
@@ -342,7 +365,7 @@ def js_initialization() -> str: # JavaScript initialization code
 
 ``` python
 def js_global_api() -> str:  # JavaScript global API exposure code
-    "Generate JavaScript code to expose mode control functions globally."
+    "Generate JavaScript code to expose control functions globally."
 ```
 
 ``` python
@@ -612,6 +635,7 @@ class ZoneManager:
     "Coordinates keyboard navigation across zones."
     
     zones: tuple[FocusZone, ...]  # all focus zones
+    system_id: Optional[str]  # unique ID for coordinator registration (defaults to initial zone ID)
     prev_zone_key: str = 'ArrowLeft'  # key to switch to previous zone
     next_zone_key: str = 'ArrowRight'  # key to switch to next zone
     zone_switch_modifiers: frozenset[str] = field(...)
@@ -676,7 +700,7 @@ class ZoneManager:
     def to_js_config(self) -> dict: # JavaScript-compatible configuration
             """Convert to JavaScript configuration object."""
             return {
-                "zones": [z.to_js_config() for z in self.zones],
+                "systemId": self.system_id,
         "Convert to JavaScript configuration object."
 ```
 

@@ -23,6 +23,9 @@ class ZoneManager:
     # Zones
     zones: tuple[FocusZone, ...]  # all focus zones
 
+    # Identity
+    system_id: Optional[str] = None  # unique ID for coordinator registration (defaults to initial zone ID)
+
     # Zone switching
     prev_zone_key: str = "ArrowLeft"  # key to switch to previous zone
     next_zone_key: str = "ArrowRight"  # key to switch to next zone
@@ -76,6 +79,10 @@ class ZoneManager:
         # Validate initial_zone_id
         if self.initial_zone_id and self.initial_zone_id not in zone_ids:
             raise ValueError(f"initial_zone_id '{self.initial_zone_id}' not found in zones")
+        
+        # Auto-generate system_id from initial zone ID if not provided
+        if self.system_id is None:
+            self.system_id = self.get_initial_zone_id()
 
     def get_zone(
         self,
@@ -126,6 +133,7 @@ class ZoneManager:
     def to_js_config(self) -> dict: # JavaScript-compatible configuration
         """Convert to JavaScript configuration object."""
         return {
+            "systemId": self.system_id,
             "zones": [z.to_js_config() for z in self.zones],
             "zoneSwitching": {
                 "prevKey": self.prev_zone_key,
