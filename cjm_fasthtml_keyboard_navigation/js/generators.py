@@ -421,15 +421,16 @@ function handleKeydown(e) {
     const key = e.key;
     const mods = getModifiers(e);
     
-    // --- Escape handling (layered: mode exit → system deactivation) ---
+    // --- Escape handling: system deactivation (only when in default mode) ---
+    // Mode exit is handled by the normal dispatch chain below (exit_key check
+    // or KeyAction with mode_exit=True) so that HTMX triggers fire correctly.
     if (key === 'Escape' && mods.size === 0) {
-        // If in a non-default mode, exit mode first
         if (currentMode !== cfg.defaultMode) {
-            exitMode();
-            return { handled: true, preventDefault: true };
+            // In a non-default mode — let normal dispatch handle it
+            // (mode exit_key check or KeyAction with mode_exit=True)
         }
-        // If this system has a parent, deactivate self (return to parent)
-        if (window.kbCoordinator && window.kbCoordinator.hasParent(cfg.systemId)) {
+        // If in default mode and has parent, deactivate self (return to parent)
+        else if (window.kbCoordinator && window.kbCoordinator.hasParent(cfg.systemId)) {
             window.kbCoordinator.deactivateChild(cfg.systemId);
             return { handled: true, preventDefault: true };
         }
@@ -455,8 +456,8 @@ function handleKeydown(e) {
     // Check mode entry/exit
     const currentModeConfig = getModeConfig(currentMode);
     
-    // Check mode exit (non-Escape exit keys)
-    if (currentModeConfig && currentModeConfig.exitKey === key && key !== 'Escape') {
+    // Check mode exit via exit_key (includes Escape if mode defines exit_key="Escape")
+    if (currentModeConfig && currentModeConfig.exitKey === key) {
         if (modifiersMatch(mods, currentModeConfig.exitModifiers || [])) {
             exitMode();
             return { handled: true, preventDefault: true };
