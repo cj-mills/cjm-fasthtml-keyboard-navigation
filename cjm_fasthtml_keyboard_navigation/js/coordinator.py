@@ -21,6 +21,7 @@ if (!window.kbCoordinator) {
         const activeChild = {};   // parentId -> childId or null
         let rootSystems = [];     // systems with no parent
         let _listener = null;     // single keydown listener reference
+        const _paused = new Set(); // paused system IDs
 
         // --- Registration ---
 
@@ -37,6 +38,7 @@ if (!window.kbCoordinator) {
 
         function unregister(systemId) {
             delete systems[systemId];
+            _paused.delete(systemId);
             // Remove from root list
             rootSystems = rootSystems.filter(id => id !== systemId);
             // Remove from parent's children
@@ -135,6 +137,20 @@ if (!window.kbCoordinator) {
             return activeChild[parentId] === systemId;
         }
 
+        // --- Pause/Resume ---
+
+        function pause(systemId) {
+            _paused.add(systemId);
+        }
+
+        function resume(systemId) {
+            _paused.delete(systemId);
+        }
+
+        function isPaused(systemId) {
+            return _paused.has(systemId);
+        }
+
         // --- Event Dispatch ---
 
         function _ensureListener() {
@@ -166,6 +182,7 @@ if (!window.kbCoordinator) {
             const chain = [];
             for (const rootId of rootSystems) {
                 if (!_hasAnyZoneInDOM(rootId)) continue;
+                if (_paused.has(rootId)) continue;  // Skip paused root systems
                 const subchain = [];
                 _walkActiveChain(rootId, subchain);
                 // subchain is root-first, reverse to get leaf-first
@@ -178,7 +195,7 @@ if (!window.kbCoordinator) {
         function _walkActiveChain(systemId, result) {
             result.push(systemId);
             const childId = activeChild[systemId];
-            if (childId && systems[childId]) {
+            if (childId && systems[childId] && !_paused.has(childId)) {
                 _walkActiveChain(childId, result);
             }
         }
@@ -228,6 +245,9 @@ if (!window.kbCoordinator) {
             hasActiveChild: hasActiveChild,
             getActiveChild: getActiveChild,
             isActive: isActive,
+            pause: pause,
+            resume: resume,
+            isPaused: isPaused,
             validateActiveChildren: validateActiveChildren,
             // Expose internals for debugging
             _systems: systems,
@@ -235,6 +255,7 @@ if (!window.kbCoordinator) {
             _parents: parents,
             _activeChild: activeChild,
             _rootSystems: rootSystems,
+            _paused: _paused,
         };
     })();
 }

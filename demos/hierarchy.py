@@ -1,7 +1,8 @@
 """Hierarchical keyboard systems demo — parent with two child systems."""
 
-from fasthtml.common import Div, H1, H3, P, Span, Ul, Script, APIRouter
+from fasthtml.common import Div, H1, H3, P, Span, Ul, Script, Button, APIRouter
 
+from cjm_fasthtml_daisyui.components.actions.button import btn, btn_styles, btn_sizes
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors
 from cjm_fasthtml_daisyui.utilities.semantic_colors import (
     text_dui, ring_dui, bg_dui, border_dui
@@ -9,10 +10,10 @@ from cjm_fasthtml_daisyui.utilities.semantic_colors import (
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import container, max_w
 from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight, font_family
-from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import grid_display, grid_cols, gap
+from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import grid_display, grid_cols, gap, flex_display, items, justify
 from cjm_fasthtml_tailwind.utilities.borders import border, rounded
 from cjm_fasthtml_tailwind.utilities.layout import overflow
-from cjm_fasthtml_tailwind.utilities.transitions_and_animation import transition
+from cjm_fasthtml_tailwind.utilities.transitions_and_animation import transition, duration
 from cjm_fasthtml_tailwind.utilities.effects import ring, inset_ring
 from cjm_fasthtml_tailwind.core.base import combine_classes
 
@@ -158,6 +159,27 @@ def setup():
             }
         };
 
+        // --- Pause/Resume toggle ---
+        window.togglePauseParent = function() {
+            const btn = document.getElementById('pause-toggle-btn');
+            const panels = document.getElementById('hierarchy-panels');
+            if (coord.isPaused('hierarchy-parent')) {
+                coord.resume('hierarchy-parent');
+                btn.textContent = 'Pause Keyboard';
+                btn.classList.remove('btn-warning');
+                btn.classList.add('btn-outline');
+                if (panels) panels.classList.remove('opacity-50');
+                updateStatus('Resumed — keyboard active');
+            } else {
+                coord.pause('hierarchy-parent');
+                btn.textContent = 'Resume Keyboard';
+                btn.classList.remove('btn-outline');
+                btn.classList.add('btn-warning');
+                if (panels) panels.classList.add('opacity-50');
+                updateStatus('PAUSED — keyboard events blocked');
+            }
+        };
+
         const childASys = coord._systems['child-a'];
         const childBSys = coord._systems['child-b'];
 
@@ -228,11 +250,23 @@ def setup():
                     Span("Toggle selection (when child is active)")),
                 cls=combine_classes(m.b(4), p(4), bg_dui.base_200, rounded.lg, font_size.sm),
             ),
-            # Status
+            # Status + Pause toggle
             Div(
-                Span("Active: ", cls=font_weight.semibold),
-                Span("Parent (navigating between areas)", id="hierarchy-status"),
-                cls=combine_classes(p(3), m.b(4), rounded.lg, bg_dui.base_200, font_size.sm, font_family.mono),
+                Div(
+                    Span("Active: ", cls=font_weight.semibold),
+                    Span("Parent (navigating between areas)", id="hierarchy-status"),
+                    cls=combine_classes(font_size.sm, font_family.mono),
+                ),
+                Button(
+                    "Pause Keyboard",
+                    id="pause-toggle-btn",
+                    onclick="togglePauseParent()",
+                    cls=combine_classes(btn, btn_styles.outline, btn_sizes.sm),
+                ),
+                cls=combine_classes(
+                    p(3), m.b(4), rounded.lg, bg_dui.base_200,
+                    flex_display, items.center, justify.between,
+                ),
             ),
             # Two child panels
             Div(
@@ -248,7 +282,8 @@ def setup():
                     id="ghost-b",
                     cls=combine_classes(p(4), rounded.lg, border(), border_dui.base_300, transition.all),
                 ),
-                cls=combine_classes(grid_display, grid_cols(2), gap(4), m.b(4)),
+                id="hierarchy-panels",
+                cls=combine_classes(grid_display, grid_cols(2), gap(4), m.b(4), transition.opacity, duration(300)),
             ),
             # All keyboard systems
             parent_system.script, parent_system.hidden_inputs, parent_system.action_buttons,
