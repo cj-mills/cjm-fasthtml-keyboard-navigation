@@ -49,12 +49,15 @@ def main():
     print("Initializing cjm-fasthtml-keyboard-navigation Demo")
     print("=" * 70)
 
+    APP_ID = "kbnav"
+
     app, rt = fast_app(
         pico=False,
         hdrs=[*get_daisyui_headers(), create_theme_persistence_script()],
         title="Keyboard Navigation Demo",
         htmlkw={'data-theme': 'light'},
-        secret_key="demo-secret-key",
+        session_cookie=f'session_{APP_ID}_',
+        secret_key=f'{APP_ID}-demo-secret',
     )
 
     router = APIRouter(prefix="")
