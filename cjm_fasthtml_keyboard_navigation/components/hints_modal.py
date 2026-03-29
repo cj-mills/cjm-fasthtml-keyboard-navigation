@@ -131,14 +131,21 @@ def render_keyboard_hints_trigger(
 def _render_question_mark_listener(
     modal_id: str,  # ID of the modal dialog to toggle
 ) -> Script:        # script element with global `?` key listener
-    """Render a global `?` key listener that toggles the hints modal."""
+    """Render a global `?` key listener that toggles the hints modal.
+    
+    Uses a named function stored on `window` so that HTMX re-renders
+    replace the previous listener instead of accumulating duplicates.
+    """
     return Script(f"""
     (function() {{
-        document.addEventListener('keydown', function(e) {{
+        // Remove previous listener if it exists (HTMX re-render dedup)
+        if (window._kbHintsKeyListener) {{
+            document.removeEventListener('keydown', window._kbHintsKeyListener);
+        }}
+        window._kbHintsKeyListener = function(e) {{
             // Skip if typing in an input, textarea, or contenteditable
             var tag = e.target.tagName;
             if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
-
             if (e.key === '?') {{
                 e.preventDefault();
                 var m = document.getElementById('{modal_id}');
@@ -147,9 +154,11 @@ def _render_question_mark_listener(
                     else {{ m.showModal(); }}
                 }}
             }}
-        }});
+        }};
+        document.addEventListener('keydown', window._kbHintsKeyListener);
     }})();
     """)
+
 
 # %% ../../nbs/components/hints_modal.ipynb #full-modal
 def render_keyboard_hints_modal(
