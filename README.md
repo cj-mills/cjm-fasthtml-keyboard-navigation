@@ -12,9 +12,10 @@ pip install cjm_fasthtml_keyboard_navigation
 ## Project Structure
 
     nbs/
-    ├── components/ (2)
-    │   ├── hints.ipynb   # Components for displaying keyboard shortcut hints to users.
-    │   └── system.ipynb  # High-level API for rendering complete keyboard navigation systems.
+    ├── components/ (3)
+    │   ├── hints.ipynb        # Components for displaying keyboard shortcut hints to users.
+    │   ├── hints_modal.ipynb  # Modal-based keyboard shortcut reference with scannable grouped layout and `?` key trigger.
+    │   └── system.ipynb       # High-level API for rendering complete keyboard navigation systems.
     ├── core/ (6)
     │   ├── actions.ipynb      # Declarative keyboard action bindings supporting HTMX triggers and JS callbacks.
     │   ├── focus_zone.ipynb   # Configuration for focusable containers with navigable items.
@@ -30,13 +31,14 @@ pip install cjm_fasthtml_keyboard_navigation
         ├── generators.ipynb   # Generate complete keyboard navigation JavaScript from configuration.
         └── utils.ipynb        # Core JavaScript utility generators for keyboard navigation.
 
-Total: 13 notebooks across 4 directories
+Total: 14 notebooks across 4 directories
 
 ## Module Dependencies
 
 ``` mermaid
 graph LR
     components_hints[components.hints<br/>Keyboard Hints]
+    components_hints_modal[components.hints_modal<br/>Keyboard Hints Modal]
     components_system[components.system<br/>Keyboard System]
     core_actions[core.actions<br/>Key Actions]
     core_focus_zone[core.focus_zone<br/>Focus Zone]
@@ -50,23 +52,27 @@ graph LR
     js_generators[js.generators<br/>Script Generators]
     js_utils[js.utils<br/>JavaScript Utilities]
 
-    components_hints --> core_focus_zone
     components_hints --> core_actions
     components_hints --> core_manager
-    components_system --> htmx_inputs
-    components_system --> core_focus_zone
-    components_system --> core_actions
-    components_system --> core_manager
+    components_hints --> core_focus_zone
+    components_hints_modal --> core_actions
+    components_hints_modal --> core_manager
+    components_hints_modal --> components_hints
+    components_hints_modal --> core_focus_zone
     components_system --> js_generators
-    components_system --> htmx_buttons
+    components_system --> core_focus_zone
+    components_system --> htmx_inputs
     components_system --> components_hints
+    components_system --> core_actions
+    components_system --> htmx_buttons
+    components_system --> core_manager
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
+    core_manager --> core_modes
     core_manager --> core_navigation
     core_manager --> core_focus_zone
-    core_manager --> core_actions
     core_manager --> core_key_mapping
-    core_manager --> core_modes
+    core_manager --> core_actions
     core_modes --> core_navigation
     htmx_buttons --> core_focus_zone
     htmx_buttons --> core_actions
@@ -75,12 +81,12 @@ graph LR
     htmx_inputs --> core_manager
     js_generators --> js_utils
     js_generators --> core_focus_zone
+    js_generators --> js_coordinator
     js_generators --> core_actions
     js_generators --> core_manager
-    js_generators --> js_coordinator
 ```
 
-*28 cross-module dependencies detected*
+*32 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -476,6 +482,90 @@ def render_keyboard_hints(
 ``` python
 NAV_ICON_MAP = {2 items}
 KEY_ICON_MAP = {9 items}
+```
+
+### Keyboard Hints Modal (`hints_modal.ipynb`)
+
+> Modal-based keyboard shortcut reference with scannable grouped layout
+> and `?` key trigger.
+
+#### Import
+
+``` python
+from cjm_fasthtml_keyboard_navigation.components.hints_modal import (
+    render_keyboard_hints_trigger,
+    render_keyboard_hints_modal
+)
+```
+
+#### Functions
+
+``` python
+def _render_key_combo(
+    display_key: str,  # formatted key combo string (e.g., "Ctrl+Shift+\u2191")
+) -> Div:              # container with kbd elements for each key part
+    "Render a key combination as a sequence of kbd elements joined by `+`."
+```
+
+``` python
+def _render_hint_row(
+    display_key: str,  # formatted key combo string
+    description: str,  # action description
+) -> Div:              # single shortcut row with key and description
+    "Render a single shortcut row: key combo on left, description on right."
+```
+
+``` python
+def _render_modal_group(
+    group_name: str,                        # group header text
+    actions: list[tuple[str, str]],          # list of (display_key, description)
+) -> Div:                                    # group container with header and rows
+    "Render a group of related shortcuts with a header."
+```
+
+``` python
+def _render_modal_body(
+    manager: ZoneManager,          # keyboard zone manager
+    include_navigation: bool = True,  # include \u2191/\u2193 navigation hint
+    include_zone_switch: bool = True, # include \u2190/\u2192 zone switch hint
+) -> Div:                             # modal body with grouped shortcuts
+    "Render the modal body with grouped keyboard shortcuts."
+```
+
+``` python
+def render_keyboard_hints_trigger(
+    modal_id: str = "kb-hints-modal",  # ID of the modal dialog to open
+    icon_size: int = 4,                 # lucide icon size
+) -> Button:                            # ghost button with keyboard icon
+    "Render a keyboard icon button that opens the hints modal."
+```
+
+``` python
+def _render_question_mark_listener(
+    modal_id: str,  # ID of the modal dialog to toggle
+) -> Script:        # script element with global `?` key listener
+    "Render a global `?` key listener that toggles the hints modal."
+```
+
+``` python
+def render_keyboard_hints_modal(
+    manager: ZoneManager,               # keyboard zone manager with actions configured
+    modal_id: str = "kb-hints-modal",    # HTML ID for the modal dialog
+    include_navigation: bool = True,     # include \u2191/\u2193 navigation hint
+    include_zone_switch: bool = True,    # include zone switch hint (auto-hidden for single zone)
+    enable_question_mark_key: bool = True,  # add global `?` key listener
+    title: str = "Keyboard Shortcuts",   # modal title text
+) -> tuple[FT, FT, FT]:                 # (modal_dialog, trigger_button, question_mark_script)
+    """
+    Render a modal-based keyboard shortcut reference.
+    
+    Returns three components:
+    - `modal_dialog`: The Dialog element (place anywhere in page)
+    - `trigger_button`: Small keyboard icon button (place in step header)
+    - `question_mark_script`: Global `?` key listener Script (place in page)
+    
+    If `enable_question_mark_key` is False, `question_mark_script` is an empty Div.
+    """
 ```
 
 ### Hidden Inputs (`inputs.ipynb`)
