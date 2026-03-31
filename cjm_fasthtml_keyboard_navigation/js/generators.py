@@ -140,19 +140,27 @@ def js_zone_switching() -> str: # JavaScript zone switching code
 // === Zone Switching ===
 function setActiveZone(zoneId, triggerCallbacks = true) {
     const prevZoneId = activeZoneId;
-    const prevZone = getZoneConfig(prevZoneId);
     const newZone = getZoneConfig(zoneId);
     
     if (!newZone) return;
     
+    // No-op if already on the requested zone (skip redundant callbacks and
+    // chrome swaps). When triggerCallbacks=false (e.g., during initialize),
+    // allow re-entry to refresh focus styling after DOM changes.
+    if (zoneId === prevZoneId && triggerCallbacks) return;
+    
+    const prevZone = getZoneConfig(prevZoneId);
+    
     // Handle mode exit on zone change
-    const currentModeConfig = getModeConfig(currentMode);
-    if (currentModeConfig && currentModeConfig.exitOnZoneChange && currentMode !== cfg.defaultMode) {
-        exitMode();
+    if (zoneId !== prevZoneId) {
+        const currentModeConfig = getModeConfig(currentMode);
+        if (currentModeConfig && currentModeConfig.exitOnZoneChange && currentMode !== cfg.defaultMode) {
+            exitMode();
+        }
     }
     
     // Clear previous zone focus
-    if (prevZone) {
+    if (prevZone && zoneId !== prevZoneId) {
         clearZoneFocus(prevZoneId);
         if (triggerCallbacks && prevZone.onZoneLeave && typeof window[prevZone.onZoneLeave] === 'function') {
             window[prevZone.onZoneLeave](prevZoneId);
