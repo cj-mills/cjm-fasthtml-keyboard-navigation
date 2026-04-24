@@ -30,6 +30,9 @@ from cjm_fasthtml_tailwind.core.base import combine_classes
 
 from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
+# Design system recipes (V11 icon-size roles)
+from cjm_fasthtml_design_system.icons import icons
+
 # %% auto #0
 __all__ = ['render_keyboard_hints_trigger', 'render_keyboard_hints_modal']
 
@@ -115,9 +118,9 @@ def _render_modal_body(
 
 # %% ../../nbs/components/hints_modal.ipynb #trigger-button
 def render_keyboard_hints_trigger(
-    modal_id: str = "kb-hints-modal",  # ID of the modal dialog to open
-    icon_size: int = 4,                 # lucide icon size
-) -> Button:                            # ghost button with keyboard icon
+    modal_id: str = "kb-hints-modal",       # ID of the modal dialog to open
+    icon_size: int = icons.icon_button,     # lucide icon size (V11 icon-only-button role)
+) -> Button:                                # ghost button with keyboard icon
     """Render a keyboard icon button that opens the hints modal."""
     return Button(
         lucide_icon("keyboard", size=icon_size),
@@ -164,7 +167,7 @@ def _render_question_mark_listener(
 def render_keyboard_hints_modal(
     manager: ZoneManager,               # keyboard zone manager with actions configured
     modal_id: str = "kb-hints-modal",    # HTML ID for the modal dialog
-    include_navigation: bool = True,     # include \u2191/\u2193 navigation hint
+    include_navigation: bool = True,     # include ↑/↓ navigation hint
     include_zone_switch: bool = True,    # include zone switch hint (auto-hidden for single zone)
     enable_question_mark_key: bool = True,  # add global `?` key listener
     title: str = "Keyboard Shortcuts",   # modal title text
@@ -189,7 +192,7 @@ def render_keyboard_hints_modal(
             # Close button (top-right corner)
             Form(
                 Button(
-                    "\u2715",
+                    "✕",
                     cls=combine_classes(
                         btn, btn_sizes.sm, btn_modifiers.circle, btn_styles.ghost,
                         position.absolute, right._2, top._2,
@@ -199,7 +202,7 @@ def render_keyboard_hints_modal(
             ),
             # Title
             H3(
-                lucide_icon("keyboard", size=5, cls=str(m.r(2))),
+                lucide_icon("keyboard", size=icons.section_header, cls=str(m.r(2))),
                 title,
                 cls=combine_classes(
                     font_size.lg, font_weight.bold,

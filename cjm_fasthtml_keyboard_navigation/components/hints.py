@@ -21,6 +21,9 @@ from cjm_fasthtml_tailwind.core.base import combine_classes
 
 from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
+# Design system recipes (V11 icon-size roles)
+from cjm_fasthtml_design_system.icons import icons
+
 # %% auto #0
 __all__ = ['NAV_ICON_MAP', 'KEY_ICON_MAP', 'get_key_icon', 'render_hint_badge', 'create_nav_icon_hint',
            'create_modifier_key_hint', 'render_hint_group', 'group_actions_by_hint_group', 'render_hints_from_actions',
@@ -47,9 +50,9 @@ KEY_ICON_MAP = {
 
 
 def get_key_icon(
-    key_name: str,    # key name to look up (case-insensitive)
-    size: int = 3     # icon size
-) -> FT | None:       # icon component or None if no icon mapping
+    key_name: str,                      # key name to look up (case-insensitive)
+    size: int = icons.dense_inline      # icon size (V11 dense_inline role)
+) -> FT | None:                         # icon component or None if no icon mapping
     """Get a lucide icon for a key name, if one exists."""
     icon_name = KEY_ICON_MAP.get(key_name.lower())
     if icon_name:
@@ -93,7 +96,7 @@ def create_nav_icon_hint(
     style: str = "ghost" # badge style
 ) -> Div:                # hint badge with icon
     """Create a hint badge with a lucide icon."""
-    icon = lucide_icon(icon_name, size=3)
+    icon = lucide_icon(icon_name, size=icons.dense_inline)
     return render_hint_badge(icon, description, style)
 
 
