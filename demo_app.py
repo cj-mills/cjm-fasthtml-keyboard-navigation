@@ -34,6 +34,8 @@ def main():
 
     from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
+    from cjm_fasthtml_design_system.icons import icons
+
     from cjm_fasthtml_app_core.components.navbar import create_navbar
     from cjm_fasthtml_app_core.core.routing import register_routes
     from cjm_fasthtml_app_core.core.htmx import handle_htmx_request
@@ -89,14 +91,14 @@ def main():
                 P(description, cls=combine_classes(text_dui.base_content, m.b(4))),
                 Div(
                     *[Span(
-                        *(icons if isinstance(icons := badge_content, list) else [badge_content]),
+                        *(parts if isinstance(parts := badge_content, list) else [badge_content]),
                         cls=combine_classes(badge, color, m.r(2), flex_display, items.center),
                     ) for badge_content, color in badges],
                     cls=combine_classes(flex_display, items.center, m.b(4)),
                 ),
                 A(
                     Span("Try Demo", cls=m.r(1)),
-                    lucide_icon("arrow-right", size=4),
+                    lucide_icon("arrow-right", size=icons.text_button),
                     href=href,
                     cls=combine_classes(btn_cls, flex_display, items.center),
                 ),
@@ -122,7 +124,7 @@ def main():
                         "Simple List",
                         "Single zone with arrow key navigation and selection.",
                         badges=[
-                            ([lucide_icon("arrow-down-up", size=3), Span("Navigate", cls=m.l(1))],
+                            ([lucide_icon("arrow-down-up", size=icons.dense_inline), Span("Navigate", cls=m.l(1))],
                              badge_colors.primary),
                             ([Span("Space", cls=combine_classes(font_family.mono, font_weight.bold)),
                               Span("Select", cls=m.l(1))],
@@ -135,9 +137,9 @@ def main():
                         "Dual Panel",
                         "Two zones with panel switching and cross-panel actions.",
                         badges=[
-                            ([lucide_icon("arrow-left-right", size=3), Span("Switch", cls=m.l(1))],
+                            ([lucide_icon("arrow-left-right", size=icons.dense_inline), Span("Switch", cls=m.l(1))],
                              badge_colors.primary),
-                            ([lucide_icon("arrow-big-up", size=3), lucide_icon("arrow-down-up", size=3),
+                            ([lucide_icon("arrow-big-up", size=icons.dense_inline), lucide_icon("arrow-down-up", size=icons.dense_inline),
                               Span("Reorder", cls=m.l(1))],
                              badge_colors.secondary),
                         ],
@@ -148,10 +150,10 @@ def main():
                         "Mode Switching",
                         "Navigation mode → Split mode with Enter/Escape.",
                         badges=[
-                            ([lucide_icon("corner-down-left", size=3), lucide_icon("move-right", size=3),
+                            ([lucide_icon("corner-down-left", size=icons.dense_inline), lucide_icon("move-right", size=icons.dense_inline),
                               Span("Split", cls=m.l(1))],
                              badge_colors.primary),
-                            ([lucide_icon("x", size=3), lucide_icon("move-right", size=3),
+                            ([lucide_icon("x", size=icons.dense_inline), lucide_icon("move-right", size=icons.dense_inline),
                               Span("Exit", cls=m.l(1))],
                              badge_colors.secondary),
                         ],
@@ -172,7 +174,7 @@ def main():
                         "Hierarchical Systems",
                         "Parent-child keyboard coordination with Escape/Enter activation.",
                         badges=[
-                            ([lucide_icon("layers", size=3), Span("Hierarchy", cls=m.l(1))],
+                            ([lucide_icon("layers", size=icons.dense_inline), Span("Hierarchy", cls=m.l(1))],
                              badge_colors.primary),
                             ([Span("Esc", cls=combine_classes(font_family.mono, font_weight.bold)),
                               Span("Deactivate", cls=m.l(1))],
@@ -189,7 +191,7 @@ def main():
                     H2("Features", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(4))),
                     Div(
                         *[Div(
-                            lucide_icon("check", size=4, cls=str(text_dui.success)),
+                            lucide_icon("check", size=icons.status_inline, cls=str(text_dui.success)),
                             Span(feature, cls=m.l(2)),
                             cls=combine_classes(flex_display, items.center, m.b(2)),
                         ) for feature in [
