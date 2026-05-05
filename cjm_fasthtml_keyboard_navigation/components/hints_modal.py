@@ -12,9 +12,7 @@ from ..core.manager import ZoneManager
 from .hints import group_actions_by_hint_group
 
 from cjm_fasthtml_daisyui.components.actions.modal import modal, modal_box, modal_backdrop
-from cjm_fasthtml_daisyui.components.actions.button import (
-    btn, btn_sizes, btn_styles, btn_modifiers,
-)
+from cjm_fasthtml_daisyui.components.actions.button import btn_modifiers
 from cjm_fasthtml_daisyui.components.data_display.kbd import kbd as kbd_cls, kbd_sizes as kbd_sz
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, border_dui
 
@@ -30,8 +28,9 @@ from cjm_fasthtml_tailwind.core.base import combine_classes
 
 from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
-# Design system recipes (V11 icon-size roles)
-from cjm_fasthtml_design_system.icons import icons
+# Design system recipes (V1 button roles, V11 icon-size roles)
+from cjm_fasthtml_design_system.buttons import buttons
+from cjm_fasthtml_design_system.icons import icons, IconSize
 
 # %% auto #0
 __all__ = ['render_keyboard_hints_trigger', 'render_keyboard_hints_modal']
@@ -118,13 +117,13 @@ def _render_modal_body(
 
 # %% ../../nbs/components/hints_modal.ipynb #trigger-button
 def render_keyboard_hints_trigger(
-    modal_id: str = "kb-hints-modal",       # ID of the modal dialog to open
-    icon_size: int = icons.icon_button,     # lucide icon size (V11 icon-only-button role)
-) -> Button:                                # ghost button with keyboard icon
+    modal_id: str = "kb-hints-modal",             # ID of the modal dialog to open
+    icon_size: IconSize = icons.ghost_button,     # lucide icon size (V11.R3 ghost-button: "full" — pairs with V1.modal_disclosure at btn-xs)
+) -> Button:                                      # ghost button with keyboard icon
     """Render a keyboard icon button that opens the hints modal."""
     return Button(
         lucide_icon("keyboard", size=icon_size),
-        cls=combine_classes(btn, btn_sizes.sm, btn_styles.ghost, btn_modifiers.circle),
+        cls=combine_classes(buttons.modal_disclosure, btn_modifiers.circle),
         title="Keyboard shortcuts (?)",
         onclick=f"document.getElementById('{modal_id}').showModal();",
         type="button",
@@ -194,7 +193,7 @@ def render_keyboard_hints_modal(
                 Button(
                     "✕",
                     cls=combine_classes(
-                        btn, btn_sizes.sm, btn_modifiers.circle, btn_styles.ghost,
+                        buttons.soft_dismissal, btn_modifiers.circle,
                         position.absolute, right._2, top._2,
                     ),
                 ),
