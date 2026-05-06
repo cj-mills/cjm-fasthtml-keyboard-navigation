@@ -16,6 +16,8 @@ from cjm_fasthtml_daisyui.components.actions.button import btn_modifiers
 from cjm_fasthtml_daisyui.components.data_display.kbd import kbd as kbd_cls, kbd_sizes as kbd_sz
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, border_dui
 
+from cjm_fasthtml_design_system.text_tiers import text_tiers
+
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import w, max_w
 from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight
@@ -44,7 +46,7 @@ def _render_key_combo(
     elements = []
     for i, part in enumerate(parts):
         if i > 0:
-            elements.append(Span('+', cls=combine_classes(text_dui.base_content.opacity(50), m.x(0.5))))
+            elements.append(Span('+', cls=combine_classes(text_tiers.muted, m.x(0.5))))
         elements.append(Kbd(part.strip(), cls=combine_classes(kbd_cls, kbd_sz.sm)))
     return Div(*elements, cls=combine_classes(flex_display, items.center))
 
@@ -56,7 +58,7 @@ def _render_hint_row(
     """Render a single shortcut row: key combo on left, description on right."""
     return Div(
         _render_key_combo(display_key),
-        Span(description, cls=combine_classes(text_dui.base_content.opacity(70))),
+        Span(description, cls=combine_classes(text_tiers.secondary)),
         cls=combine_classes(
             flex_display, items.center, justify.between,
             gap(4), p.y(1),
@@ -75,7 +77,7 @@ def _render_modal_group(
             group_name,
             cls=combine_classes(
                 font_size.xs, font_weight.semibold,
-                text_dui.base_content.opacity(50),
+                text_tiers.muted,
                 p.b(1),
                 border.b(), border_dui.base_content.opacity(10),
                 m.b(1),
@@ -216,7 +218,7 @@ def render_keyboard_hints_modal(
                 Kbd("?", cls=combine_classes(kbd_cls, kbd_sz.sm)),
                 Span(" to toggle this dialog"),
                 cls=combine_classes(
-                    font_size.xs, text_dui.base_content.opacity(40),
+                    font_size.xs, text_tiers.subtle,
                     p.t(3), border.t(), border_dui.base_content.opacity(10),
                     flex_display, items.center, gap(1),
                 ),
