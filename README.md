@@ -52,41 +52,45 @@ graph LR
     js_generators[js.generators<br/>Script Generators]
     js_utils[js.utils<br/>JavaScript Utilities]
 
-    components_hints --> core_focus_zone
+    components_hints --> core_navigation
+    components_hints --> core_key_mapping
     components_hints --> core_manager
     components_hints --> core_actions
-    components_hints_modal --> core_focus_zone
-    components_hints_modal --> core_manager
+    components_hints --> core_focus_zone
     components_hints_modal --> components_hints
+    components_hints_modal --> core_key_mapping
+    components_hints_modal --> core_navigation
+    components_hints_modal --> core_manager
     components_hints_modal --> core_actions
-    components_system --> components_hints
+    components_hints_modal --> core_focus_zone
     components_system --> htmx_inputs
-    components_system --> core_actions
     components_system --> js_generators
-    components_system --> core_focus_zone
     components_system --> core_manager
+    components_system --> components_hints
+    components_system --> core_actions
     components_system --> htmx_buttons
+    components_system --> core_focus_zone
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
     core_manager --> core_navigation
-    core_manager --> core_key_mapping
     core_manager --> core_modes
+    core_manager --> core_key_mapping
     core_manager --> core_actions
     core_manager --> core_focus_zone
     core_modes --> core_navigation
+    htmx_buttons --> core_manager
     htmx_buttons --> core_actions
     htmx_buttons --> core_focus_zone
-    htmx_buttons --> core_manager
-    htmx_inputs --> core_focus_zone
     htmx_inputs --> core_manager
+    htmx_inputs --> core_focus_zone
+    js_generators --> core_manager
     js_generators --> js_coordinator
     js_generators --> core_actions
     js_generators --> core_focus_zone
-    js_generators --> core_manager
     js_generators --> js_utils
 ```
 
-*32 cross-module dependencies detected*
+*36 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -139,6 +143,29 @@ class KeyAction:
         ) -> bool:         # True if action is valid in this context
         "Check if action is valid for given zone and mode."
     
+    def is_documentation_only(self) -> bool:  # True if no action path is set (advisory hint only)
+            """Check if this is a documentation-only KeyAction (no handler fires).
+            
+            Documentation-only actions appear in keyboard hints but do not trigger
+            HTMX, JS callbacks, or mode transitions. Useful for documenting purely
+            client-side keyboard interactions (e.g., text-selector caret movement
+            implemented as a separate event listener).
+            """
+            return (
+                self.htmx_trigger is None
+                and self.js_callback is None
+                and self.mode_enter is None
+                and not self.mode_exit
+            )
+    
+        def get_display_key(self) -> str: # formatted key combo for display
+        "Check if this is a documentation-only KeyAction (no handler fires).
+
+Documentation-only actions appear in keyboard hints but do not trigger
+HTMX, JS callbacks, or mode transitions. Useful for documenting purely
+client-side keyboard interactions (e.g., text-selector caret movement
+implemented as a separate event listener)."
+    
     def get_display_key(self) -> str: # formatted key combo for display
             """Get formatted key combination for display."""
             return format_key_combo(self.key, self.modifiers)
@@ -151,6 +178,28 @@ class KeyAction:
             return {
                 "key": self.key,
         "Convert to JavaScript configuration object."
+    
+    def documentation_only(
+            cls,
+            key: str,                                       # JavaScript key name (e.g., "ArrowLeft")
+            description: str,                               # human-readable description for hints
+            *,
+            modifiers: frozenset[str] = frozenset(),        # required modifiers
+            zone_ids: Optional[tuple[str, ...]] = None,     # restrict to these zones
+            mode_names: Optional[tuple[str, ...]] = None,   # restrict to these modes
+            not_modes: Optional[tuple[str, ...]] = None,    # not in these modes
+            hint_group: str = "General",                    # hint group label
+        ) -> "KeyAction":                                   # KeyAction that appears in hints only
+        "Create a KeyAction that ONLY appears in keyboard hints — no handler fires.
+
+Use for documenting client-side-only key interactions (e.g., a text-selector
+that handles ArrowLeft / ArrowRight via its own DOM event listener — the
+keyboard-navigation library shouldn't fire any action, but the user should
+still see those keys in the hints modal).
+
+The returned action has all action paths unset (no htmx_trigger, js_callback,
+mode_enter, or mode_exit) and explicitly disables prevent_default and
+stop_propagation so the client-side handler receives the event unaltered."
 ```
 
 ### Action Buttons (`buttons.ipynb`)
@@ -246,6 +295,7 @@ class FocusZone:
     "A focusable container with navigable items."
     
     id: str  # HTML element ID of the container
+    label: Optional[str]  # human-readable label for keyboard-hints display (falls back to id when None)
     item_selector: Optional[str]  # CSS selector for items (None = scroll only)
     navigation: Union[NavigationPattern, LinearVertical] = field(...)
     navigation_throttle_ms: int = 0  # minimum ms between navigation events (0 = no throttle)
@@ -266,11 +316,18 @@ class FocusZone:
             """Check if zone has selectable items."""
             return self.item_selector is not None
     
+        def get_display_label(self) -> str: # human-readable label, falling back to id
+        "Check if zone has selectable items."
+    
+    def get_display_label(self) -> str: # human-readable label, falling back to id
+            """Get the label for keyboard-hints display, falling back to id when label is None."""
+            return self.label if self.label is not None else self.id
+    
         def get_hidden_input_id(
             self,
             attr: str  # the data attribute name
         ) -> str:      # the hidden input element ID
-        "Check if zone has selectable items."
+        "Get the label for keyboard-hints display, falling back to id when label is None."
     
     def get_hidden_input_id(
             self,
@@ -397,6 +454,9 @@ from cjm_fasthtml_keyboard_navigation.components.hints import (
     create_modifier_key_hint,
     render_hint_group,
     group_actions_by_hint_group,
+    group_actions_by_zone_and_hint_group,
+    mode_context_label,
+    derive_navigation_hints,
     render_hints_from_actions,
     render_keyboard_hints
 )
@@ -406,9 +466,9 @@ from cjm_fasthtml_keyboard_navigation.components.hints import (
 
 ``` python
 def get_key_icon(
-    key_name: str,    # key name to look up (case-insensitive)
-    size: int = 3     # icon size
-) -> FT | None:       # icon component or None if no icon mapping
+    key_name: str,                      # key name to look up (case-insensitive)
+    size: int = icons.dense_inline      # icon size (V11 dense_inline role)
+) -> FT | None:                         # icon component or None if no icon mapping
     "Get a lucide icon for a key name, if one exists."
 ```
 
@@ -455,6 +515,85 @@ def group_actions_by_hint_group(
     actions: tuple[KeyAction, ...]  # actions to group
 ) -> dict[str, list[KeyAction]]:    # grouped actions
     "Group actions by their hint_group attribute."
+```
+
+``` python
+def group_actions_by_zone_and_hint_group(
+    manager: ZoneManager,  # the zone manager whose actions to group
+) -> list[tuple[Optional[str], str, list[KeyAction]]]:  # ordered (zone_label_or_None, hint_group, actions) tuples
+    """
+    Group actions for hint display, scoped by zone and hint_group.
+    
+    Returns an ordered list of (zone_label, hint_group, actions) tuples:
+    
+    - **Shared section** (zone_label=None) appears FIRST, containing actions
+      with zone_ids=None (truly global) or zone_ids covering all zones in the
+      manager. Single-zone managers route all actions through this section,
+      preserving single-zone consumer rendering (no zone-label prefix).
+    - **Per-zone sections** follow, in the order zones are declared on the
+      manager. zone_label is FocusZone.get_display_label() (label, falling
+      back to id). Actions with zone_ids matching exactly one zone land here.
+    - **Within each section**, hint_groups appear in insertion (first-seen)
+      order. Actions are emitted in their original tuple order.
+    
+    Actions with show_in_hints=False or empty description are excluded.
+    
+    Edge cases:
+    - Multi-zone partial coverage (zone_ids touches >1 zone but not all):
+      routed to shared. Rare in practice; documents the action as shared.
+    - zone_ids referencing a zone not in manager.zones: silently dropped.
+    """
+```
+
+``` python
+def mode_context_label(
+    action: KeyAction,  # action whose mode constraints to summarize
+) -> Optional[str]:     # short chip-friendly label, or None for unrestricted actions
+    """
+    Derive a short mode-context label from a KeyAction's mode constraints.
+    
+    Returns None when the action has no mode restrictions (works in any mode —
+    no chip should render). Returns the mode name(s) when mode_names is set.
+    Returns 'default' when not_modes is set (action is excluded from specified
+    modes, so it fires in the default mode).
+    
+    Examples:
+        mode_names=("split",)             -> "split"
+        mode_names=("token-select",)      -> "token-select"
+        mode_names=("split", "edit")      -> "split + edit"
+        not_modes=("split",)              -> "default"
+        no mode constraints               -> None
+    """
+```
+
+``` python
+def derive_navigation_hints(
+    manager: ZoneManager,  # the zone manager whose navigation to derive hints from
+) -> list[tuple[str, str]]:  # ordered (display_key, description) tuples
+    """
+    Derive built-in navigation hint rows from manager.key_mapping + zone patterns.
+    
+    Walks every zone with `has_items()` true, unions the navigable directions
+    via each zone's `navigation.get_supported_directions()`, and emits hint
+    rows using the actual keys from `manager.key_mapping`. Replaces the
+    earlier hardcoded `↑/↓ Navigate items` row, which was wrong under custom
+    key_mappings (wasd, vim, etc.).
+    
+    Returns rows for each direction pair (up/down, left/right) whose keys are
+    *actually* bound and *actually* used by some zone:
+    
+    - **Vertical pair** (up/down): emitted when any zone has a pattern that
+      supports up/down navigation. Display uses `key_mapping.up[0]` /
+      `key_mapping.down[0]`.
+    - **Horizontal pair** (left/right): emitted when any zone supports
+      left/right navigation, UNLESS the in-zone horizontal keys collide with
+      the manager's zone-switch keys (prev_zone_key/next_zone_key). In that
+      case the zone-switch row already documents those keys; emitting a
+      second row would be misleading (the zone-switch path wins at runtime).
+    
+    Returns an empty list when no zone supports key-based navigation (e.g.,
+    all zones are ScrollOnly, or no zone has an item_selector).
+    """
 ```
 
 ``` python
@@ -509,34 +648,120 @@ def _render_key_combo(
 
 ``` python
 def _render_hint_row(
-    display_key: str,  # formatted key combo string
-    description: str,  # action description
-) -> Div:              # single shortcut row with key and description
-    "Render a single shortcut row: key combo on left, description on right."
+    display_key: str,                       # formatted key combo string
+    description: str,                       # action description
+    mode_label: Optional[str] = None,        # mode-context chip text (e.g., "split", "default"); None for no chip
+) -> Div:                                    # single shortcut row with key, description, and optional mode chip
+    "Render a single shortcut row: key combo on left, description (with optional mode chip) on right."
 ```
 
 ``` python
 def _render_modal_group(
-    group_name: str,                        # group header text
-    actions: list[tuple[str, str]],          # list of (display_key, description)
-) -> Div:                                    # group container with header and rows
-    "Render a group of related shortcuts with a header."
+    group_name: str,                                                   # group header text
+    rows: list[tuple[str, str, Optional[str]]],                         # list of (display_key, description, mode_label)
+) -> Div:                                                              # group container with header and rows
+    """
+    Render a group of related shortcuts with a header.
+    
+    `break_util.inside.avoid_column` keeps the entire group (header + rows)
+    in one column inside the modal body's CSS-columns layout — groups never
+    split across columns, preserving "form follows function" scannability.
+    """
+```
+
+``` python
+def _render_section_header(
+    label: str,  # human-readable section label
+) -> Div:        # styled section-header element
+    """
+    Render a section header for one manager in a multi-manager modal.
+    
+    Visually distinct from group headers (`_render_modal_group`):
+    - Section headers: font-sm + bold + secondary tier + top border + extra spacing
+    - Group headers:   font-xs + semibold + muted tier + bottom border (no top)
+    
+    `break_util.after.avoid` keeps a section header attached to its first
+    group inside the CSS-columns layout — prevents the orphan-header case where
+    a header lands at the bottom of one column and its first group at the top
+    of the next. (`break_util.inside.avoid_column` exists but only applies to
+    breaks INSIDE the element; for "don't break right after", `break-after: avoid`
+    is the correct CSS property.)
+    """
+```
+
+``` python
+def _render_manager_groups(
+    manager: ZoneManager,                # the manager to render groups for
+    include_zone_switch: bool = True,    # include zone-switch hint when multi-zone
+) -> list[FT]:                           # flat list of group FT elements (no wrapping Div)
+    """
+    Render the keyboard-shortcut groups for a single ZoneManager.
+    
+    Composes:
+    1. **Manager-derived "Navigation" group**: derived nav rows from
+       `derive_navigation_hints(manager)` (via `manager.key_mapping` + each zone's
+       `navigation.get_supported_directions()`), plus the Switch-panel row when
+       `include_zone_switch=True` and multi-zone. **Plus** any consumer actions
+       whose `hint_group == "Navigation"` AND land in the shared section
+       (zone_label=None) — they fold into the same group rather than rendering
+       a duplicate "Navigation" header underneath the derived rows.
+    2. **Zone-aware action groups**: from `group_actions_by_zone_and_hint_group`,
+       with `"<zone label> — <hint_group>"` headers for per-zone sections and
+       plain `"<hint_group>"` for shared sections (other than Navigation).
+    
+    Per-zone "Navigation" groups stay separate (they're zone-scoped — distinct
+    from the manager-level Navigation row). Only the shared-section Navigation
+    rows merge into the manager-derived group.
+    
+    Returned as a flat list (no wrapping Div) so callers can interleave section
+    headers between groups when rendering multi-manager hierarchies.
+    """
 ```
 
 ``` python
 def _render_modal_body(
-    manager: ZoneManager,          # keyboard zone manager
-    include_navigation: bool = True,  # include \u2191/\u2193 navigation hint
-    include_zone_switch: bool = True, # include \u2190/\u2192 zone switch hint
-) -> Div:                             # modal body with grouped shortcuts
-    "Render the modal body with grouped keyboard shortcuts."
+    manager: ZoneManager,                            # primary keyboard zone manager
+    include_zone_switch: bool = True,                # include zone-switch hint (single-manager: when multi-zone; multi-manager: per-manager)
+    include_navigation: bool = True,                 # DEPRECATED: no-op. Built-in nav row derived from key_mapping now.
+    child_managers: Optional[Sequence[ZoneManager]] = None,  # additional managers for hierarchical hint display (each renders as a labeled section)
+) -> Div:                                            # modal body with grouped shortcuts
+    """
+    Render the modal body with grouped keyboard shortcuts.
+    
+    **Single-manager mode** (`child_managers=None`, the common case):
+    - Renders one manager's content as a flat list of groups (no section header).
+    - Layout: derived "Navigation" group → zone-aware action groups.
+    
+    **Multi-manager mode** (`child_managers=[...]`, hierarchical keyboard systems):
+    - Renders the primary manager as a labeled section (header = `manager.get_display_label()`),
+      followed by each child manager as its own labeled section. Used for
+      coordinator-based hierarchies where multiple ZoneManagers cooperate
+      (e.g., parent + N children pattern in `cjm-fasthtml-keyboard-navigation`'s
+      hierarchy demo). Each manager's content composes via `_render_manager_groups`.
+    
+    Layout details (same in both modes):
+    - Each group container has `break-inside: avoid-column` so the CSS-columns
+      layout never splits a group across columns.
+    - Section headers (multi-manager mode) carry `break-after: avoid`
+      to keep each header attached to its first group.
+    - Mode-restricted actions get a small chip ("split", "default", etc.)
+      derived from `mode_context_label(action)`.
+    - Per-manager: shared-section actions with `hint_group="Navigation"` fold
+      into the manager-derived Navigation group (no duplicate group headers).
+    
+    History: an earlier version hardcoded `↑/↓ Navigate items` regardless of
+    the manager's actual `key_mapping`. That row was wrong under custom
+    mappings (wasd, vim) and was dropped in G4. This version derives the
+    nav row from `manager.key_mapping` via `derive_navigation_hints`, which
+    is accurate under any KeyMapping configuration.
+    """
 ```
 
 ``` python
 def render_keyboard_hints_trigger(
-    modal_id: str = "kb-hints-modal",  # ID of the modal dialog to open
-    icon_size: int = 4,                 # lucide icon size
-) -> Button:                            # ghost button with keyboard icon
+    modal_id: str = "kb-hints-modal",             # ID of the modal dialog to open
+    icon_size: IconSize = icons.ghost_button,     # lucide icon size (V11.R3 ghost-button: "full" — pairs with V1.modal_disclosure at btn-xs)
+) -> Button:                                      # ghost button with keyboard icon
     "Render a keyboard icon button that opens the hints modal."
 ```
 
@@ -554,13 +779,14 @@ def _render_question_mark_listener(
 
 ``` python
 def render_keyboard_hints_modal(
-    manager: ZoneManager,               # keyboard zone manager with actions configured
-    modal_id: str = "kb-hints-modal",    # HTML ID for the modal dialog
-    include_navigation: bool = True,     # include \u2191/\u2193 navigation hint
-    include_zone_switch: bool = True,    # include zone switch hint (auto-hidden for single zone)
-    enable_question_mark_key: bool = True,  # add global `?` key listener
-    title: str = "Keyboard Shortcuts",   # modal title text
-) -> tuple[FT, FT, FT]:                 # (modal_dialog, trigger_button, question_mark_script)
+    manager: ZoneManager,                                   # primary keyboard zone manager
+    modal_id: str = "kb-hints-modal",                        # HTML ID for the modal dialog
+    include_navigation: bool = True,                         # DEPRECATED: no-op kept for backward compat. See _render_modal_body.
+    include_zone_switch: bool = True,                        # include zone-switch hint (auto-hidden for single zone)
+    enable_question_mark_key: bool = True,                   # add global `?` key listener
+    title: str = "Keyboard Shortcuts",                       # modal title text
+    child_managers: Optional[Sequence[ZoneManager]] = None,  # child managers for hierarchical hint display (each rendered as a labeled section)
+) -> tuple[FT, FT, FT]:                                     # (modal_dialog, trigger_button, question_mark_script)
     """
     Render a modal-based keyboard shortcut reference.
     
@@ -570,7 +796,28 @@ def render_keyboard_hints_modal(
     - `question_mark_script`: Global `?` key listener Script (place in page)
     
     If `enable_question_mark_key` is False, `question_mark_script` is an empty Div.
+    
+    **Hierarchical hints** (`child_managers=[...]`): when working with multiple
+    ZoneManagers coordinated by `window.kbCoordinator` (parent + N children), pass
+    the parent as `manager` and the children as `child_managers`. The modal will
+    render each as a labeled section using `manager.get_display_label()` for
+    section headers. Set `label` on each ZoneManager for human-readable headers;
+    falls back to `system_id` otherwise.
+    
+    Modal width ladder (R2 cap + optimal-space response — see
+    layout-system.md M1–M6 modes): grows responsively with viewport. Combined
+    with `columns.sm` on the body, this gives 1 column at narrow widths,
+    2 columns at laptop full-screen (lg breakpoint with max_w._4xl), and
+    3 columns at desktop full-screen (2xl breakpoint with max_w._7xl).
+    Modal width is an upper bound; DaisyUI's `modal_box` sizes the actual
+    modal to its content within that bound, so short content stays compact.
     """
+```
+
+#### Variables
+
+``` python
+_BUILTIN_NAV_GROUP = 'Navigation'
 ```
 
 ### Hidden Inputs (`inputs.ipynb`)
@@ -731,6 +978,7 @@ class ZoneManager:
     
     zones: tuple[FocusZone, ...]  # all focus zones
     system_id: Optional[str]  # unique ID for coordinator registration (defaults to initial zone ID)
+    label: Optional[str]  # human-readable label for keyboard-hints display (falls back to system_id when None)
     prev_zone_key: str = 'ArrowLeft'  # key to switch to previous zone
     next_zone_key: str = 'ArrowRight'  # key to switch to next zone
     zone_switch_modifiers: frozenset[str] = field(...)
@@ -760,8 +1008,26 @@ class ZoneManager:
             """Get initial zone ID."""
             return self.initial_zone_id or self.zones[0].id
     
-        def get_all_modes(self) -> tuple[KeyboardMode, ...]: # all modes including default
+        def get_display_label(self) -> str: # human-readable label, falling back to system_id
         "Get initial zone ID."
+    
+    def get_display_label(self) -> str: # human-readable label, falling back to system_id
+            """Get the label for keyboard-hints display, falling back to system_id when label is None.
+    
+            Used by hierarchical hints-modal rendering to label child manager sections
+            (`render_keyboard_hints_modal(..., child_managers=[...])`). Set `label` to
+            a human-friendly string (e.g., "Alpha List") so the modal's section headers
+            read clearly instead of using technical system_id values (e.g., "child-a").
+            """
+            return self.label if self.label is not None else self.system_id
+    
+        def get_all_modes(self) -> tuple[KeyboardMode, ...]: # all modes including default
+        "Get the label for keyboard-hints display, falling back to system_id when label is None.
+
+Used by hierarchical hints-modal rendering to label child manager sections
+(`render_keyboard_hints_modal(..., child_managers=[...])`). Set `label` to
+a human-friendly string (e.g., "Alpha List") so the modal's section headers
+read clearly instead of using technical system_id values (e.g., "child-a")."
     
     def get_all_modes(self) -> tuple[KeyboardMode, ...]: # all modes including default
             """Get all modes including the default navigation mode."""
