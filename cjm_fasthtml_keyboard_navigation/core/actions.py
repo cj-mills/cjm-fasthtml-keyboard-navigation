@@ -23,7 +23,7 @@ class KeyAction:
         default_factory=frozenset
     )  # required modifiers ("shift", "ctrl", "alt", "meta")
 
-    # Action - exactly one should typically be set
+    # Action - exactly one should typically be set (or none, for documentation-only actions)
     htmx_trigger: Optional[str] = None  # ID of hidden button to click
     js_callback: Optional[str] = None  # JS function name to call
     mode_enter: Optional[str] = None  # mode name to enter
@@ -64,6 +64,21 @@ class KeyAction:
         
         return True
 
+    def is_documentation_only(self) -> bool:  # True if no action path is set (advisory hint only)
+        """Check if this is a documentation-only KeyAction (no handler fires).
+        
+        Documentation-only actions appear in keyboard hints but do not trigger
+        HTMX, JS callbacks, or mode transitions. Useful for documenting purely
+        client-side keyboard interactions (e.g., text-selector caret movement
+        implemented as a separate event listener).
+        """
+        return (
+            self.htmx_trigger is None
+            and self.js_callback is None
+            and self.mode_enter is None
+            and not self.mode_exit
+        )
+
     def get_display_key(self) -> str: # formatted key combo for display
         """Get formatted key combination for display."""
         return format_key_combo(self.key, self.modifiers)
@@ -86,3 +101,38 @@ class KeyAction:
             "description": self.description,
             "hintGroup": self.hint_group,
         }
+
+    @classmethod
+    def documentation_only(
+        cls,
+        key: str,                                       # JavaScript key name (e.g., "ArrowLeft")
+        description: str,                               # human-readable description for hints
+        *,
+        modifiers: frozenset[str] = frozenset(),        # required modifiers
+        zone_ids: Optional[tuple[str, ...]] = None,     # restrict to these zones
+        mode_names: Optional[tuple[str, ...]] = None,   # restrict to these modes
+        not_modes: Optional[tuple[str, ...]] = None,    # not in these modes
+        hint_group: str = "General",                    # hint group label
+    ) -> "KeyAction":                                   # KeyAction that appears in hints only
+        """Create a KeyAction that ONLY appears in keyboard hints — no handler fires.
+
+        Use for documenting client-side-only key interactions (e.g., a text-selector
+        that handles ArrowLeft / ArrowRight via its own DOM event listener — the
+        keyboard-navigation library shouldn't fire any action, but the user should
+        still see those keys in the hints modal).
+
+        The returned action has all action paths unset (no htmx_trigger, js_callback,
+        mode_enter, or mode_exit) and explicitly disables prevent_default and
+        stop_propagation so the client-side handler receives the event unaltered.
+        """
+        return cls(
+            key=key,
+            modifiers=modifiers,
+            description=description,
+            hint_group=hint_group,
+            zone_ids=zone_ids,
+            mode_names=mode_names,
+            not_modes=not_modes,
+            prevent_default=False,
+            stop_propagation=False,
+        )

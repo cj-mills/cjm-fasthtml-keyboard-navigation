@@ -25,6 +25,7 @@ class FocusZone:
     
     # Identity
     id: str  # HTML element ID of the container
+    label: Optional[str] = None  # human-readable label for keyboard-hints display (falls back to id when None)
 
     # Item selection
     item_selector: Optional[str] = None  # CSS selector for items (None = scroll only)
@@ -66,6 +67,10 @@ class FocusZone:
     def has_items(self) -> bool: # True if zone has selectable items
         """Check if zone has selectable items."""
         return self.item_selector is not None
+
+    def get_display_label(self) -> str: # human-readable label, falling back to id
+        """Get the label for keyboard-hints display, falling back to id when label is None."""
+        return self.label if self.label is not None else self.id
 
     def get_hidden_input_id(
         self,

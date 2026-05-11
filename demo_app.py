@@ -46,6 +46,7 @@ def main():
     import demos.modes as modes_demo
     import demos.wasd as wasd_demo
     import demos.hierarchy as hierarchy_demo
+    import demos.dual_card_stack as dual_card_stack_demo
 
     print("\n" + "=" * 70)
     print("Initializing cjm-fasthtml-keyboard-navigation Demo")
@@ -72,13 +73,15 @@ def main():
     modes = modes_demo.setup()
     wasd = wasd_demo.setup()
     hierarchy = hierarchy_demo.setup()
+    dual_card_stack = dual_card_stack_demo.setup()
 
-    print("  Set up 5 demo configurations:")
+    print("  Set up 6 demo configurations:")
     print("    - Simple list (single zone, arrow keys)")
     print("    - Dual panel (two zones, panel switching)")
     print("    - Mode switching (navigation/split modes)")
     print("    - Custom keys (WASD mapping)")
     print("    - Hierarchy (parent-child coordination)")
+    print("    - Dual card-stack (G4 hints patterns: zone-scoping, mode chips, documentation-only keys)")
 
     # -------------------------------------------------------------------------
     # Homepage
@@ -183,6 +186,18 @@ def main():
                         href=demo_hierarchy.to(),
                         btn_cls=combine_classes(btn, btn_colors.warning),
                     ),
+                    _demo_card(
+                        "Dual Card-Stack (G4 Hints Patterns)",
+                        "Shared factory across two zones with mode chips and documentation-only keys. Reference implementation of the G4 hints-modal patterns.",
+                        badges=[
+                            ([lucide_icon("layout-grid", size=icons.dense_inline), Span("Zone-scoped", cls=m.l(1))],
+                             badge_colors.primary),
+                            ([lucide_icon("info", size=icons.dense_inline), Span("Mode chips", cls=m.l(1))],
+                             badge_colors.accent),
+                        ],
+                        href=demo_dual_card_stack.to(),
+                        btn_cls=combine_classes(btn, btn_colors.success),
+                    ),
                     cls=combine_classes(grid_display, grid_cols(1), grid_cols(2).md, gap(6), m.b(8)),
                 ),
 
@@ -256,6 +271,13 @@ def main():
             wrap_fn=lambda content: wrap_with_layout(content, navbar=navbar),
         )
 
+    @router
+    def demo_dual_card_stack(request):
+        return handle_htmx_request(
+            request, dual_card_stack["page_content"],
+            wrap_fn=lambda content: wrap_with_layout(content, navbar=navbar),
+        )
+
     # -------------------------------------------------------------------------
     # Navbar & route registration
     # -------------------------------------------------------------------------
@@ -268,6 +290,7 @@ def main():
             ("Modes", demo_modes),
             ("WASD", demo_wasd),
             ("Hierarchy", demo_hierarchy),
+            ("Dual Card-Stack (G4)", demo_dual_card_stack),
         ],
         home_route=index,
         theme_selector=True,
@@ -276,7 +299,7 @@ def main():
     register_routes(
         app, router,
         simple["router"], dual_panel["router"], modes["router"],
-        wasd["router"], hierarchy["router"],
+        wasd["router"], hierarchy["router"], dual_card_stack["router"],
     )
 
     # Debug output
@@ -319,6 +342,7 @@ if __name__ == "__main__":
     print(f"  http://{display_host}:{port}/demo_modes     — Mode switching")
     print(f"  http://{display_host}:{port}/demo_wasd      — WASD keys")
     print(f"  http://{display_host}:{port}/demo_hierarchy  — Hierarchical systems")
+    print(f"  http://{display_host}:{port}/demo_dual_card_stack — Dual card-stack (G4 hints patterns)")
     print()
 
     timer = threading.Timer(1.5, lambda: webbrowser.open(f"http://localhost:{port}"))

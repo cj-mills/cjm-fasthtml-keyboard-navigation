@@ -22,6 +22,7 @@ from cjm_fasthtml_keyboard_navigation.core.actions import KeyAction
 from cjm_fasthtml_keyboard_navigation.core.manager import ZoneManager
 from cjm_fasthtml_keyboard_navigation.core.navigation import LinearVertical, ScrollOnly
 from cjm_fasthtml_keyboard_navigation.components.system import render_keyboard_system
+from cjm_fasthtml_keyboard_navigation.components.hints_modal import render_keyboard_hints_modal
 
 from demos.data import DemoState, CHILD_A_ITEMS, CHILD_B_ITEMS
 from demos.shared import render_list_item
@@ -49,6 +50,7 @@ def setup():
     )
     child_a_manager = ZoneManager(
         zones=(child_a_zone,), actions=child_a_actions, system_id="child-a",
+        label="Alpha List (Child A)",
     )
 
     # --- Child B ---
@@ -68,6 +70,7 @@ def setup():
     )
     child_b_manager = ZoneManager(
         zones=(child_b_zone,), actions=child_b_actions, system_id="child-b",
+        label="Beta List (Child B)",
     )
 
     # --- Parent ---
@@ -92,6 +95,7 @@ def setup():
         system_id="hierarchy-parent",
         prev_zone_key="ArrowLeft",
         next_zone_key="ArrowRight",
+        label="Parent (Areas)",
     )
 
     router = APIRouter(prefix="")
@@ -228,13 +232,26 @@ def setup():
             show_hints=False,
         )
 
+        # Hints modal: hierarchical rendering via child_managers.
+        # Parent at top (area-level navigation), then each child as a labeled
+        # section showing its own keys. The bespoke Instructions panel below
+        # still explains the parent/child coordination semantics (when child
+        # is active vs. parent is active) — content the modal can't capture.
+        hints_modal, hints_trigger, hints_script = render_keyboard_hints_modal(
+            parent_manager,
+            child_managers=(child_a_manager, child_b_manager),
+        )
+
         return Div(
             Div(
-                H1("Hierarchical Systems",
-                   cls=combine_classes(font_size._2xl, font_weight.bold)),
-                P("Parent with two child systems. Escape deactivates child, Enter activates.",
-                  cls=combine_classes(text_dui.base_content, font_size.sm)),
-                cls=m.b(4),
+                Div(
+                    H1("Hierarchical Systems",
+                       cls=combine_classes(font_size._2xl, font_weight.bold)),
+                    P("Parent with two child systems. Escape deactivates child, Enter activates. Press ? for parent-level shortcuts.",
+                      cls=combine_classes(text_dui.base_content, font_size.sm)),
+                ),
+                hints_trigger,
+                cls=combine_classes(flex_display, items.start, justify.between, m.b(4)),
             ),
             # Instructions
             Div(
@@ -290,6 +307,8 @@ def setup():
             child_a_system.script, child_a_system.hidden_inputs, child_a_system.action_buttons,
             child_b_system.script, child_b_system.hidden_inputs, child_b_system.action_buttons,
             hierarchy_js,
+            hints_modal,
+            hints_script,
             cls=combine_classes(container, max_w._4xl, m.x.auto, p(6)),
         )
 

@@ -5,11 +5,12 @@
 # %% ../../nbs/components/hints.ipynb #e5043c09
 from __future__ import annotations
 from collections import defaultdict
-from typing import Union
+from typing import Optional, Union
 from fasthtml.common import Div, Span, FT
 
 from ..core.actions import KeyAction
 from ..core.manager import ZoneManager
+from ..core.key_mapping import format_key_for_display
 
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors, badge_styles
 from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import (
@@ -26,8 +27,9 @@ from cjm_fasthtml_design_system.icons import icons
 
 # %% auto #0
 __all__ = ['NAV_ICON_MAP', 'KEY_ICON_MAP', 'get_key_icon', 'render_hint_badge', 'create_nav_icon_hint',
-           'create_modifier_key_hint', 'render_hint_group', 'group_actions_by_hint_group', 'render_hints_from_actions',
-           'render_keyboard_hints']
+           'create_modifier_key_hint', 'render_hint_group', 'group_actions_by_hint_group',
+           'group_actions_by_zone_and_hint_group', 'mode_context_label', 'derive_navigation_hints',
+           'render_hints_from_actions', 'render_keyboard_hints']
 
 # %% ../../nbs/components/hints.ipynb #1680f700
 # Icon mappings for navigation patterns and common keys
@@ -158,6 +160,154 @@ def group_actions_by_hint_group(
         if action.show_in_hints and action.description:
             groups[action.hint_group].append(action)
     return dict(groups)
+
+# %% ../../nbs/components/hints.ipynb #bdee9bda
+def group_actions_by_zone_and_hint_group(
+    manager: ZoneManager,  # the zone manager whose actions to group
+) -> list[tuple[Optional[str], str, list[KeyAction]]]:  # ordered (zone_label_or_None, hint_group, actions) tuples
+    """Group actions for hint display, scoped by zone and hint_group.
+
+    Returns an ordered list of (zone_label, hint_group, actions) tuples:
+
+    - **Shared section** (zone_label=None) appears FIRST, containing actions
+      with zone_ids=None (truly global) or zone_ids covering all zones in the
+      manager. Single-zone managers route all actions through this section,
+      preserving single-zone consumer rendering (no zone-label prefix).
+    - **Per-zone sections** follow, in the order zones are declared on the
+      manager. zone_label is FocusZone.get_display_label() (label, falling
+      back to id). Actions with zone_ids matching exactly one zone land here.
+    - **Within each section**, hint_groups appear in insertion (first-seen)
+      order. Actions are emitted in their original tuple order.
+
+    Actions with show_in_hints=False or empty description are excluded.
+
+    Edge cases:
+    - Multi-zone partial coverage (zone_ids touches >1 zone but not all):
+      routed to shared. Rare in practice; documents the action as shared.
+    - zone_ids referencing a zone not in manager.zones: silently dropped.
+    """
+    zone_id_order = [zone.id for zone in manager.zones]
+    zone_labels = {zone.id: zone.get_display_label() for zone in manager.zones}
+    all_zone_ids = set(zone_id_order)
+
+    # Partition actions: shared vs per-zone, preserving hint_group insertion order
+    shared_groups: dict[str, list[KeyAction]] = defaultdict(list)
+    per_zone_groups: dict[str, dict[str, list[KeyAction]]] = {
+        zone_id: defaultdict(list) for zone_id in zone_id_order
+    }
+
+    for action in manager.actions:
+        if not action.show_in_hints or not action.description:
+            continue
+
+        if action.zone_ids is None or set(action.zone_ids) >= all_zone_ids:
+            # Unrestricted or covers all zones -> shared section
+            shared_groups[action.hint_group].append(action)
+        elif len(action.zone_ids) == 1 and action.zone_ids[0] in zone_labels:
+            # Scoped to one zone -> per-zone section
+            per_zone_groups[action.zone_ids[0]][action.hint_group].append(action)
+        elif any(zid in zone_labels for zid in action.zone_ids):
+            # Multi-zone partial coverage -> shared (rare edge case)
+            shared_groups[action.hint_group].append(action)
+        # else: zone_ids references no registered zone -> silently dropped
+
+    # Build ordered result: shared first, then per-zone in declaration order
+    result: list[tuple[Optional[str], str, list[KeyAction]]] = []
+    for group_name, actions in shared_groups.items():
+        result.append((None, group_name, actions))
+    for zone_id in zone_id_order:
+        for group_name, actions in per_zone_groups[zone_id].items():
+            result.append((zone_labels[zone_id], group_name, actions))
+
+    return result
+
+
+def mode_context_label(
+    action: KeyAction,  # action whose mode constraints to summarize
+) -> Optional[str]:     # short chip-friendly label, or None for unrestricted actions
+    """Derive a short mode-context label from a KeyAction's mode constraints.
+
+    Returns None when the action has no mode restrictions (works in any mode —
+    no chip should render). Returns the mode name(s) when mode_names is set.
+    Returns 'default' when not_modes is set (action is excluded from specified
+    modes, so it fires in the default mode).
+
+    Examples:
+        mode_names=("split",)             -> "split"
+        mode_names=("token-select",)      -> "token-select"
+        mode_names=("split", "edit")      -> "split + edit"
+        not_modes=("split",)              -> "default"
+        no mode constraints               -> None
+    """
+    if action.mode_names:
+        return " + ".join(action.mode_names)
+    if action.not_modes:
+        return "default"
+    return None
+
+# %% ../../nbs/components/hints.ipynb #cb2d3361
+def derive_navigation_hints(
+    manager: ZoneManager,  # the zone manager whose navigation to derive hints from
+) -> list[tuple[str, str]]:  # ordered (display_key, description) tuples
+    """Derive built-in navigation hint rows from manager.key_mapping + zone patterns.
+
+    Walks every zone with `has_items()` true, unions the navigable directions
+    via each zone's `navigation.get_supported_directions()`, and emits hint
+    rows using the actual keys from `manager.key_mapping`. Replaces the
+    earlier hardcoded `↑/↓ Navigate items` row, which was wrong under custom
+    key_mappings (wasd, vim, etc.).
+
+    Returns rows for each direction pair (up/down, left/right) whose keys are
+    *actually* bound and *actually* used by some zone:
+
+    - **Vertical pair** (up/down): emitted when any zone has a pattern that
+      supports up/down navigation. Display uses `key_mapping.up[0]` /
+      `key_mapping.down[0]`.
+    - **Horizontal pair** (left/right): emitted when any zone supports
+      left/right navigation, UNLESS the in-zone horizontal keys collide with
+      the manager's zone-switch keys (prev_zone_key/next_zone_key). In that
+      case the zone-switch row already documents those keys; emitting a
+      second row would be misleading (the zone-switch path wins at runtime).
+
+    Returns an empty list when no zone supports key-based navigation (e.g.,
+    all zones are ScrollOnly, or no zone has an item_selector).
+    """
+    directions_used = set()
+    for zone in manager.zones:
+        if not zone.has_items():
+            continue
+        # Each NavigationPattern self-reports its supported directions —
+        # change-tolerant if new patterns are added (e.g., a future 2D grid
+        # variant doesn't need this function updated).
+        get_dirs = getattr(zone.navigation, "get_supported_directions", None)
+        if get_dirs is not None:
+            directions_used.update(get_dirs())
+
+    if not directions_used:
+        return []
+
+    km = manager.key_mapping
+    multi_zone = len(manager.zones) > 1
+    hints: list[tuple[str, str]] = []
+
+    # Vertical pair (up/down)
+    if {"up", "down"} <= directions_used and km.up and km.down:
+        hints.append((
+            f"{format_key_for_display(km.up[0])} / {format_key_for_display(km.down[0])}",
+            "Navigate items",
+        ))
+
+    # Horizontal pair (left/right) — skip when keys collide with zone-switch
+    if {"left", "right"} <= directions_used and km.left and km.right:
+        left_collides = multi_zone and km.left[0] == manager.prev_zone_key
+        right_collides = multi_zone and km.right[0] == manager.next_zone_key
+        if not (left_collides and right_collides):
+            hints.append((
+                f"{format_key_for_display(km.left[0])} / {format_key_for_display(km.right[0])}",
+                "Navigate items",
+            ))
+
+    return hints
 
 # %% ../../nbs/components/hints.ipynb #471f86ab
 def render_hints_from_actions(

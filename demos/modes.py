@@ -21,7 +21,7 @@ from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import container, max_w
 from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight, font_family
 from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import (
-    flex_display, flex_direction, flex_wrap, items, gap
+    flex_display, flex_direction, flex_wrap, items, gap, justify
 )
 from cjm_fasthtml_tailwind.utilities.borders import border
 from cjm_fasthtml_tailwind.utilities.transitions_and_animation import transition, animate
@@ -36,6 +36,7 @@ from cjm_fasthtml_keyboard_navigation.core.modes import KeyboardMode
 from cjm_fasthtml_keyboard_navigation.core.manager import ZoneManager
 from cjm_fasthtml_keyboard_navigation.core.navigation import LinearVertical, ScrollOnly
 from cjm_fasthtml_keyboard_navigation.components.system import render_keyboard_system
+from cjm_fasthtml_keyboard_navigation.components.hints_modal import render_keyboard_hints_modal
 
 from demos.data import MODE_SEGMENTS
 
@@ -306,15 +307,21 @@ def setup():
                 "mode-merge-btn": _include_selector,
                 "mode-split-btn": _include_selector,
             },
+            show_hints=False,
         )
+
+        hints_modal, hints_trigger, hints_script = render_keyboard_hints_modal(manager)
 
         return Div(
             Div(
-                H1("Mode Switching",
-                   cls=combine_classes(font_size._2xl, font_weight.bold)),
-                P("Press Enter/Space to enter Split mode. Escape should exit and re-render from server.",
-                  cls=combine_classes(text_dui.base_content, font_size.sm)),
-                cls=m.b(4),
+                Div(
+                    H1("Mode Switching",
+                       cls=combine_classes(font_size._2xl, font_weight.bold)),
+                    P("Press Enter/Space to enter Split mode. Escape should exit and re-render from server. Press ? for the keyboard shortcuts.",
+                      cls=combine_classes(text_dui.base_content, font_size.sm)),
+                ),
+                hints_trigger,
+                cls=combine_classes(flex_display, items.start, justify.between, m.b(4)),
             ),
             # Mode indicator
             Div(
@@ -351,9 +358,10 @@ def setup():
                   cls=combine_classes(font_size.sm, text_dui.success)),
                 cls=combine_classes(m.b(4), p(3), bg_dui.warning.opacity(10), font_size.sm),
             ),
-            system.hints if system.hints else "",
             Div(render_segments(is_split_mode=False), cls=m.t(4)),
             system.script, system.hidden_inputs, system.action_buttons,
+            hints_modal,
+            hints_script,
             Script("""
                 function enterSplitMode(modeName, zoneId) {
                     console.log('[MODE] Entered split mode (JS callback)');

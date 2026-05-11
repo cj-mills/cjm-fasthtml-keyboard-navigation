@@ -25,6 +25,7 @@ class ZoneManager:
 
     # Identity
     system_id: Optional[str] = None  # unique ID for coordinator registration (defaults to initial zone ID)
+    label: Optional[str] = None  # human-readable label for keyboard-hints display (falls back to system_id when None)
 
     # Zone switching
     prev_zone_key: str = "ArrowLeft"  # key to switch to previous zone
@@ -97,6 +98,16 @@ class ZoneManager:
     def get_initial_zone_id(self) -> str: # the initial zone ID
         """Get initial zone ID."""
         return self.initial_zone_id or self.zones[0].id
+
+    def get_display_label(self) -> str: # human-readable label, falling back to system_id
+        """Get the label for keyboard-hints display, falling back to system_id when label is None.
+
+        Used by hierarchical hints-modal rendering to label child manager sections
+        (`render_keyboard_hints_modal(..., child_managers=[...])`). Set `label` to
+        a human-friendly string (e.g., "Alpha List") so the modal's section headers
+        read clearly instead of using technical system_id values (e.g., "child-a").
+        """
+        return self.label if self.label is not None else self.system_id
 
     def get_all_modes(self) -> tuple[KeyboardMode, ...]: # all modes including default
         """Get all modes including the default navigation mode."""

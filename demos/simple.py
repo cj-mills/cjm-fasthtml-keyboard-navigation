@@ -6,6 +6,7 @@ from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, ring_dui, b
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import container, max_w
 from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight
+from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, items, justify
 from cjm_fasthtml_tailwind.utilities.borders import border, rounded
 from cjm_fasthtml_tailwind.utilities.layout import overflow
 from cjm_fasthtml_tailwind.utilities.effects import ring, inset_ring
@@ -16,6 +17,7 @@ from cjm_fasthtml_keyboard_navigation.core.actions import KeyAction
 from cjm_fasthtml_keyboard_navigation.core.manager import ZoneManager
 from cjm_fasthtml_keyboard_navigation.core.navigation import LinearVertical
 from cjm_fasthtml_keyboard_navigation.components.system import render_keyboard_system
+from cjm_fasthtml_keyboard_navigation.components.hints_modal import render_keyboard_hints_modal
 
 from demos.data import DemoState, SIMPLE_LIST_ITEMS
 from demos.shared import render_list_item
@@ -97,19 +99,26 @@ def setup():
                 "simple-delete-btn": "#simple-list-container",
                 "simple-select-all-btn": "#simple-list-container",
             },
+            show_hints=False,
         )
+
+        hints_modal, hints_trigger, hints_script = render_keyboard_hints_modal(manager)
 
         return Div(
             Div(
-                H1("Simple List Navigation",
-                   cls=combine_classes(font_size._2xl, font_weight.bold)),
-                P("Use arrow keys to navigate, Space to select, Delete to remove.",
-                  cls=combine_classes(text_dui.base_content, font_size.sm)),
-                cls=m.b(4),
+                Div(
+                    H1("Simple List Navigation",
+                       cls=combine_classes(font_size._2xl, font_weight.bold)),
+                    P("Use arrow keys to navigate, Space to select, Delete to remove. Press ? for the keyboard shortcuts.",
+                      cls=combine_classes(text_dui.base_content, font_size.sm)),
+                ),
+                hints_trigger,
+                cls=combine_classes(flex_display, items.start, justify.between, m.b(4)),
             ),
-            system.hints if system.hints else "",
             Div(render_simple_list(), cls=m.t(4)),
             system.script, system.hidden_inputs, system.action_buttons,
+            hints_modal,
+            hints_script,
             cls=combine_classes(container, max_w._2xl, m.x.auto, p(6)),
         )
 

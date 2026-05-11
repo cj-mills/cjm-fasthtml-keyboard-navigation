@@ -4,16 +4,21 @@
 
 # %% ../../nbs/components/hints_modal.ipynb #hints-modal-imports
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, Sequence
 from fasthtml.common import Div, Span, Dialog, Button, Form, H3, Kbd, Script, FT
 
 from ..core.actions import KeyAction
 from ..core.manager import ZoneManager
-from .hints import group_actions_by_hint_group
+from cjm_fasthtml_keyboard_navigation.components.hints import (
+    derive_navigation_hints,
+    group_actions_by_zone_and_hint_group,
+    mode_context_label,
+)
 
 from cjm_fasthtml_daisyui.components.actions.modal import modal, modal_box, modal_backdrop
 from cjm_fasthtml_daisyui.components.actions.button import btn_modifiers
 from cjm_fasthtml_daisyui.components.data_display.kbd import kbd as kbd_cls, kbd_sizes as kbd_sz
+from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_styles, badge_sizes
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, border_dui
 
 from cjm_fasthtml_design_system.text_tiers import text_tiers
@@ -24,7 +29,7 @@ from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight
 from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import (
     flex_display, items, gap, justify, flex_direction,
 )
-from cjm_fasthtml_tailwind.utilities.layout import position, right, top
+from cjm_fasthtml_tailwind.utilities.layout import position, right, top, columns, break_util
 from cjm_fasthtml_tailwind.utilities.borders import border
 from cjm_fasthtml_tailwind.core.base import combine_classes
 
@@ -52,13 +57,28 @@ def _render_key_combo(
 
 # %% ../../nbs/components/hints_modal.ipynb #hint-row-group
 def _render_hint_row(
-    display_key: str,  # formatted key combo string
-    description: str,  # action description
-) -> Div:              # single shortcut row with key and description
-    """Render a single shortcut row: key combo on left, description on right."""
+    display_key: str,                       # formatted key combo string
+    description: str,                       # action description
+    mode_label: Optional[str] = None,        # mode-context chip text (e.g., "split", "default"); None for no chip
+) -> Div:                                    # single shortcut row with key, description, and optional mode chip
+    """Render a single shortcut row: key combo on left, description (with optional mode chip) on right."""
+    description_components = [Span(description, cls=combine_classes(text_tiers.secondary))]
+    if mode_label is not None:
+        description_components.append(
+            Span(
+                mode_label,
+                cls=combine_classes(
+                    badge, badge_styles.soft, badge_sizes.xs,
+                    m.l(2),
+                ),
+            )
+        )
     return Div(
         _render_key_combo(display_key),
-        Span(description, cls=combine_classes(text_tiers.secondary)),
+        Div(
+            *description_components,
+            cls=combine_classes(flex_display, items.center),
+        ),
         cls=combine_classes(
             flex_display, items.center, justify.between,
             gap(4), p.y(1),
@@ -67,11 +87,16 @@ def _render_hint_row(
 
 
 def _render_modal_group(
-    group_name: str,                        # group header text
-    actions: list[tuple[str, str]],          # list of (display_key, description)
-) -> Div:                                    # group container with header and rows
-    """Render a group of related shortcuts with a header."""
-    rows = [_render_hint_row(key, desc) for key, desc in actions]
+    group_name: str,                                                   # group header text
+    rows: list[tuple[str, str, Optional[str]]],                         # list of (display_key, description, mode_label)
+) -> Div:                                                              # group container with header and rows
+    """Render a group of related shortcuts with a header.
+
+    `break_util.inside.avoid_column` keeps the entire group (header + rows)
+    in one column inside the modal body's CSS-columns layout — groups never
+    split across columns, preserving "form follows function" scannability.
+    """
+    row_elements = [_render_hint_row(key, desc, mode) for key, desc, mode in rows]
     return Div(
         Div(
             group_name,
@@ -83,39 +108,172 @@ def _render_modal_group(
                 m.b(1),
             )
         ),
-        *rows,
-        cls=m.b(4),
+        *row_elements,
+        cls=combine_classes(m.b(4), break_util.inside.avoid_column),
     )
 
 # %% ../../nbs/components/hints_modal.ipynb #modal-body
-def _render_modal_body(
-    manager: ZoneManager,          # keyboard zone manager
-    include_navigation: bool = True,  # include \u2191/\u2193 navigation hint
-    include_zone_switch: bool = True, # include \u2190/\u2192 zone switch hint
-) -> Div:                             # modal body with grouped shortcuts
-    """Render the modal body with grouped keyboard shortcuts."""
+def _render_section_header(
+    label: str,  # human-readable section label
+) -> Div:        # styled section-header element
+    """Render a section header for one manager in a multi-manager modal.
+
+    Visually distinct from group headers (`_render_modal_group`):
+    - Section headers: font-sm + bold + secondary tier + top border + extra spacing
+    - Group headers:   font-xs + semibold + muted tier + bottom border (no top)
+
+    `break_util.after.avoid` keeps a section header attached to its first
+    group inside the CSS-columns layout — prevents the orphan-header case where
+    a header lands at the bottom of one column and its first group at the top
+    of the next. (`break_util.inside.avoid_column` exists but only applies to
+    breaks INSIDE the element; for "don't break right after", `break-after: avoid`
+    is the correct CSS property.)
+    """
+    return Div(
+        label,
+        cls=combine_classes(
+            font_size.sm, font_weight.bold,
+            text_tiers.secondary,
+            p.t(3), p.b(2),
+            m.t(2), m.b(2),
+            border.t(2), border_dui.base_content.opacity(20),
+            break_util.after.avoid,
+        ),
+    )
+
+
+# Built-in group label that the manager-derived Navigation rows render under.
+# Consumer actions with `hint_group=_BUILTIN_NAV_GROUP` in the shared section
+# get merged into the same group (no duplicate header).
+_BUILTIN_NAV_GROUP = "Navigation"
+
+
+def _render_manager_groups(
+    manager: ZoneManager,                # the manager to render groups for
+    include_zone_switch: bool = True,    # include zone-switch hint when multi-zone
+) -> list[FT]:                           # flat list of group FT elements (no wrapping Div)
+    """Render the keyboard-shortcut groups for a single ZoneManager.
+
+    Composes:
+    1. **Manager-derived "Navigation" group**: derived nav rows from
+       `derive_navigation_hints(manager)` (via `manager.key_mapping` + each zone's
+       `navigation.get_supported_directions()`), plus the Switch-panel row when
+       `include_zone_switch=True` and multi-zone. **Plus** any consumer actions
+       whose `hint_group == "Navigation"` AND land in the shared section
+       (zone_label=None) — they fold into the same group rather than rendering
+       a duplicate "Navigation" header underneath the derived rows.
+    2. **Zone-aware action groups**: from `group_actions_by_zone_and_hint_group`,
+       with `"<zone label> — <hint_group>"` headers for per-zone sections and
+       plain `"<hint_group>"` for shared sections (other than Navigation).
+
+    Per-zone "Navigation" groups stay separate (they're zone-scoped — distinct
+    from the manager-level Navigation row). Only the shared-section Navigation
+    rows merge into the manager-derived group.
+
+    Returned as a flat list (no wrapping Div) so callers can interleave section
+    headers between groups when rendering multi-manager hierarchies.
+    """
     from cjm_fasthtml_keyboard_navigation.core.key_mapping import format_key_for_display
 
-    groups_content = []
+    elements: list[FT] = []
 
-    # Navigation group (built-in)
-    nav_hints = []
-    if include_navigation:
-        nav_hints.append(("\u2191 / \u2193", "Navigate items"))
+    # Build the manager-derived "Navigation" group's rows
+    nav_rows: list[tuple[str, str, Optional[str]]] = [
+        (display_key, description, None)
+        for display_key, description in derive_navigation_hints(manager)
+    ]
     if include_zone_switch and len(manager.zones) > 1:
         prev_key = format_key_for_display(manager.prev_zone_key)
         next_key = format_key_for_display(manager.next_zone_key)
-        nav_hints.append((f"{prev_key} / {next_key}", "Switch panel"))
-    if nav_hints:
-        groups_content.append(_render_modal_group("Navigation", nav_hints))
+        nav_rows.append((f"{prev_key} / {next_key}", "Switch panel", None))
 
-    # Action groups (from KeyAction hint_group)
-    action_groups = group_actions_by_hint_group(manager.actions)
-    for group_name, group_actions in action_groups.items():
-        hints = [(a.get_display_key(), a.description) for a in group_actions]
-        groups_content.append(_render_modal_group(group_name, hints))
+    # Walk action groups, merging shared-section "Navigation" into nav_rows
+    # and collecting the rest for downstream emission as their own groups.
+    remaining_groups: list[tuple[Optional[str], str, list[KeyAction]]] = []
+    for zone_label, group_name, actions in group_actions_by_zone_and_hint_group(manager):
+        if zone_label is None and group_name == _BUILTIN_NAV_GROUP:
+            # Shared-section Navigation actions: fold into the manager-derived
+            # Navigation group so the modal shows one "Navigation" header, not two.
+            nav_rows.extend(
+                (a.get_display_key(), a.description, mode_context_label(a))
+                for a in actions
+            )
+        else:
+            remaining_groups.append((zone_label, group_name, actions))
 
-    return Div(*groups_content, cls=p.t(2))
+    # Emit the merged Navigation group (if any rows were collected)
+    if nav_rows:
+        elements.append(_render_modal_group(_BUILTIN_NAV_GROUP, nav_rows))
+
+    # Emit remaining groups (per-zone, or non-Navigation shared)
+    for zone_label, group_name, actions in remaining_groups:
+        rows = [
+            (a.get_display_key(), a.description, mode_context_label(a))
+            for a in actions
+        ]
+        header = f"{zone_label} — {group_name}" if zone_label else group_name
+        elements.append(_render_modal_group(header, rows))
+
+    return elements
+
+
+def _render_modal_body(
+    manager: ZoneManager,                            # primary keyboard zone manager
+    include_zone_switch: bool = True,                # include zone-switch hint (single-manager: when multi-zone; multi-manager: per-manager)
+    include_navigation: bool = True,                 # DEPRECATED: no-op. Built-in nav row derived from key_mapping now.
+    child_managers: Optional[Sequence[ZoneManager]] = None,  # additional managers for hierarchical hint display (each renders as a labeled section)
+) -> Div:                                            # modal body with grouped shortcuts
+    """Render the modal body with grouped keyboard shortcuts.
+
+    **Single-manager mode** (`child_managers=None`, the common case):
+    - Renders one manager's content as a flat list of groups (no section header).
+    - Layout: derived "Navigation" group → zone-aware action groups.
+
+    **Multi-manager mode** (`child_managers=[...]`, hierarchical keyboard systems):
+    - Renders the primary manager as a labeled section (header = `manager.get_display_label()`),
+      followed by each child manager as its own labeled section. Used for
+      coordinator-based hierarchies where multiple ZoneManagers cooperate
+      (e.g., parent + N children pattern in `cjm-fasthtml-keyboard-navigation`'s
+      hierarchy demo). Each manager's content composes via `_render_manager_groups`.
+
+    Layout details (same in both modes):
+    - Each group container has `break-inside: avoid-column` so the CSS-columns
+      layout never splits a group across columns.
+    - Section headers (multi-manager mode) carry `break-after: avoid`
+      to keep each header attached to its first group.
+    - Mode-restricted actions get a small chip ("split", "default", etc.)
+      derived from `mode_context_label(action)`.
+    - Per-manager: shared-section actions with `hint_group="Navigation"` fold
+      into the manager-derived Navigation group (no duplicate group headers).
+
+    History: an earlier version hardcoded `↑/↓ Navigate items` regardless of
+    the manager's actual `key_mapping`. That row was wrong under custom
+    mappings (wasd, vim) and was dropped in G4. This version derives the
+    nav row from `manager.key_mapping` via `derive_navigation_hints`, which
+    is accurate under any KeyMapping configuration.
+    """
+    elements: list[FT] = []
+
+    if child_managers:
+        # Multi-manager mode: label the primary manager too, so the hierarchy
+        # is visually clear in the rendered modal.
+        elements.append(_render_section_header(manager.get_display_label()))
+
+    elements.extend(_render_manager_groups(manager, include_zone_switch=include_zone_switch))
+
+    if child_managers:
+        for child in child_managers:
+            elements.append(_render_section_header(child.get_display_label()))
+            elements.extend(_render_manager_groups(child, include_zone_switch=include_zone_switch))
+
+    # `columns.sm` = CSS column-width: 24rem; browser auto-decides count based
+    # on modal's actual rendered width. Short content stays effectively single-
+    # column at narrow modal widths; long content (e.g., multi-manager modals)
+    # auto-flows into 2-3 columns at wider modal sizes.
+    return Div(
+        *elements,
+        cls=combine_classes(p.t(2), columns.sm),
+    )
 
 # %% ../../nbs/components/hints_modal.ipynb #trigger-button
 def render_keyboard_hints_trigger(
@@ -166,13 +324,14 @@ def _render_question_mark_listener(
 
 # %% ../../nbs/components/hints_modal.ipynb #full-modal
 def render_keyboard_hints_modal(
-    manager: ZoneManager,               # keyboard zone manager with actions configured
-    modal_id: str = "kb-hints-modal",    # HTML ID for the modal dialog
-    include_navigation: bool = True,     # include ↑/↓ navigation hint
-    include_zone_switch: bool = True,    # include zone switch hint (auto-hidden for single zone)
-    enable_question_mark_key: bool = True,  # add global `?` key listener
-    title: str = "Keyboard Shortcuts",   # modal title text
-) -> tuple[FT, FT, FT]:                 # (modal_dialog, trigger_button, question_mark_script)
+    manager: ZoneManager,                                   # primary keyboard zone manager
+    modal_id: str = "kb-hints-modal",                        # HTML ID for the modal dialog
+    include_navigation: bool = True,                         # DEPRECATED: no-op kept for backward compat. See _render_modal_body.
+    include_zone_switch: bool = True,                        # include zone-switch hint (auto-hidden for single zone)
+    enable_question_mark_key: bool = True,                   # add global `?` key listener
+    title: str = "Keyboard Shortcuts",                       # modal title text
+    child_managers: Optional[Sequence[ZoneManager]] = None,  # child managers for hierarchical hint display (each rendered as a labeled section)
+) -> tuple[FT, FT, FT]:                                     # (modal_dialog, trigger_button, question_mark_script)
     """Render a modal-based keyboard shortcut reference.
 
     Returns three components:
@@ -181,11 +340,26 @@ def render_keyboard_hints_modal(
     - `question_mark_script`: Global `?` key listener Script (place in page)
 
     If `enable_question_mark_key` is False, `question_mark_script` is an empty Div.
+
+    **Hierarchical hints** (`child_managers=[...]`): when working with multiple
+    ZoneManagers coordinated by `window.kbCoordinator` (parent + N children), pass
+    the parent as `manager` and the children as `child_managers`. The modal will
+    render each as a labeled section using `manager.get_display_label()` for
+    section headers. Set `label` on each ZoneManager for human-readable headers;
+    falls back to `system_id` otherwise.
+
+    Modal width ladder (R2 cap + optimal-space response — see
+    layout-system.md M1–M6 modes): grows responsively with viewport. Combined
+    with `columns.sm` on the body, this gives 1 column at narrow widths,
+    2 columns at laptop full-screen (lg breakpoint with max_w._4xl), and
+    3 columns at desktop full-screen (2xl breakpoint with max_w._7xl).
+    Modal width is an upper bound; DaisyUI's `modal_box` sizes the actual
+    modal to its content within that bound, so short content stays compact.
     """
     body = _render_modal_body(
         manager,
-        include_navigation=include_navigation,
         include_zone_switch=include_zone_switch,
+        child_managers=child_managers,
     )
 
     modal_dialog = Dialog(
@@ -223,7 +397,18 @@ def render_keyboard_hints_modal(
                     flex_display, items.center, gap(1),
                 ),
             ),
-            cls=combine_classes(modal_box, max_w.md),
+            cls=combine_classes(
+                modal_box,
+                # Responsive max-width ladder per layout-system M1–M6 modes.
+                # Values tuned via cross-device retest 2026-05-11: laptop
+                # full-screen wants 2-col (lg + max_w._4xl); desktop full-screen
+                # wants 3-col (2xl + max_w._7xl). Content-driven actual width:
+                # modal shrinks below the cap when content is short.
+                max_w.md,           # M1 Pocket base
+                max_w.lg.sm,        # M2 Compact (sm 640+)
+                max_w._4xl.lg,      # M3 Standard (lg 1024+) — 2-col on laptop
+                max_w._7xl._2xl,    # M4+ Spacious (2xl 1536+) — 3-col on desktop
+            ),
         ),
         # Backdrop (click outside to close)
         Form(Button("close"), method="dialog", cls=str(modal_backdrop)),

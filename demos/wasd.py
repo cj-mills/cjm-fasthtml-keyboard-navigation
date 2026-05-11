@@ -7,7 +7,7 @@ from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, ring_dui, b
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
 from cjm_fasthtml_tailwind.utilities.sizing import container, max_w
 from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight
-from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, items
+from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, items, justify
 from cjm_fasthtml_tailwind.utilities.borders import border, rounded
 from cjm_fasthtml_tailwind.utilities.layout import overflow
 from cjm_fasthtml_tailwind.utilities.effects import ring, inset_ring
@@ -19,6 +19,7 @@ from cjm_fasthtml_keyboard_navigation.core.manager import ZoneManager
 from cjm_fasthtml_keyboard_navigation.core.navigation import LinearVertical
 from cjm_fasthtml_keyboard_navigation.core.key_mapping import WASD_KEYS
 from cjm_fasthtml_keyboard_navigation.components.system import render_keyboard_system
+from cjm_fasthtml_keyboard_navigation.components.hints_modal import render_keyboard_hints_modal
 
 from demos.data import DemoState, WASD_ITEMS
 from demos.shared import render_list_item
@@ -75,15 +76,21 @@ def setup():
             manager,
             url_map={"wasd-action-btn": wasd_action.to()},
             target_map={"wasd-action-btn": "#wasd-list-container"},
+            show_hints=False,
         )
+
+        hints_modal, hints_trigger, hints_script = render_keyboard_hints_modal(manager)
 
         return Div(
             Div(
-                H1("Custom Key Mappings",
-                   cls=combine_classes(font_size._2xl, font_weight.bold)),
-                P("Use W/S to navigate up/down, F to interact.",
-                  cls=combine_classes(text_dui.base_content, font_size.sm)),
-                cls=m.b(4),
+                Div(
+                    H1("Custom Key Mappings",
+                       cls=combine_classes(font_size._2xl, font_weight.bold)),
+                    P("Use W/S to navigate up/down, F to interact. Press ? for the keyboard shortcuts.",
+                      cls=combine_classes(text_dui.base_content, font_size.sm)),
+                ),
+                hints_trigger,
+                cls=combine_classes(flex_display, items.start, justify.between, m.b(4)),
             ),
             Div(
                 H3("Active Mapping: WASD", cls=combine_classes(font_weight.semibold, m.b(2))),
@@ -95,9 +102,10 @@ def setup():
                 ),
                 cls=combine_classes(m.b(4), p(4), bg_dui.base_200, rounded.lg),
             ),
-            system.hints if system.hints else "",
             Div(render_wasd_list(), cls=m.t(4)),
             system.script, system.hidden_inputs, system.action_buttons,
+            hints_modal,
+            hints_script,
             cls=combine_classes(container, max_w._2xl, m.x.auto, p(6)),
         )
 

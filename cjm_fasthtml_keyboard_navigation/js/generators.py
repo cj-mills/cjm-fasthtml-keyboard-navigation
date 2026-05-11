@@ -498,6 +498,15 @@ function handleKeydown(e) {
     // Check actions
     const action = findMatchingAction(key, mods);
     if (action) {
+        // Documentation-only short-circuit: actions with no action paths set
+        // (htmxTrigger, jsCallback, modeEnter, modeExit all unset) appear in
+        // hints for discoverability but fire NO handler. Return NOT_HANDLED so
+        // preventDefault/stopPropagation stay uncalled — client-side event
+        // listeners on the same key (e.g., a text-selector's caret-movement
+        // handler) receive the event uninterrupted.
+        if (!action.htmxTrigger && !action.jsCallback && !action.modeEnter && !action.modeExit) {
+            return NOT_HANDLED;
+        }
         executeAction(action);
         return {
             handled: true,
