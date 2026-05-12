@@ -54,6 +54,13 @@ class FocusZone:
     on_zone_enter: Optional[str] = None  # called when zone becomes active
     on_zone_leave: Optional[str] = None  # called when zone loses focus
 
+    # Child-activation wiring (used by ZoneManager.activate_keys — Enter/Space by default).
+    # Exactly one path should typically be set; callback takes precedence if both are.
+    # When neither is set, the zone has no child-activation behavior and no hint emits.
+    activate_child_id: Optional[str] = None  # system_id of the child to activate (declarative path)
+    activate_child_callback: Optional[str] = None  # JS function name (takes precedence over activate_child_id)
+    activate_description: Optional[str] = None  # per-zone hint text (e.g., "Activate browser"); None = use manager default
+
     # Scroll behavior
     scroll_behavior: str = "smooth"  # "smooth" or "auto"
     scroll_block: str = "nearest"  # "start", "center", "end", "nearest"
@@ -67,6 +74,16 @@ class FocusZone:
     def has_items(self) -> bool: # True if zone has selectable items
         """Check if zone has selectable items."""
         return self.item_selector is not None
+
+    def has_activation(self) -> bool: # True if zone has child-activation wiring
+        """Check if the zone has child-activation wiring (declarative or callback).
+        
+        Used by the hints renderer to decide whether to emit an "Activate panel"
+        row, and by the JS dispatcher to know whether to attempt activation on
+        the manager's activate_keys. Equivalent to
+        `activate_child_id is not None or activate_child_callback is not None`.
+        """
+        return self.activate_child_id is not None or self.activate_child_callback is not None
 
     def get_display_label(self) -> str: # human-readable label, falling back to id
         """Get the label for keyboard-hints display, falling back to id when label is None."""
@@ -96,6 +113,8 @@ class FocusZone:
             "onNavigate": self.on_navigate,
             "onZoneEnter": self.on_zone_enter,
             "onZoneLeave": self.on_zone_leave,
+            "activateChildId": self.activate_child_id,
+            "activateChildCallback": self.activate_child_callback,
             "scrollBehavior": self.scroll_behavior,
             "scrollBlock": self.scroll_block,
             "initialIndex": self.initial_index,

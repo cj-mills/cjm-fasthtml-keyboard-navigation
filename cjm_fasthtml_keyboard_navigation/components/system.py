@@ -24,14 +24,24 @@ __all__ = ['KeyboardSystem', 'render_keyboard_system', 'quick_keyboard_system']
 # %% ../../nbs/components/system.ipynb #d1b9ba72
 @dataclass
 class KeyboardSystem:
-    """Container for all keyboard navigation components."""
+    """Container for all keyboard navigation components.
+    
+    Carries `manager` so consumers building child systems can hand the underlying
+    `ZoneManager` to `render_keyboard_hints_modal(..., child_managers=[system.manager])`
+    without reconstructing it. Purely additive — pre-existing consumers that
+    unpack the rendered DOM pieces continue to work unchanged.
+    """
     script: Script                    # the keyboard navigation JavaScript
     hidden_inputs: Div                # hidden inputs for HTMX
     action_buttons: Div               # hidden action buttons for HTMX
     hints: Optional[Div] = None       # optional keyboard hints UI
+    manager: Optional[ZoneManager] = None  # underlying zone manager (Optional for backward compat; populated by render_keyboard_system)
 
     def all_components(self) -> tuple:  # all components as tuple
-        """Return all components for easy unpacking into render."""
+        """Return all components for easy unpacking into render.
+        
+        Excludes `manager` — it's data, not a rendered DOM component.
+        """
         components = [self.script, self.hidden_inputs, self.action_buttons]
         if self.hints:
             components.append(self.hints)
@@ -115,7 +125,8 @@ def render_keyboard_system(
         script=script,
         hidden_inputs=hidden_inputs,
         action_buttons=action_buttons,
-        hints=hints
+        hints=hints,
+        manager=manager,
     )
 
 # %% ../../nbs/components/system.ipynb #2bedddcb

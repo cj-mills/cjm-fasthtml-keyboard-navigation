@@ -74,24 +74,24 @@ def setup():
     )
 
     # --- Parent ---
+    # Each ghost zone declares which child it activates via activate_child_id.
+    # The library-baked Enter/Space dispatch (manager.activate_keys = ("Enter", " ")
+    # by default) reads these fields and calls coord.setActiveChild on press —
+    # no consumer KeyAction needed. The "Activate panel" hint row is surfaced
+    # in the modal via derive_hierarchy_hints. Status-text updates run via the
+    # children's onActivate callbacks (see hierarchy_js below).
     ghost_zone_a = FocusZone(
         id="ghost-a", item_selector=None, navigation=ScrollOnly(),
         zone_focus_classes=(str(ring(2)), str(ring_dui.primary)),
+        activate_child_id="child-a",
     )
     ghost_zone_b = FocusZone(
         id="ghost-b", item_selector=None, navigation=ScrollOnly(),
         zone_focus_classes=(str(ring(2)), str(ring_dui.secondary)),
-    )
-    parent_actions = (
-        KeyAction(key="Enter", js_callback="activateHighlightedChild",
-                  description="Activate area", hint_group="Navigation"),
-        KeyAction(key=" ", js_callback="activateHighlightedChild",
-                  description="Activate area", hint_group="Navigation",
-                  show_in_hints=False),
+        activate_child_id="child-b",
     )
     parent_manager = ZoneManager(
         zones=(ghost_zone_a, ghost_zone_b),
-        actions=parent_actions,
         system_id="hierarchy-parent",
         prev_zone_key="ArrowLeft",
         next_zone_key="ArrowRight",
@@ -147,21 +147,17 @@ def setup():
         coord.setParent('child-a', 'hierarchy-parent');
         coord.setParent('child-b', 'hierarchy-parent');
 
-        const ghostToChild = { 'ghost-a': 'child-a', 'ghost-b': 'child-b' };
+        // Child-activation is now library-baked via FocusZone.activate_child_id
+        // on each ghost zone. The Enter/Space dispatcher calls coord.setActiveChild
+        // directly — no consumer-defined window callback needed. The status text
+        // and zone-ring side-effects flow through the child systems' onActivate /
+        // onDeactivate hooks below.
         const childLabels = { 'child-a': 'Child A (Alpha list)', 'child-b': 'Child B (Beta list)' };
 
         function updateStatus(text) {
             const el = document.getElementById('hierarchy-status');
             if (el) el.textContent = text;
         }
-
-        window.activateHighlightedChild = function(item, index, zoneId, mode) {
-            const childId = ghostToChild[zoneId];
-            if (childId) {
-                coord.setActiveChild('hierarchy-parent', childId);
-                updateStatus(childLabels[childId] + ' — press Escape to return');
-            }
-        };
 
         // --- Pause/Resume toggle ---
         window.togglePauseParent = function() {
@@ -191,6 +187,7 @@ def setup():
             childASys.onActivate = function() {
                 const el = document.getElementById('ghost-a');
                 if (el) { el.classList.add('ring-2', 'ring-primary'); }
+                updateStatus(childLabels['child-a'] + ' — press Escape to return');
             };
             childASys.onDeactivate = function() {
                 const el = document.getElementById('ghost-a');
@@ -203,6 +200,7 @@ def setup():
             childBSys.onActivate = function() {
                 const el = document.getElementById('ghost-b');
                 if (el) { el.classList.add('ring-2', 'ring-secondary'); }
+                updateStatus(childLabels['child-b'] + ' — press Escape to return');
             };
             childBSys.onDeactivate = function() {
                 const el = document.getElementById('ghost-b');

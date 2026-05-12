@@ -29,7 +29,7 @@ from cjm_fasthtml_design_system.icons import icons
 __all__ = ['NAV_ICON_MAP', 'KEY_ICON_MAP', 'get_key_icon', 'render_hint_badge', 'create_nav_icon_hint',
            'create_modifier_key_hint', 'render_hint_group', 'group_actions_by_hint_group',
            'group_actions_by_zone_and_hint_group', 'mode_context_label', 'derive_navigation_hints',
-           'render_hints_from_actions', 'render_keyboard_hints']
+           'derive_hierarchy_hints', 'derive_mode_exit_hints', 'render_hints_from_actions', 'render_keyboard_hints']
 
 # %% ../../nbs/components/hints.ipynb #1680f700
 # Icon mappings for navigation patterns and common keys
@@ -308,6 +308,83 @@ def derive_navigation_hints(
             ))
 
     return hints
+
+# %% ../../nbs/components/hints.ipynb #a4b36224
+def derive_hierarchy_hints(
+    manager: ZoneManager,        # the zone manager whose hierarchy keys to surface
+    *,
+    is_child: bool = False,      # True when this manager is rendered as a child in a hierarchical hints modal
+) -> list[tuple[str, str]]:      # ordered (display_key, description) rows; fold into manager-derived Navigation group
+    """Derive built-in hierarchy-key hint rows: Esc deactivation + Enter/Space activation.
+
+    These keys are baked into the JS dispatcher (`js_keyboard_handler` in
+    `generators.py`), not declared as `KeyAction`s — so a renderer iterating
+    only `manager.actions` would miss them. This helper bridges that gap, analogous
+    to `derive_navigation_hints` for navigation keys.
+
+    Returns rows that fold into the manager-derived "Navigation" group (callers
+    extend `nav_rows` with the result before emitting `_render_modal_group`).
+
+    Emission rules:
+
+    - **Escape — Deactivate panel** is emitted only when `is_child=True`. The JS
+      dispatcher's Escape→deactivate-child branch fires when the manager has a
+      parent in the coordinator hierarchy at runtime; the renderer can't know
+      parent state at render time, but the modal's *multi-manager mode*
+      (`child_managers=[...]`) is the canonical signal that a given manager IS a
+      child in the hierarchy being documented. Callers pass `is_child=True` for
+      every entry in `child_managers`.
+
+    - **Enter / Space — Activate panel** is emitted when the manager has at
+      least one zone with activation wiring (`activate_child_id` or
+      `activate_child_callback`) AND `manager.activate_keys` is non-empty.
+      The description defaults to `manager.activate_description` ("Activate
+      panel"); consumers override at the manager level for site-specific text.
+      Empty `activate_keys` opts out entirely (no row emitted).
+
+    The hierarchy demo's on-page legend has long listed both keys; this helper
+    is what lets the same information land in the modal too.
+    """
+    rows: list[tuple[str, str]] = []
+
+    if is_child:
+        rows.append((format_key_for_display("Escape"), "Deactivate panel, return to parent"))
+
+    if manager.activate_keys and manager.has_activatable_zone():
+        key_display = " / ".join(format_key_for_display(k) for k in manager.activate_keys)
+        rows.append((key_display, manager.activate_description))
+
+    return rows
+
+
+def derive_mode_exit_hints(
+    manager: ZoneManager,                          # the zone manager whose mode exit keys to surface
+) -> list[tuple[str, str, Optional[str]]]:         # ordered (display_key, description, mode_name) rows; mode_name drives the V13 mode chip
+    """Derive built-in mode-exit hint rows for every non-default mode that defines an exit_key.
+
+    Mode exit is handled by the JS dispatcher (`js_keyboard_handler`'s
+    `currentModeConfig.exitKey === key` branch at `generators.py`) when a mode
+    has a non-empty `exit_key`. Like Escape-deactivate-child, this is not a
+    declared `KeyAction` — so the renderer needs a derivation seam.
+
+    Returned rows include the mode_name as the third tuple element. The modal
+    renderer uses this to attach the V13 mode chip ("split", "edit", etc.) to
+    the row, so the user sees the row is only meaningful while in that mode.
+
+    Honors `mode.exit_modifiers` via `format_key_combo` so chord exits like
+    Ctrl+Escape display correctly. Modes with empty `exit_key` (e.g., the
+    implicit `NAVIGATION_MODE` whose exit_key is `""`) are skipped silently.
+    """
+    from cjm_fasthtml_keyboard_navigation.core.key_mapping import format_key_combo
+
+    rows: list[tuple[str, str, Optional[str]]] = []
+    for mode in manager.modes:
+        if not mode.exit_key:
+            continue
+        # exit_modifiers is frozenset[str]; format_key_combo handles both empty and populated cases.
+        display_key = format_key_combo(mode.exit_key, mode.exit_modifiers)
+        rows.append((display_key, "Exit mode", mode.name))
+    return rows
 
 # %% ../../nbs/components/hints.ipynb #471f86ab
 def render_hints_from_actions(

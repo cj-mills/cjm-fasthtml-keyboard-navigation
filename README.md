@@ -52,45 +52,47 @@ graph LR
     js_generators[js.generators<br/>Script Generators]
     js_utils[js.utils<br/>JavaScript Utilities]
 
-    components_hints --> core_navigation
-    components_hints --> core_key_mapping
     components_hints --> core_manager
-    components_hints --> core_actions
+    components_hints --> core_key_mapping
     components_hints --> core_focus_zone
-    components_hints_modal --> components_hints
-    components_hints_modal --> core_key_mapping
-    components_hints_modal --> core_navigation
+    components_hints --> core_modes
+    components_hints --> core_actions
+    components_hints --> core_navigation
     components_hints_modal --> core_manager
-    components_hints_modal --> core_actions
+    components_hints_modal --> components_hints
     components_hints_modal --> core_focus_zone
-    components_system --> htmx_inputs
-    components_system --> js_generators
-    components_system --> core_manager
+    components_hints_modal --> core_key_mapping
+    components_hints_modal --> core_actions
+    components_hints_modal --> core_navigation
+    components_hints_modal --> core_modes
     components_system --> components_hints
+    components_system --> htmx_inputs
     components_system --> core_actions
+    components_system --> core_manager
     components_system --> htmx_buttons
+    components_system --> js_generators
     components_system --> core_focus_zone
     core_actions --> core_key_mapping
     core_focus_zone --> core_navigation
-    core_manager --> core_navigation
-    core_manager --> core_modes
-    core_manager --> core_key_mapping
     core_manager --> core_actions
+    core_manager --> core_navigation
+    core_manager --> core_key_mapping
     core_manager --> core_focus_zone
+    core_manager --> core_modes
     core_modes --> core_navigation
-    htmx_buttons --> core_manager
     htmx_buttons --> core_actions
+    htmx_buttons --> core_manager
     htmx_buttons --> core_focus_zone
     htmx_inputs --> core_manager
     htmx_inputs --> core_focus_zone
-    js_generators --> core_manager
-    js_generators --> js_coordinator
-    js_generators --> core_actions
-    js_generators --> core_focus_zone
     js_generators --> js_utils
+    js_generators --> core_actions
+    js_generators --> js_coordinator
+    js_generators --> core_manager
+    js_generators --> core_focus_zone
 ```
 
-*36 cross-module dependencies detected*
+*38 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -307,6 +309,9 @@ class FocusZone:
     on_navigate: Optional[str]  # called on any navigation (for side effects like audition)
     on_zone_enter: Optional[str]  # called when zone becomes active
     on_zone_leave: Optional[str]  # called when zone loses focus
+    activate_child_id: Optional[str]  # system_id of the child to activate (declarative path)
+    activate_child_callback: Optional[str]  # JS function name (takes precedence over activate_child_id)
+    activate_description: Optional[str]  # per-zone hint text (e.g., "Activate browser"); None = use manager default
     scroll_behavior: str = 'smooth'  # "smooth" or "auto"
     scroll_block: str = 'nearest'  # "start", "center", "end", "nearest"
     hidden_input_prefix: str = ''  # prefix for auto-generated hidden input IDs
@@ -316,8 +321,26 @@ class FocusZone:
             """Check if zone has selectable items."""
             return self.item_selector is not None
     
-        def get_display_label(self) -> str: # human-readable label, falling back to id
+        def has_activation(self) -> bool: # True if zone has child-activation wiring
         "Check if zone has selectable items."
+    
+    def has_activation(self) -> bool: # True if zone has child-activation wiring
+            """Check if the zone has child-activation wiring (declarative or callback).
+            
+            Used by the hints renderer to decide whether to emit an "Activate panel"
+            row, and by the JS dispatcher to know whether to attempt activation on
+            the manager's activate_keys. Equivalent to
+            `activate_child_id is not None or activate_child_callback is not None`.
+            """
+            return self.activate_child_id is not None or self.activate_child_callback is not None
+    
+        def get_display_label(self) -> str: # human-readable label, falling back to id
+        "Check if the zone has child-activation wiring (declarative or callback).
+
+Used by the hints renderer to decide whether to emit an "Activate panel"
+row, and by the JS dispatcher to know whether to attempt activation on
+the manager's activate_keys. Equivalent to
+`activate_child_id is not None or activate_child_callback is not None`."
     
     def get_display_label(self) -> str: # human-readable label, falling back to id
             """Get the label for keyboard-hints display, falling back to id when label is None."""
@@ -457,6 +480,8 @@ from cjm_fasthtml_keyboard_navigation.components.hints import (
     group_actions_by_zone_and_hint_group,
     mode_context_label,
     derive_navigation_hints,
+    derive_hierarchy_hints,
+    derive_mode_exit_hints,
     render_hints_from_actions,
     render_keyboard_hints
 )
@@ -597,6 +622,67 @@ def derive_navigation_hints(
 ```
 
 ``` python
+def derive_hierarchy_hints(
+    manager: ZoneManager,        # the zone manager whose hierarchy keys to surface
+    *,
+    is_child: bool = False,      # True when this manager is rendered as a child in a hierarchical hints modal
+) -> list[tuple[str, str]]:      # ordered (display_key, description) rows; fold into manager-derived Navigation group
+    """
+    Derive built-in hierarchy-key hint rows: Esc deactivation + Enter/Space activation.
+    
+    These keys are baked into the JS dispatcher (`js_keyboard_handler` in
+    `generators.py`), not declared as `KeyAction`s — so a renderer iterating
+    only `manager.actions` would miss them. This helper bridges that gap, analogous
+    to `derive_navigation_hints` for navigation keys.
+    
+    Returns rows that fold into the manager-derived "Navigation" group (callers
+    extend `nav_rows` with the result before emitting `_render_modal_group`).
+    
+    Emission rules:
+    
+    - **Escape — Deactivate panel** is emitted only when `is_child=True`. The JS
+      dispatcher's Escape→deactivate-child branch fires when the manager has a
+      parent in the coordinator hierarchy at runtime; the renderer can't know
+      parent state at render time, but the modal's *multi-manager mode*
+      (`child_managers=[...]`) is the canonical signal that a given manager IS a
+      child in the hierarchy being documented. Callers pass `is_child=True` for
+      every entry in `child_managers`.
+    
+    - **Enter / Space — Activate panel** is emitted when the manager has at
+      least one zone with activation wiring (`activate_child_id` or
+      `activate_child_callback`) AND `manager.activate_keys` is non-empty.
+      The description defaults to `manager.activate_description` ("Activate
+      panel"); consumers override at the manager level for site-specific text.
+      Empty `activate_keys` opts out entirely (no row emitted).
+    
+    The hierarchy demo's on-page legend has long listed both keys; this helper
+    is what lets the same information land in the modal too.
+    """
+```
+
+``` python
+def derive_mode_exit_hints(
+    manager: ZoneManager,                          # the zone manager whose mode exit keys to surface
+) -> list[tuple[str, str, Optional[str]]]:         # ordered (display_key, description, mode_name) rows; mode_name drives the V13 mode chip
+    """
+    Derive built-in mode-exit hint rows for every non-default mode that defines an exit_key.
+    
+    Mode exit is handled by the JS dispatcher (`js_keyboard_handler`'s
+    `currentModeConfig.exitKey === key` branch at `generators.py`) when a mode
+    has a non-empty `exit_key`. Like Escape-deactivate-child, this is not a
+    declared `KeyAction` — so the renderer needs a derivation seam.
+    
+    Returned rows include the mode_name as the third tuple element. The modal
+    renderer uses this to attach the V13 mode chip ("split", "edit", etc.) to
+    the row, so the user sees the row is only meaningful while in that mode.
+    
+    Honors `mode.exit_modifiers` via `format_key_combo` so chord exits like
+    Ctrl+Escape display correctly. Modes with empty `exit_key` (e.g., the
+    implicit `NAVIGATION_MODE` whose exit_key is `""`) are skipped silently.
+    """
+```
+
+``` python
 def render_hints_from_actions(
     actions: tuple[KeyAction, ...],  # actions to display hints for
     badge_style: str = "ghost"       # badge style
@@ -693,6 +779,7 @@ def _render_section_header(
 def _render_manager_groups(
     manager: ZoneManager,                # the manager to render groups for
     include_zone_switch: bool = True,    # include zone-switch hint when multi-zone
+    is_child: bool = False,              # True when this manager is rendered as a child in a hierarchical modal
 ) -> list[FT]:                           # flat list of group FT elements (no wrapping Div)
     """
     Render the keyboard-shortcut groups for a single ZoneManager.
@@ -701,10 +788,15 @@ def _render_manager_groups(
     1. **Manager-derived "Navigation" group**: derived nav rows from
        `derive_navigation_hints(manager)` (via `manager.key_mapping` + each zone's
        `navigation.get_supported_directions()`), plus the Switch-panel row when
-       `include_zone_switch=True` and multi-zone. **Plus** any consumer actions
-       whose `hint_group == "Navigation"` AND land in the shared section
-       (zone_label=None) — they fold into the same group rather than rendering
-       a duplicate "Navigation" header underneath the derived rows.
+       `include_zone_switch=True` and multi-zone, **plus** library-baked
+       hierarchy rows from `derive_hierarchy_hints(manager, is_child=is_child)`
+       (Esc deactivate-child when is_child=True; Enter/Space activate-panel
+       when the manager has activatable zones), **plus** library-baked
+       mode-exit rows from `derive_mode_exit_hints(manager)` (each tagged
+       with its mode chip so the user sees the row only applies in that mode).
+       **Plus** any consumer actions whose `hint_group == "Navigation"` AND
+       land in the shared section (zone_label=None) — they fold into the
+       same group rather than rendering a duplicate "Navigation" header.
     2. **Zone-aware action groups**: from `group_actions_by_zone_and_hint_group`,
        with `"<zone label> — <hint_group>"` headers for per-zone sections and
        plain `"<hint_group>"` for shared sections (other than Navigation).
@@ -715,6 +807,11 @@ def _render_manager_groups(
     
     Returned as a flat list (no wrapping Div) so callers can interleave section
     headers between groups when rendering multi-manager hierarchies.
+    
+    The `is_child` flag is set by `_render_modal_body` for every entry in
+    `child_managers` — the canonical signal that a manager is a child in the
+    hierarchy being documented. See `derive_hierarchy_hints` for the underlying
+    emission rules.
     """
 ```
 
@@ -738,6 +835,9 @@ def _render_modal_body(
       coordinator-based hierarchies where multiple ZoneManagers cooperate
       (e.g., parent + N children pattern in `cjm-fasthtml-keyboard-navigation`'s
       hierarchy demo). Each manager's content composes via `_render_manager_groups`.
+    - Each child manager is rendered with `is_child=True`, which surfaces the
+      library-baked Escape→deactivate-parent hint in that child's Navigation
+      group (Escape is built into the JS dispatcher's hierarchy handling).
     
     Layout details (same in both modes):
     - Each group container has `break-inside: avoid-column` so the CSS-columns
@@ -748,12 +848,16 @@ def _render_modal_body(
       derived from `mode_context_label(action)`.
     - Per-manager: shared-section actions with `hint_group="Navigation"` fold
       into the manager-derived Navigation group (no duplicate group headers).
+    - Library-baked hierarchy + mode-exit rows (Esc deactivate, Enter/Space
+      activate, per-mode exit) also fold into the same Navigation group via
+      `derive_hierarchy_hints` and `derive_mode_exit_hints`.
     
     History: an earlier version hardcoded `↑/↓ Navigate items` regardless of
     the manager's actual `key_mapping`. That row was wrong under custom
     mappings (wasd, vim) and was dropped in G4. This version derives the
     nav row from `manager.key_mapping` via `derive_navigation_hints`, which
-    is accurate under any KeyMapping configuration.
+    is accurate under any KeyMapping configuration. The same derivation
+    discipline extends to hierarchy keys (Esc/Enter/Space) and mode-exit keys.
     """
 ```
 
@@ -988,6 +1092,8 @@ class ZoneManager:
     modes: tuple[KeyboardMode, ...] = ()  # custom modes (navigation mode is implicit)
     default_mode: str = 'navigation'  # mode to return to after exiting others
     actions: tuple[KeyAction, ...] = ()  # keyboard action bindings
+    activate_keys: tuple[str, ...] = ('Enter', ' ')  # keys that fire child activation
+    activate_description: str = 'Activate panel'  # default hint text when zone-level activate_description is None
     on_zone_change: Optional[str]  # called when active zone changes
     on_mode_change: Optional[str]  # called when mode changes
     on_state_change: Optional[str]  # called on any state change (for persistence)
@@ -1057,6 +1163,22 @@ read clearly instead of using technical system_id values (e.g., "child-a")."
             attrs = set()
             for zone in self.zones
         "Get all unique data attributes from all zones."
+    
+    def has_activatable_zone(self) -> bool: # True if any zone declares child-activation wiring
+            """Check if any zone in the manager has child-activation wiring.
+    
+            Used by the hints renderer to decide whether to emit an "Activate panel"
+            row at the manager level. When False, the manager has no activation seam
+            and `activate_keys` is effectively dormant for this manager.
+            """
+            return any(zone.has_activation() for zone in self.zones)
+    
+        def to_js_config(self) -> dict: # JavaScript-compatible configuration
+        "Check if any zone in the manager has child-activation wiring.
+
+Used by the hints renderer to decide whether to emit an "Activate panel"
+row at the manager level. When False, the manager has no activation seam
+and `activate_keys` is effectively dormant for this manager."
     
     def to_js_config(self) -> dict: # JavaScript-compatible configuration
             """Convert to JavaScript configuration object."""
@@ -1371,18 +1493,31 @@ def quick_keyboard_system(
 ``` python
 @dataclass
 class KeyboardSystem:
-    "Container for all keyboard navigation components."
+    """
+    Container for all keyboard navigation components.
+    
+    Carries `manager` so consumers building child systems can hand the underlying
+    `ZoneManager` to `render_keyboard_hints_modal(..., child_managers=[system.manager])`
+    without reconstructing it. Purely additive — pre-existing consumers that
+    unpack the rendered DOM pieces continue to work unchanged.
+    """
     
     script: Script  # the keyboard navigation JavaScript
     hidden_inputs: Div  # hidden inputs for HTMX
     action_buttons: Div  # hidden action buttons for HTMX
     hints: Optional[Div]  # optional keyboard hints UI
+    manager: Optional[ZoneManager]  # underlying zone manager (Optional for backward compat; populated by render_keyboard_system)
     
     def all_components(self) -> tuple:  # all components as tuple
-            """Return all components for easy unpacking into render."""
+            """Return all components for easy unpacking into render.
+            
+            Excludes `manager` — it's data, not a rendered DOM component.
+            """
             components = [self.script, self.hidden_inputs, self.action_buttons]
             if self.hints
-        "Return all components for easy unpacking into render."
+        "Return all components for easy unpacking into render.
+
+Excludes `manager` — it's data, not a rendered DOM component."
 ```
 
 ### JavaScript Utilities (`utils.ipynb`)

@@ -50,6 +50,13 @@ class ZoneManager:
     # Actions
     actions: tuple[KeyAction, ...] = ()  # keyboard action bindings
 
+    # Child activation
+    # Keys that trigger child activation on zones with activate_child_id or activate_child_callback.
+    # Empty tuple opts out entirely (no library-baked activation; consumer can still wire explicit
+    # KeyActions). Default is Enter + Space so consumers inherit the common case without code.
+    activate_keys: tuple[str, ...] = ("Enter", " ")  # keys that fire child activation
+    activate_description: str = "Activate panel"  # default hint text when zone-level activate_description is None
+
     # Global callbacks (JS function names)
     on_zone_change: Optional[str] = None  # called when active zone changes
     on_mode_change: Optional[str] = None  # called when mode changes
@@ -141,6 +148,15 @@ class ZoneManager:
             attrs.update(zone.data_attributes)
         return attrs
 
+    def has_activatable_zone(self) -> bool: # True if any zone declares child-activation wiring
+        """Check if any zone in the manager has child-activation wiring.
+
+        Used by the hints renderer to decide whether to emit an "Activate panel"
+        row at the manager level. When False, the manager has no activation seam
+        and `activate_keys` is effectively dormant for this manager.
+        """
+        return any(zone.has_activation() for zone in self.zones)
+
     def to_js_config(self) -> dict: # JavaScript-compatible configuration
         """Convert to JavaScript configuration object."""
         return {
@@ -157,6 +173,7 @@ class ZoneManager:
             "modes": [m.to_js_config() for m in self.get_all_modes()],
             "defaultMode": self.default_mode,
             "actions": [a.to_js_config() for a in self.actions],
+            "activateKeys": list(self.activate_keys),
             "callbacks": {
                 "onZoneChange": self.on_zone_change,
                 "onModeChange": self.on_mode_change,

@@ -495,7 +495,9 @@ function handleKeydown(e) {
         }
     }
     
-    // Check actions
+    // Check actions (consumer-declared KeyActions). Runs BEFORE library-baked
+    // child activation so an explicit `KeyAction(key="Enter", ...)` on a zone
+    // with `activate_child_id` always wins over the library default.
     const action = findMatchingAction(key, mods);
     if (action) {
         // Documentation-only short-circuit: actions with no action paths set
@@ -513,6 +515,31 @@ function handleKeydown(e) {
             preventDefault: action.preventDefault,
             stopPropagation: action.stopPropagation,
         };
+    }
+    
+    // Library-baked child activation. Fires when (a) the pressed key is in
+    // `cfg.activateKeys` (default ["Enter", " "]) with no modifiers, AND (b) the
+    // active zone declares `activate_child_id` or `activate_child_callback`.
+    // The callback path takes precedence over the declarative path when both
+    // are set on the same zone. Stays inert when the manager opts out via
+    // `activate_keys=()` or when the active zone has no activation wiring.
+    if (cfg.activateKeys && cfg.activateKeys.includes(key) && mods.size === 0) {
+        const zone = getZoneConfig(activeZoneId);
+        if (zone && (zone.activateChildId || zone.activateChildCallback)) {
+            if (zone.activateChildCallback && typeof window[zone.activateChildCallback] === 'function') {
+                window[zone.activateChildCallback](
+                    getFocusedItem(activeZoneId),
+                    focusIndices[activeZoneId],
+                    activeZoneId,
+                    currentMode
+                );
+                return { handled: true, preventDefault: true };
+            }
+            if (zone.activateChildId && window.kbCoordinator) {
+                window.kbCoordinator.setActiveChild(cfg.systemId, zone.activateChildId);
+                return { handled: true, preventDefault: true };
+            }
+        }
     }
     
     return NOT_HANDLED;

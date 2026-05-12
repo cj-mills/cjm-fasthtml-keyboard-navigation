@@ -11,6 +11,8 @@ from ..core.actions import KeyAction
 from ..core.manager import ZoneManager
 from cjm_fasthtml_keyboard_navigation.components.hints import (
     derive_navigation_hints,
+    derive_hierarchy_hints,
+    derive_mode_exit_hints,
     group_actions_by_zone_and_hint_group,
     mode_context_label,
 )
@@ -151,6 +153,7 @@ _BUILTIN_NAV_GROUP = "Navigation"
 def _render_manager_groups(
     manager: ZoneManager,                # the manager to render groups for
     include_zone_switch: bool = True,    # include zone-switch hint when multi-zone
+    is_child: bool = False,              # True when this manager is rendered as a child in a hierarchical modal
 ) -> list[FT]:                           # flat list of group FT elements (no wrapping Div)
     """Render the keyboard-shortcut groups for a single ZoneManager.
 
@@ -158,10 +161,15 @@ def _render_manager_groups(
     1. **Manager-derived "Navigation" group**: derived nav rows from
        `derive_navigation_hints(manager)` (via `manager.key_mapping` + each zone's
        `navigation.get_supported_directions()`), plus the Switch-panel row when
-       `include_zone_switch=True` and multi-zone. **Plus** any consumer actions
-       whose `hint_group == "Navigation"` AND land in the shared section
-       (zone_label=None) — they fold into the same group rather than rendering
-       a duplicate "Navigation" header underneath the derived rows.
+       `include_zone_switch=True` and multi-zone, **plus** library-baked
+       hierarchy rows from `derive_hierarchy_hints(manager, is_child=is_child)`
+       (Esc deactivate-child when is_child=True; Enter/Space activate-panel
+       when the manager has activatable zones), **plus** library-baked
+       mode-exit rows from `derive_mode_exit_hints(manager)` (each tagged
+       with its mode chip so the user sees the row only applies in that mode).
+       **Plus** any consumer actions whose `hint_group == "Navigation"` AND
+       land in the shared section (zone_label=None) — they fold into the
+       same group rather than rendering a duplicate "Navigation" header.
     2. **Zone-aware action groups**: from `group_actions_by_zone_and_hint_group`,
        with `"<zone label> — <hint_group>"` headers for per-zone sections and
        plain `"<hint_group>"` for shared sections (other than Navigation).
@@ -172,6 +180,11 @@ def _render_manager_groups(
 
     Returned as a flat list (no wrapping Div) so callers can interleave section
     headers between groups when rendering multi-manager hierarchies.
+
+    The `is_child` flag is set by `_render_modal_body` for every entry in
+    `child_managers` — the canonical signal that a manager is a child in the
+    hierarchy being documented. See `derive_hierarchy_hints` for the underlying
+    emission rules.
     """
     from cjm_fasthtml_keyboard_navigation.core.key_mapping import format_key_for_display
 
@@ -186,6 +199,18 @@ def _render_manager_groups(
         prev_key = format_key_for_display(manager.prev_zone_key)
         next_key = format_key_for_display(manager.next_zone_key)
         nav_rows.append((f"{prev_key} / {next_key}", "Switch panel", None))
+
+    # Library-baked hierarchy rows (Esc on children + Enter/Space activation on
+    # parents with activatable zones). No mode chip — these are mode-independent.
+    nav_rows.extend(
+        (display_key, description, None)
+        for display_key, description in derive_hierarchy_hints(manager, is_child=is_child)
+    )
+
+    # Library-baked mode-exit rows. Each row carries its mode_name as the third
+    # tuple element — the renderer attaches the V13 mode chip so the user sees
+    # the row applies only while that mode is active.
+    nav_rows.extend(derive_mode_exit_hints(manager))
 
     # Walk action groups, merging shared-section "Navigation" into nav_rows
     # and collecting the rest for downstream emission as their own groups.
@@ -235,6 +260,9 @@ def _render_modal_body(
       coordinator-based hierarchies where multiple ZoneManagers cooperate
       (e.g., parent + N children pattern in `cjm-fasthtml-keyboard-navigation`'s
       hierarchy demo). Each manager's content composes via `_render_manager_groups`.
+    - Each child manager is rendered with `is_child=True`, which surfaces the
+      library-baked Escape→deactivate-parent hint in that child's Navigation
+      group (Escape is built into the JS dispatcher's hierarchy handling).
 
     Layout details (same in both modes):
     - Each group container has `break-inside: avoid-column` so the CSS-columns
@@ -245,12 +273,16 @@ def _render_modal_body(
       derived from `mode_context_label(action)`.
     - Per-manager: shared-section actions with `hint_group="Navigation"` fold
       into the manager-derived Navigation group (no duplicate group headers).
+    - Library-baked hierarchy + mode-exit rows (Esc deactivate, Enter/Space
+      activate, per-mode exit) also fold into the same Navigation group via
+      `derive_hierarchy_hints` and `derive_mode_exit_hints`.
 
     History: an earlier version hardcoded `↑/↓ Navigate items` regardless of
     the manager's actual `key_mapping`. That row was wrong under custom
     mappings (wasd, vim) and was dropped in G4. This version derives the
     nav row from `manager.key_mapping` via `derive_navigation_hints`, which
-    is accurate under any KeyMapping configuration.
+    is accurate under any KeyMapping configuration. The same derivation
+    discipline extends to hierarchy keys (Esc/Enter/Space) and mode-exit keys.
     """
     elements: list[FT] = []
 
@@ -259,12 +291,15 @@ def _render_modal_body(
         # is visually clear in the rendered modal.
         elements.append(_render_section_header(manager.get_display_label()))
 
-    elements.extend(_render_manager_groups(manager, include_zone_switch=include_zone_switch))
+    # Primary manager: is_child=False (it's the root of the hierarchy being documented).
+    elements.extend(_render_manager_groups(manager, include_zone_switch=include_zone_switch, is_child=False))
 
     if child_managers:
         for child in child_managers:
             elements.append(_render_section_header(child.get_display_label()))
-            elements.extend(_render_manager_groups(child, include_zone_switch=include_zone_switch))
+            # Children: is_child=True so derive_hierarchy_hints surfaces the
+            # Escape→deactivate-parent row in their Navigation group.
+            elements.extend(_render_manager_groups(child, include_zone_switch=include_zone_switch, is_child=True))
 
     # `columns.sm` = CSS column-width: 24rem; browser auto-decides count based
     # on modal's actual rendered width. Short content stays effectively single-
