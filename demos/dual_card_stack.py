@@ -20,7 +20,8 @@ rendering):
   auto-distributes content across CSS columns at desktop widths.
 """
 
-from fasthtml.common import Div, H1, H3, P, Li, Ul, Script, APIRouter, Span
+from fasthtml.common import Div, H1, H3, P, Li, Ul, Script, Span
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, ring_dui, bg_dui
 from cjm_fasthtml_tailwind.utilities.spacing import p, m

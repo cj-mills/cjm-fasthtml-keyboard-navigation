@@ -1,6 +1,7 @@
 """Hierarchical keyboard systems demo — parent with two child systems."""
 
-from fasthtml.common import Div, H1, H3, P, Span, Ul, Script, Button, APIRouter
+from fasthtml.common import Div, H1, H3, P, Span, Ul, Script, Button
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_daisyui.components.actions.button import btn, btn_styles, btn_sizes
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors

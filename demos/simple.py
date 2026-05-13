@@ -1,6 +1,7 @@
 """Simple single-zone list navigation demo."""
 
-from fasthtml.common import Div, H1, P, Ul, APIRouter
+from fasthtml.common import Div, H1, P, Ul
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, ring_dui, bg_dui
 from cjm_fasthtml_tailwind.utilities.spacing import p, m

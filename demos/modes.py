@@ -10,7 +10,8 @@ Key pattern (matching cjm-transcript-segmentation):
 - A Cancel button provides the working workaround for comparison
 """
 
-from fasthtml.common import Div, H1, P, Span, Button, Script, APIRouter
+from fasthtml.common import Div, H1, P, Span, Button, Script
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_daisyui.components.actions.button import btn, btn_sizes, btn_styles
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors

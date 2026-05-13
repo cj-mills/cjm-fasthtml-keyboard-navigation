@@ -1,6 +1,7 @@
 """Custom WASD key mapping demo."""
 
-from fasthtml.common import Div, H1, H3, P, Span, Ul, APIRouter
+from fasthtml.common import Div, H1, H3, P, Span, Ul
+from cjm_fasthtml_app_core.core.routing import APIRouter
 
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors
 from cjm_fasthtml_daisyui.utilities.semantic_colors import text_dui, ring_dui, bg_dui
