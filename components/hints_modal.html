@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Modal-based keyboard shortcut reference with scannable grouped layout and ? key trigger.">
+
+<title>Keyboard Hints Modal – cjm-fasthtml-keyboard-navigation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-62a0fb827630e33fd95d729094ca943e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Keyboard Hints Modal – cjm-fasthtml-keyboard-navigation">
+<meta property="og:description" content="Modal-based keyboard shortcut reference with scannable grouped layout and ? key trigger.">
+<meta property="og:site_name" content="cjm-fasthtml-keyboard-navigation">
+<meta name="twitter:title" content="Keyboard Hints Modal – cjm-fasthtml-keyboard-navigation">
+<meta name="twitter:description" content="Modal-based keyboard shortcut reference with scannable grouped layout and ? key trigger.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">cjm-fasthtml-keyboard-navigation</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../components/hints.html">components</a></li><li class="breadcrumb-item"><a href="../components/hints_modal.html">Keyboard Hints Modal</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cjm-fasthtml-keyboard-navigation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">components</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../components/hints.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keyboard Hints</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../components/hints_modal.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Keyboard Hints Modal</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../components/system.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keyboard System</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">core</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../core/actions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Key Actions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../core/focus_zone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Focus Zone</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../core/key_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Key Mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../core/manager.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zone Manager</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../core/modes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keyboard Modes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../core/navigation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Navigation Patterns</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">htmx</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../htmx/buttons.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Action Buttons</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../htmx/inputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hidden Inputs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">js</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../js/coordinator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Keyboard Coordinator</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../js/generators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Script Generators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../js/utils.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">JavaScript Utilities</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#key-display" id="toc-key-display" class="nav-link active" data-scroll-target="#key-display">Key Display</a></li>
+  <li><a href="#hint-row-group" id="toc-hint-row-group" class="nav-link" data-scroll-target="#hint-row-group">Hint Row &amp; Group</a></li>
+  <li><a href="#modal-body" id="toc-modal-body" class="nav-link" data-scroll-target="#modal-body">Modal Body</a></li>
+  <li><a href="#trigger-button" id="toc-trigger-button" class="nav-link" data-scroll-target="#trigger-button">Trigger Button</a>
+  <ul class="collapse">
+  <li><a href="#render_keyboard_hints_trigger" id="toc-render_keyboard_hints_trigger" class="nav-link" data-scroll-target="#render_keyboard_hints_trigger">render_keyboard_hints_trigger</a></li>
+  </ul></li>
+  <li><a href="#question-mark-key-listener" id="toc-question-mark-key-listener" class="nav-link" data-scroll-target="#question-mark-key-listener">Question Mark Key Listener</a></li>
+  <li><a href="#full-modal-component" id="toc-full-modal-component" class="nav-link" data-scroll-target="#full-modal-component">Full Modal Component</a>
+  <ul class="collapse">
+  <li><a href="#render_keyboard_hints_modal" id="toc-render_keyboard_hints_modal" class="nav-link" data-scroll-target="#render_keyboard_hints_modal">render_keyboard_hints_modal</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/cj-mills/cjm-fasthtml-keyboard-navigation/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="hints_modal.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../components/hints.html">components</a></li><li class="breadcrumb-item"><a href="../components/hints_modal.html">Keyboard Hints Modal</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Keyboard Hints Modal</h1>
+</div>
+
+<div>
+  <div class="description">
+    Modal-based keyboard shortcut reference with scannable grouped layout and <code>?</code> key trigger.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="key-display" class="level2">
+<h2 class="anchored" data-anchor-id="key-display">Key Display</h2>
+<div id="7b9cebf4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fasthtml.common <span class="im">import</span> to_xml</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Single key</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> to_xml(_render_key_combo(<span class="st">"Space"</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"kbd"</span> <span class="kw">in</span> html</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Space"</span> <span class="kw">in</span> html</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"+"</span> <span class="kw">not</span> <span class="kw">in</span> html.split(<span class="st">"kbd"</span>)[<span class="dv">0</span>]  <span class="co"># no plus before first kbd</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-key combo</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> to_xml(_render_key_combo(<span class="st">"Ctrl+Shift+</span><span class="ch">\u2191</span><span class="st">"</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> html.count(<span class="st">"kbd"</span>) <span class="op">&gt;=</span> <span class="dv">3</span>  <span class="co"># 3 kbd elements (tag appears in open+close)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Ctrl"</span> <span class="kw">in</span> html</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Shift"</span> <span class="kw">in</span> html</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"</span><span class="ch">\u2191</span><span class="st">"</span> <span class="kw">in</span> html</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Key display tests passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Key display tests passed</code></pre>
+</div>
+</div>
+</section>
+<section id="hint-row-group" class="level2">
+<h2 class="anchored" data-anchor-id="hint-row-group">Hint Row &amp; Group</h2>
+<div id="20d336bd" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test hint row (without mode chip)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>row_html <span class="op">=</span> to_xml(_render_hint_row(<span class="st">"Ctrl+Z"</span>, <span class="st">"Undo last action"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Ctrl"</span> <span class="kw">in</span> row_html</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Z"</span> <span class="kw">in</span> row_html</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Undo last action"</span> <span class="kw">in</span> row_html</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># No mode chip when mode_label is omitted (defaults to None)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"badge-soft"</span> <span class="kw">not</span> <span class="kw">in</span> row_html, <span class="st">"No mode chip should render when mode_label is None"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Test hint row WITH mode chip</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>chip_row_html <span class="op">=</span> to_xml(_render_hint_row(<span class="st">"Enter"</span>, <span class="st">"Split at caret"</span>, mode_label<span class="op">=</span><span class="st">"split"</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Split at caret"</span> <span class="kw">in</span> chip_row_html</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"&gt;split&lt;"</span> <span class="kw">in</span> chip_row_html, <span class="st">"Mode chip text must appear in the rendered row"</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"badge-soft"</span> <span class="kw">in</span> chip_row_html, <span class="st">"Mode chip must use the daisyui soft badge style"</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"badge-xs"</span> <span class="kw">in</span> chip_row_html, <span class="st">"Mode chip must use the xs badge size"</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Test modal group (new 3-tuple signature: (key, desc, mode_label))</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>group_html <span class="op">=</span> to_xml(_render_modal_group(<span class="st">"Editing"</span>, [</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Enter"</span>, <span class="st">"Enter split mode"</span>, <span class="va">None</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Escape"</span>, <span class="st">"Exit split mode"</span>, <span class="st">"split"</span>),  <span class="co"># mode-restricted row gets a chip</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>]))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Editing"</span> <span class="kw">in</span> group_html</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Enter split mode"</span> <span class="kw">in</span> group_html</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Exit split mode"</span> <span class="kw">in</span> group_html</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"&gt;split&lt;"</span> <span class="kw">in</span> group_html  <span class="co"># mode chip rendered on second row only</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Group container must carry break-inside-avoid-column for CSS-columns layout</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"break-inside-avoid-column"</span> <span class="kw">in</span> group_html, <span class="op">\</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Modal group container must use break-inside-avoid-column to stay intact across columns"</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hint row and group tests passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="modal-body" class="level2">
+<h2 class="anchored" data-anchor-id="modal-body">Modal Body</h2>
+<div id="24182ac6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cjm_fasthtml_keyboard_navigation.core.focus_zone <span class="im">import</span> FocusZone</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cjm_fasthtml_keyboard_navigation.core.actions <span class="im">import</span> KeyAction</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cjm_fasthtml_keyboard_navigation.core.manager <span class="im">import</span> ZoneManager</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cjm_fasthtml_keyboard_navigation.core.key_mapping <span class="im">import</span> WASD_KEYS</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cjm_fasthtml_keyboard_navigation.core.navigation <span class="im">import</span> LinearVertical</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># --- test_manager: zones WITHOUT item_selector ---</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># derive_navigation_hints returns [] when no zone has items, so this fixture</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># tests the consumer-action path without a manager-derived nav row.</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>z1 <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"seg"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>z2 <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"align"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>test_manager <span class="op">=</span> ZoneManager(</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(z1, z2),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"Enter"</span>, js_callback<span class="op">=</span><span class="st">"x"</span>, description<span class="op">=</span><span class="st">"Enter split mode"</span>, hint_group<span class="op">=</span><span class="st">"Editing"</span>),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"Escape"</span>, js_callback<span class="op">=</span><span class="st">"x"</span>, description<span class="op">=</span><span class="st">"Exit split mode"</span>, hint_group<span class="op">=</span><span class="st">"Editing"</span>),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"Backspace"</span>, htmx_trigger<span class="op">=</span><span class="st">"x"</span>, description<span class="op">=</span><span class="st">"Merge with previous"</span>, hint_group<span class="op">=</span><span class="st">"Editing"</span>),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"z"</span>, modifiers<span class="op">=</span><span class="bu">frozenset</span>({<span class="st">"ctrl"</span>}), htmx_trigger<span class="op">=</span><span class="st">"x"</span>, description<span class="op">=</span><span class="st">"Undo"</span>, hint_group<span class="op">=</span><span class="st">"Editing"</span>),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">" "</span>, js_callback<span class="op">=</span><span class="st">"x"</span>, description<span class="op">=</span><span class="st">"Play audio"</span>, hint_group<span class="op">=</span><span class="st">"Audio"</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    prev_zone_key<span class="op">=</span><span class="st">"ArrowLeft"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    next_zone_key<span class="op">=</span><span class="st">"ArrowRight"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>body_html <span class="op">=</span> to_xml(_render_modal_body(test_manager))</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Manager-derived Navigation group (Switch panel only — no item_selector zones,</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># so derive_navigation_hints returns empty)</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Navigation"</span> <span class="kw">in</span> body_html</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Switch panel"</span> <span class="kw">in</span> body_html</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Consumer action groups (zone_ids=None → all go to shared section)</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Editing"</span> <span class="kw">in</span> body_html</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Enter split mode"</span> <span class="kw">in</span> body_html</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Audio"</span> <span class="kw">in</span> body_html</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Play audio"</span> <span class="kw">in</span> body_html</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co"># No derived nav rows: test_manager's zones have no item_selector</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Navigate items"</span> <span class="kw">not</span> <span class="kw">in</span> body_html, <span class="op">\</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Without item_selector zones, derive_navigation_hints returns empty — no nav rows expected"</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Modal body tests passed (no-item-selector manager)"</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Test: derived nav row WITH item_selector zones (ARROW_KEYS default) ---</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>nav_z1 <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"nav-seg"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>nav_z2 <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"nav-align"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>nav_manager <span class="op">=</span> ZoneManager(</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(nav_z1, nav_z2),</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(),</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    prev_zone_key<span class="op">=</span><span class="st">"ArrowLeft"</span>,</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    next_zone_key<span class="op">=</span><span class="st">"ArrowRight"</span>,</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>nav_body_html <span class="op">=</span> to_xml(_render_modal_body(nav_manager))</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Derived "↑ / ↓ Navigate items" row appears (default ARROW_KEYS + LinearVertical).</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="co"># _render_key_combo renders the combo as a single Kbd containing "↑ / ↓"</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="co"># (only splits on '+'), so check the literal combo string in the HTML.</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Navigate items"</span> <span class="kw">in</span> nav_body_html</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"↑ / ↓"</span> <span class="kw">in</span> nav_body_html, <span class="st">"ARROW_KEYS LinearVertical must surface as '↑ / ↓'"</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Switch-panel row also appears (multi-zone)</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Switch panel"</span> <span class="kw">in</span> nav_body_html</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Test: WASD regression fix — modal shows W/S, NOT ↑/↓ ---</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the load-bearing assertion for the WASD bug fix. Pre-fix, the modal</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="co"># either hardcoded ↑/↓ (lie) or showed nothing (regression after the drop).</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Post-fix, the modal shows the actually-bound keys via derive_navigation_hints.</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>wasd_z <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"wasd-list"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>wasd_manager <span class="op">=</span> ZoneManager(zones<span class="op">=</span>(wasd_z,), key_mapping<span class="op">=</span>WASD_KEYS)</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>wasd_body_html <span class="op">=</span> to_xml(_render_modal_body(wasd_manager))</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"w / s"</span> <span class="kw">in</span> wasd_body_html, <span class="op">\</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>    <span class="st">"WASD-mapped manager must show 'w / s' as the navigation keys in the modal"</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"↑"</span> <span class="kw">not</span> <span class="kw">in</span> wasd_body_html <span class="kw">and</span> <span class="st">"↓"</span> <span class="kw">not</span> <span class="kw">in</span> wasd_body_html, <span class="op">\</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>    <span class="st">"WASD-mapped manager must NOT show arrow-key symbols — that was the latent bug"</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Derived navigation hints in modal body tests passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Modal body tests passed (no-item-selector manager)
+Derived navigation hints in modal body tests passed</code></pre>
+</div>
+</div>
+</section>
+<section id="trigger-button" class="level2">
+<h2 class="anchored" data-anchor-id="trigger-button">Trigger Button</h2>
+<hr>
+<section id="render_keyboard_hints_trigger" class="level3">
+<h3 class="anchored" data-anchor-id="render_keyboard_hints_trigger">render_keyboard_hints_trigger</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> render_keyboard_hints_trigger(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    modal_id:<span class="bu">str</span><span class="op">=</span><span class="st">'kb-hints-modal'</span>, <span class="co"># ID of the modal dialog to open</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    icon_size:IconSize<span class="op">=</span><span class="st">'full'</span>, <span class="co"># lucide icon size (V11.R3 ghost-button: "full" — pairs with V1.modal_disclosure at btn-xs)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>Button: <span class="co"># ghost button with keyboard icon</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Render a keyboard icon button that opens the hints modal.</em></p>
+<div id="fdff8d42" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>trigger <span class="op">=</span> render_keyboard_hints_trigger()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> to_xml(trigger)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"keyboard"</span> <span class="kw">in</span> html.lower() <span class="kw">or</span> <span class="st">"svg"</span> <span class="kw">in</span> html  <span class="co"># has icon</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"showModal"</span> <span class="kw">in</span> html</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"kb-hints-modal"</span> <span class="kw">in</span> html</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'title="Keyboard shortcuts (?)"'</span> <span class="kw">in</span> html</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Trigger button tests passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Trigger button tests passed</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="question-mark-key-listener" class="level2">
+<h2 class="anchored" data-anchor-id="question-mark-key-listener">Question Mark Key Listener</h2>
+<div id="3d35be39" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>listener <span class="op">=</span> _render_question_mark_listener(<span class="st">"kb-hints-modal"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> to_xml(listener)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"keydown"</span> <span class="kw">in</span> html</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"e.key === '?'"</span> <span class="kw">in</span> html</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"showModal"</span> <span class="kw">in</span> html</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"INPUT"</span> <span class="kw">in</span> html  <span class="co"># skips input fields</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"TEXTAREA"</span> <span class="kw">in</span> html</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"isContentEditable"</span> <span class="kw">in</span> html</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Question mark listener tests passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Question mark listener tests passed</code></pre>
+</div>
+</div>
+</section>
+<section id="full-modal-component" class="level2">
+<h2 class="anchored" data-anchor-id="full-modal-component">Full Modal Component</h2>
+<hr>
+<section id="render_keyboard_hints_modal" class="level3">
+<h3 class="anchored" data-anchor-id="render_keyboard_hints_modal">render_keyboard_hints_modal</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> render_keyboard_hints_modal(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    manager:ZoneManager, <span class="co"># primary keyboard zone manager</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    modal_id:<span class="bu">str</span><span class="op">=</span><span class="st">'kb-hints-modal'</span>, <span class="co"># HTML ID for the modal dialog</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    include_navigation:<span class="bu">bool</span><span class="op">=</span><span class="va">True</span>, <span class="co"># </span><span class="al">DEPRECATED</span><span class="co">: no-op kept for backward compat. See _render_modal_body.</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    include_zone_switch:<span class="bu">bool</span><span class="op">=</span><span class="va">True</span>, <span class="co"># include zone-switch hint (auto-hidden for single zone)</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    enable_question_mark_key:<span class="bu">bool</span><span class="op">=</span><span class="va">True</span>, <span class="co"># add global `?` key listener</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    title:<span class="bu">str</span><span class="op">=</span><span class="st">'Keyboard Shortcuts'</span>, <span class="co"># modal title text</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    child_managers:Optional[Sequence[ZoneManager]]<span class="op">=</span><span class="va">None</span>, <span class="co"># child managers for hierarchical hint display (each rendered as a labeled section)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span><span class="bu">tuple</span>[FT, FT, FT]: <span class="co"># (modal_dialog, trigger_button, question_mark_script)</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Render a modal-based keyboard shortcut reference.</em></p>
+<p>Returns three components: - <code>modal_dialog</code>: The Dialog element (place anywhere in page) - <code>trigger_button</code>: Small keyboard icon button (place in step header) - <code>question_mark_script</code>: Global <code>?</code> key listener Script (place in page)</p>
+<p>If <code>enable_question_mark_key</code> is False, <code>question_mark_script</code> is an empty Div.</p>
+<p><strong>Hierarchical hints</strong> (<code>child_managers=[...]</code>): when working with multiple ZoneManagers coordinated by <code>window.kbCoordinator</code> (parent + N children), pass the parent as <code>manager</code> and the children as <code>child_managers</code>. The modal will render each as a labeled section using <code>manager.get_display_label()</code> for section headers. Set <code>label</code> on each ZoneManager for human-readable headers; falls back to <code>system_id</code> otherwise.</p>
+<p>Modal width ladder (R2 cap + optimal-space response — see layout-system.md M1–M6 modes): grows responsively with viewport. Combined with <code>columns.sm</code> on the body, this gives 1 column at narrow widths, 2 columns at laptop full-screen (lg breakpoint with max_w._4xl), and 3 columns at desktop full-screen (2xl breakpoint with max_w._7xl). Modal width is an upper bound; DaisyUI’s <code>modal_box</code> sizes the actual modal to its content within that bound, so short content stays compact.</p>
+<div id="e9ed30aa" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test dual-zone modal: zone-aware sectioning + dropped hardcoded nav row + mode chips</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>modal_dialog, trigger, qm_script <span class="op">=</span> render_keyboard_hints_modal(test_manager)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>modal_html <span class="op">=</span> to_xml(modal_dialog)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>trigger_html <span class="op">=</span> to_xml(trigger)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>script_html <span class="op">=</span> to_xml(qm_script)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Modal structure</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'id="kb-hints-modal"'</span> <span class="kw">in</span> modal_html</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'modal-box'</span> <span class="kw">in</span> modal_html</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'modal-backdrop'</span> <span class="kw">in</span> modal_html</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Keyboard Shortcuts'</span> <span class="kw">in</span> modal_html</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Navigation'</span> <span class="kw">in</span> modal_html  <span class="co"># manager-derived Switch-panel group label</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Editing'</span> <span class="kw">in</span> modal_html</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Audio'</span> <span class="kw">in</span> modal_html</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'✕'</span> <span class="kw">in</span> modal_html  <span class="co"># close button</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: test_manager's zones have no item_selector, so derive_navigation_hints</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># returns []. The modal's "Navigation" group renders only the Switch-panel row.</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># (Tests for the derived nav row WITH item_selectors live in the modal-body</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co"># test cell above — including the WASD regression guard.)</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Navigate items'</span> <span class="kw">not</span> <span class="kw">in</span> modal_html, <span class="op">\</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"test_manager has no item_selectors → no derived nav rows expected"</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># The Switch-panel hint IS still emitted (key-mapping-derived, correct under custom mappings)</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Switch panel'</span> <span class="kw">in</span> modal_html</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Optimal-space layout: CSS columns + responsive max_w + break-inside guard.</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Width-ladder values tuned via cross-device retest 2026-05-11 — laptop wants</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 2-col at lg with max_w._4xl, desktop wants 3-col at 2xl with max_w._7xl.</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'columns-sm'</span> <span class="kw">in</span> modal_html, <span class="st">"Modal body must use columns-sm for CSS auto-distribution"</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'break-inside-avoid-column'</span> <span class="kw">in</span> modal_html, <span class="st">"Groups must use break-inside-avoid-column"</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'max-w-md'</span> <span class="kw">in</span> modal_html        <span class="co"># M1 base</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'sm:max-w-lg'</span> <span class="kw">in</span> modal_html      <span class="co"># M2 step</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'lg:max-w-4xl'</span> <span class="kw">in</span> modal_html     <span class="co"># M3 step — 2-col on laptop</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'2xl:max-w-7xl'</span> <span class="kw">in</span> modal_html    <span class="co"># M4+ step — 3-col on desktop</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Trigger</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'showModal'</span> <span class="kw">in</span> trigger_html</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'kb-hints-modal'</span> <span class="kw">in</span> trigger_html</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Question mark listener</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'keydown'</span> <span class="kw">in</span> script_html</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"e.key === '?'"</span> <span class="kw">in</span> script_html</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Test with question mark key disabled</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>_, _, no_qm <span class="op">=</span> render_keyboard_hints_modal(test_manager, enable_question_mark_key<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>no_qm_html <span class="op">=</span> to_xml(no_qm)</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'keydown'</span> <span class="kw">not</span> <span class="kw">in</span> no_qm_html  <span class="co"># no listener</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'display:none'</span> <span class="kw">in</span> no_qm_html  <span class="co"># empty placeholder</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Test single-zone manager (no zone switch hint, no zone-label prefix)</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>single_manager <span class="op">=</span> ZoneManager(</span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(z1,),</span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(KeyAction(key<span class="op">=</span><span class="st">" "</span>, js_callback<span class="op">=</span><span class="st">"x"</span>, description<span class="op">=</span><span class="st">"Select"</span>, hint_group<span class="op">=</span><span class="st">"Actions"</span>),),</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>single_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(single_manager)</span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>single_html <span class="op">=</span> to_xml(single_modal)</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Switch panel'</span> <span class="kw">not</span> <span class="kw">in</span> single_html  <span class="co"># no zone switch for single zone</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">'Select'</span> <span class="kw">in</span> single_html  <span class="co"># consumer action surfaces</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Single-zone managers should NOT emit "seg — Actions" style headers</span></span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">' — '</span> <span class="kw">not</span> <span class="kw">in</span> single_html, <span class="st">"Single-zone manager must not emit zone-label-prefixed group headers"</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Full modal component tests passed"</span>)</span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a><span class="co"># --- G4 regression-guard pattern: dual-zone shared-factory ---</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproduces segment-align's exact shape. Without zone-scoping in the grouper,</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="co"># rows like "Previous item" would duplicate inside a single "Navigation" header.</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>zone_seg <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"seg"</span>, label<span class="op">=</span><span class="st">"Text Segmentation"</span>)</span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>zone_align <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"align"</span>, label<span class="op">=</span><span class="st">"VAD Alignment"</span>)</span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _shared_factory_g4(zid):</span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (</span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"ArrowUp"</span>, htmx_trigger<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>zid<span class="sc">}</span><span class="ss">-up"</span>, zone_ids<span class="op">=</span>(zid,),</span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Previous item"</span>, hint_group<span class="op">=</span><span class="st">"Navigation"</span>),</span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"ArrowDown"</span>, htmx_trigger<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>zid<span class="sc">}</span><span class="ss">-down"</span>, zone_ids<span class="op">=</span>(zid,),</span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Next item"</span>, hint_group<span class="op">=</span><span class="st">"Navigation"</span>),</span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>g4_manager <span class="op">=</span> ZoneManager(</span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(zone_seg, zone_align),</span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>_shared_factory_g4(<span class="st">"seg"</span>),</span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>_shared_factory_g4(<span class="st">"align"</span>),</span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Mode-restricted action — must render with a mode chip</span></span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"Enter"</span>, htmx_trigger<span class="op">=</span><span class="st">"x"</span>, zone_ids<span class="op">=</span>(<span class="st">"seg"</span>,),</span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>                  mode_names<span class="op">=</span>(<span class="st">"split"</span>,),</span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Split at caret"</span>, hint_group<span class="op">=</span><span class="st">"Split Mode"</span>),</span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>        <span class="co"># not_modes action — must render with "default" chip</span></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"Backspace"</span>, htmx_trigger<span class="op">=</span><span class="st">"m"</span>, zone_ids<span class="op">=</span>(<span class="st">"seg"</span>,),</span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>                  not_modes<span class="op">=</span>(<span class="st">"split"</span>,),</span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Merge with previous"</span>, hint_group<span class="op">=</span><span class="st">"Segmentation"</span>),</span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>g4_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(g4_manager)</span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>g4_html <span class="op">=</span> to_xml(g4_modal)</span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Per-zone section headers: explicit zone-label prefix</span></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Text Segmentation — Navigation"</span> <span class="kw">in</span> g4_html</span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"VAD Alignment — Navigation"</span> <span class="kw">in</span> g4_html</span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Text Segmentation — Split Mode"</span> <span class="kw">in</span> g4_html</span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Text Segmentation — Segmentation"</span> <span class="kw">in</span> g4_html</span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode chip presence on mode-restricted rows</span></span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"&gt;split&lt;"</span> <span class="kw">in</span> g4_html, <span class="st">"Mode chip 'split' must appear on mode_names=('split',) action"</span></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"&gt;default&lt;"</span> <span class="kw">in</span> g4_html, <span class="st">"Mode chip 'default' must appear on not_modes=('split',) action"</span></span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Hierarchy sentinel: Text Segmentation must appear BEFORE VAD Alignment</span></span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a><span class="co"># in the rendered HTML (matches manager.zones declaration order). Prevents</span></span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a><span class="co"># silent re-ordering by future renderer changes.</span></span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a>seg_first <span class="op">=</span> g4_html.index(<span class="st">"Text Segmentation — Navigation"</span>)</span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>align_first <span class="op">=</span> g4_html.index(<span class="st">"VAD Alignment — Navigation"</span>)</span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> seg_first <span class="op">&lt;</span> align_first, <span class="op">\</span></span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Per-zone sections must appear in zone declaration order (Text Segmentation before VAD Alignment)"</span></span>
+<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Regression guard: "Previous item" must appear EXACTLY TWICE in the modal</span></span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a><span class="co"># (once under "Text Segmentation — Navigation", once under "VAD Alignment —</span></span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigation") — NOT 4 times (which would indicate the pre-fix duplication</span></span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a><span class="co"># bug where both zones' actions collapsed into a single header).</span></span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> g4_html.count(<span class="st">"&gt;Previous item&lt;"</span>) <span class="op">==</span> <span class="dv">2</span>, <span class="op">\</span></span>
+<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"'Previous item' must appear exactly twice (once per zone), got </span><span class="sc">{</span>g4_html<span class="sc">.</span>count(<span class="st">'&gt;Previous item&lt;'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> g4_html.count(<span class="st">"&gt;Next item&lt;"</span>) <span class="op">==</span> <span class="dv">2</span>, <span class="op">\</span></span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"'Next item' must appear exactly twice (once per zone), got </span><span class="sc">{</span>g4_html<span class="sc">.</span>count(<span class="st">'&gt;Next item&lt;'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"G4 regression-guard pattern tests passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="e9055dc0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test multi-manager (hierarchical) hints modal</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproduces the hierarchy demo pattern: parent + two children, coordinated</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># via window.kbCoordinator at runtime. The modal renders each as a labeled</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># section using `manager.get_display_label()`.</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cjm_fasthtml_keyboard_navigation.core.navigation <span class="im">import</span> LinearVertical, ScrollOnly</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Parent: ghost zones (ScrollOnly) for switching between areas.</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Includes a consumer action with hint_group="Navigation" — this exercises the</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigation-merge behavior: the consumer's Navigation action must fold into</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># the manager-derived Navigation group (Switch panel), NOT produce a second</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># "Navigation" header.</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>ghost_a <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"ghost-a"</span>, item_selector<span class="op">=</span><span class="va">None</span>, navigation<span class="op">=</span>ScrollOnly())</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>ghost_b <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"ghost-b"</span>, item_selector<span class="op">=</span><span class="va">None</span>, navigation<span class="op">=</span>ScrollOnly())</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>parent_mgr <span class="op">=</span> ZoneManager(</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(ghost_a, ghost_b),</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"Enter"</span>, js_callback<span class="op">=</span><span class="st">"activateChild"</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Activate area"</span>, hint_group<span class="op">=</span><span class="st">"Navigation"</span>),</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Parent — Hierarchy Coordinator"</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Child A: LinearVertical list</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>child_a_zone <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"child-a-list"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>child_a_mgr <span class="op">=</span> ZoneManager(</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(child_a_zone,),</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">" "</span>, htmx_trigger<span class="op">=</span><span class="st">"child-a-toggle"</span>,</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Toggle selection"</span>, hint_group<span class="op">=</span><span class="st">"Selection"</span>),</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Alpha List"</span>,</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Child B: LinearVertical list</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>child_b_zone <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"child-b-list"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>child_b_mgr <span class="op">=</span> ZoneManager(</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(child_b_zone,),</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">" "</span>, htmx_trigger<span class="op">=</span><span class="st">"child-b-toggle"</span>,</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Toggle selection"</span>, hint_group<span class="op">=</span><span class="st">"Selection"</span>),</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Beta List"</span>,</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Render the hierarchical modal</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>hier_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>    parent_mgr,</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>    child_managers<span class="op">=</span>(child_a_mgr, child_b_mgr),</span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>hier_html <span class="op">=</span> to_xml(hier_modal)</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Each manager's label appears as a section header</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Parent — Hierarchy Coordinator"</span> <span class="kw">in</span> hier_html</span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Alpha List"</span> <span class="kw">in</span> hier_html</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Beta List"</span> <span class="kw">in</span> hier_html</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Parent's content: Switch panel (multi-zone) + the Enter "Activate area" action</span></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Switch panel"</span> <span class="kw">in</span> hier_html</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Activate area"</span> <span class="kw">in</span> hier_html</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Children's content: their own derived nav rows ('↑ / ↓' for LinearVertical)</span></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a><span class="co"># AND their own action rows (Space — Toggle selection)</span></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"↑ / ↓"</span> <span class="kw">in</span> hier_html, <span class="st">"Child managers' LinearVertical pattern must surface ↑/↓"</span></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Toggle selection should appear TWICE (once per child)</span></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> hier_html.count(<span class="st">"&gt;Toggle selection&lt;"</span>) <span class="op">==</span> <span class="dv">2</span>, <span class="op">\</span></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"'Toggle selection' must appear twice (once per child), got </span><span class="sc">{</span>hier_html<span class="sc">.</span>count(<span class="st">'&gt;Toggle selection&lt;'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Regression guard: Navigation-merge behavior ---</span></span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Per manager, the modal should emit exactly ONE "Navigation" group header</span></span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a><span class="co"># (containing both manager-derived rows and consumer actions with</span></span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a><span class="co"># hint_group="Navigation"). Across the 3 managers (parent + 2 children),</span></span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a><span class="co"># we expect EXACTLY 3 "Navigation" group headers total — NOT 4 (which would</span></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a><span class="co"># indicate the parent's consumer Navigation action is producing its own</span></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a><span class="co"># duplicate header).</span></span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> hier_html.count(<span class="st">"&gt;Navigation&lt;"</span>) <span class="op">==</span> <span class="dv">3</span>, <span class="op">\</span></span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Each manager must emit exactly one 'Navigation' header (3 total: parent + 2 children), got </span><span class="sc">{</span>hier_html<span class="sc">.</span>count(<span class="st">'&gt;Navigation&lt;'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a><span class="co"># Hierarchy sentinel: section headers appear in (parent → children) declaration order</span></span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>parent_pos <span class="op">=</span> hier_html.index(<span class="st">"Parent — Hierarchy Coordinator"</span>)</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>alpha_pos <span class="op">=</span> hier_html.index(<span class="st">"Alpha List"</span>)</span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>beta_pos <span class="op">=</span> hier_html.index(<span class="st">"Beta List"</span>)</span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> parent_pos <span class="op">&lt;</span> alpha_pos <span class="op">&lt;</span> beta_pos, <span class="op">\</span></span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Section headers must appear in (parent, child_managers[0], child_managers[1], ...) order"</span></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a><span class="co"># Section headers must use break-after-avoid to stay attached to their groups</span></span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a><span class="co"># (prevents orphan headers in CSS columns layout — `break-after-avoid` is the</span></span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a><span class="co"># correct CSS for "don't break right after this element").</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"break-after-avoid"</span> <span class="kw">in</span> hier_html, <span class="op">\</span></span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Section headers must carry break-after-avoid to prevent orphan headers in CSS columns"</span></span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Regression guard: single-manager call still works (no children) ---</span></span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Without child_managers, no section headers should render (preserves the</span></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a><span class="co"># common-case modal layout).</span></span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a>single_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(parent_mgr)</span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a>single_html <span class="op">=</span> to_xml(single_modal)</span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Alpha List"</span> <span class="kw">not</span> <span class="kw">in</span> single_html  <span class="co"># children NOT rendered</span></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Beta List"</span> <span class="kw">not</span> <span class="kw">in</span> single_html</span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a><span class="co"># The parent's label SHOULDN'T appear either — single-manager mode is implicit context</span></span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Parent — Hierarchy Coordinator"</span> <span class="kw">not</span> <span class="kw">in</span> single_html, <span class="op">\</span></span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Single-manager mode must not emit a section header for the primary manager"</span></span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a><span class="co"># break-after-avoid should NOT appear in single-manager output (no section headers)</span></span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"break-after-avoid"</span> <span class="kw">not</span> <span class="kw">in</span> single_html, <span class="op">\</span></span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Single-manager mode must not render section headers (no break-after class)"</span></span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigation-merge: still ONE "Navigation" header in single-manager mode too</span></span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> single_html.count(<span class="st">"&gt;Navigation&lt;"</span>) <span class="op">==</span> <span class="dv">1</span>, <span class="op">\</span></span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Single-manager mode must emit exactly one 'Navigation' header, got </span><span class="sc">{</span>single_html<span class="sc">.</span>count(<span class="st">'&gt;Navigation&lt;'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Per-zone Navigation must STAY separate (zone-scoped vs shared) ---</span></span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a><span class="co"># When a consumer registers actions with hint_group="Navigation" AND zone_ids</span></span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a><span class="co"># tying them to specific zones, those zone-scoped Navigation groups must NOT</span></span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a><span class="co"># merge into the manager-derived shared Navigation group. They render as</span></span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a><span class="co"># their own "&lt;zone label&gt; — Navigation" headers.</span></span>
+<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a>z_seg <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"z-seg"</span>, label<span class="op">=</span><span class="st">"Text Seg"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a>z_align <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"z-align"</span>, label<span class="op">=</span><span class="st">"VAD"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb13-117"><a href="#cb13-117" aria-hidden="true" tabindex="-1"></a>zone_scoped_mgr <span class="op">=</span> ZoneManager(</span>
+<span id="cb13-118"><a href="#cb13-118" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(z_seg, z_align),</span>
+<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Zone-scoped Navigation action — should land under "Text Seg — Navigation"</span></span>
+<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a>        <span class="co"># NOT merge into the manager-derived top-level Navigation group.</span></span>
+<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"ArrowUp"</span>, htmx_trigger<span class="op">=</span><span class="st">"seg-prev"</span>, zone_ids<span class="op">=</span>(<span class="st">"z-seg"</span>,),</span>
+<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Previous item"</span>, hint_group<span class="op">=</span><span class="st">"Navigation"</span>),</span>
+<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a>zs_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(zone_scoped_mgr)</span>
+<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a>zs_html <span class="op">=</span> to_xml(zs_modal)</span>
+<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a><span class="co"># Expect TWO Navigation headers: manager-derived top one + zone-scoped "Text Seg — Navigation"</span></span>
+<span id="cb13-129"><a href="#cb13-129" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"&gt;Navigation&lt;"</span> <span class="kw">in</span> zs_html  <span class="co"># manager-derived</span></span>
+<span id="cb13-130"><a href="#cb13-130" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Text Seg — Navigation"</span> <span class="kw">in</span> zs_html  <span class="co"># zone-scoped, must stay separate</span></span>
+<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Label fallback: child without explicit label uses system_id ---</span></span>
+<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a>unlabeled_child <span class="op">=</span> ZoneManager(</span>
+<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"raw-zone"</span>),),</span>
+<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a>fallback_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(parent_mgr, child_managers<span class="op">=</span>(unlabeled_child,))</span>
+<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a>fallback_html <span class="op">=</span> to_xml(fallback_modal)</span>
+<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"raw-zone"</span> <span class="kw">in</span> fallback_html, <span class="op">\</span></span>
+<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Child without explicit label must fall back to system_id (auto-derived from initial zone id)"</span></span>
+<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-143"><a href="#cb13-143" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hierarchical hints modal tests passed (incl. Navigation-merge regression guard)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hierarchical hints modal tests passed (incl. Navigation-merge regression guard)</code></pre>
+</div>
+</div>
+<div id="e32d6375" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># L1 regression-guards: library-baked hierarchy + mode-exit rows render in the modal</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># These assertions cover the gap surfaced by the hierarchy-demo screenshot</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (2026-05-12) — Esc and Enter/Space were absent from the modal even though</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the JS dispatcher implements both.</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cjm_fasthtml_keyboard_navigation.core.modes <span class="im">import</span> KeyboardMode</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Parent with activatable zones renders Enter/Space activate-panel row ---</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproduces the hierarchy-demo's parent shape: two ghost zones with</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># activate_child_id wiring + Enter/Space activate_keys (the default).</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>parent_ghost_a <span class="op">=</span> FocusZone(</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">id</span><span class="op">=</span><span class="st">"hd-ghost-a"</span>, item_selector<span class="op">=</span><span class="va">None</span>, navigation<span class="op">=</span>ScrollOnly(),</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    activate_child_id<span class="op">=</span><span class="st">"hd-child-a"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>parent_ghost_b <span class="op">=</span> FocusZone(</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">id</span><span class="op">=</span><span class="st">"hd-ghost-b"</span>, item_selector<span class="op">=</span><span class="va">None</span>, navigation<span class="op">=</span>ScrollOnly(),</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    activate_child_id<span class="op">=</span><span class="st">"hd-child-b"</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>parent_mgr_with_activation <span class="op">=</span> ZoneManager(</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(parent_ghost_a, parent_ghost_b),</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Hierarchy Parent"</span>,</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>parent_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(parent_mgr_with_activation)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>parent_html <span class="op">=</span> to_xml(parent_modal)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co"># The Enter/Space row + manager.activate_description ("Activate panel") must appear</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Activate panel"</span> <span class="kw">in</span> parent_html, <span class="op">\</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Parent with activatable zones must surface the Enter/Space activate-panel row"</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co"># The Esc row must NOT appear on the parent — it's not a child in any hierarchy</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co"># (this guards against accidentally emitting Esc for every manager regardless of role)</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Deactivate panel"</span> <span class="kw">not</span> <span class="kw">in</span> parent_html, <span class="op">\</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Parent (non-child) must NOT emit the Esc deactivate-panel row"</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Child manager rendered via child_managers=[...] surfaces Esc row ---</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproduces the hierarchy-demo's child shape: a child manager with no</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co"># activatable zones of its own, rendered as part of a hierarchy.</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>hd_child_a_zone <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"hd-child-a"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>hd_child_a <span class="op">=</span> ZoneManager(</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(hd_child_a_zone,),</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Alpha List"</span>,</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">" "</span>, htmx_trigger<span class="op">=</span><span class="st">"alpha-toggle"</span>,</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Toggle selection"</span>, hint_group<span class="op">=</span><span class="st">"Selection"</span>),</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>hd_child_b_zone <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"hd-child-b"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>hd_child_b <span class="op">=</span> ZoneManager(</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(hd_child_b_zone,),</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Beta List"</span>,</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">" "</span>, htmx_trigger<span class="op">=</span><span class="st">"beta-toggle"</span>,</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Toggle selection"</span>, hint_group<span class="op">=</span><span class="st">"Selection"</span>),</span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>hier_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(</span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>    parent_mgr_with_activation,</span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a>    child_managers<span class="op">=</span>(hd_child_a, hd_child_b),</span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>hier_html <span class="op">=</span> to_xml(hier_modal)</span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="co"># The Esc row must appear in each child's Navigation group — once per child.</span></span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Parent does NOT emit it (parent is root of the documented hierarchy).</span></span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> hier_html.count(<span class="st">"&gt;Deactivate panel, return to parent&lt;"</span>) <span class="op">==</span> <span class="dv">2</span>, <span class="op">\</span></span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Esc deactivate-panel row must appear exactly twice (once per child), got </span><span class="sc">{</span>hier_html<span class="sc">.</span>count(<span class="st">'&gt;Deactivate panel, return to parent&lt;'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a><span class="co"># The Enter/Space activate row must still appear once on the parent</span></span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> hier_html.count(<span class="st">"&gt;Activate panel&lt;"</span>) <span class="op">==</span> <span class="dv">1</span>, <span class="op">\</span></span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Parent's activate-panel row must appear exactly once, got </span><span class="sc">{</span>hier_html<span class="sc">.</span>count(<span class="st">'&gt;Activate panel&lt;'</span>)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Each child's Navigation group still contains its own derived nav row (↑/↓)</span></span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> hier_html.count(<span class="st">"↑ / ↓"</span>) <span class="op">&gt;=</span> <span class="dv">2</span>, <span class="op">\</span></span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Each child manager's LinearVertical zone should surface ↑/↓ in its Navigation group"</span></span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-79"><a href="#cb15-79" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Mode-exit rows render with mode chips in the Navigation group ---</span></span>
+<span id="cb15-80"><a href="#cb15-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproduces the cjm-transcript-segmentation 'split' mode shape: a manager</span></span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a><span class="co"># with a non-default mode whose exit_key="Escape". The modal should show:</span></span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a><span class="co">#   - Esc row with the "split" mode chip (V13 mode chip)</span></span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a><span class="co">#   - The row appears in the same Navigation group as other library-baked rows</span></span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a>split_mode <span class="op">=</span> KeyboardMode(name<span class="op">=</span><span class="st">"split"</span>, enter_key<span class="op">=</span><span class="st">"Enter"</span>)  <span class="co"># exit_key defaults to "Escape"</span></span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a>mode_z <span class="op">=</span> FocusZone(<span class="bu">id</span><span class="op">=</span><span class="st">"seg-z"</span>, item_selector<span class="op">=</span><span class="st">"span"</span>, navigation<span class="op">=</span>LinearVertical())</span>
+<span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a>mode_mgr <span class="op">=</span> ZoneManager(</span>
+<span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(mode_z,),</span>
+<span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a>    modes<span class="op">=</span>(split_mode,),</span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a>    actions<span class="op">=</span>(</span>
+<span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a>        KeyAction(key<span class="op">=</span><span class="st">"Enter"</span>, htmx_trigger<span class="op">=</span><span class="st">"enter-split"</span>,</span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a>                  description<span class="op">=</span><span class="st">"Enter split mode"</span>, hint_group<span class="op">=</span><span class="st">"Editing"</span>),</span>
+<span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-95"><a href="#cb15-95" aria-hidden="true" tabindex="-1"></a>mode_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(mode_mgr)</span>
+<span id="cb15-96"><a href="#cb15-96" aria-hidden="true" tabindex="-1"></a>mode_html <span class="op">=</span> to_xml(mode_modal)</span>
+<span id="cb15-97"><a href="#cb15-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-98"><a href="#cb15-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode-exit row appears</span></span>
+<span id="cb15-99"><a href="#cb15-99" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Exit mode"</span> <span class="kw">in</span> mode_html, <span class="op">\</span></span>
+<span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Manager with a non-default mode (exit_key='Escape') must surface 'Exit mode' row in the modal"</span></span>
+<span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode chip with the mode name appears in the same row (V13 chip rendering)</span></span>
+<span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"&gt;split&lt;"</span> <span class="kw">in</span> mode_html, <span class="op">\</span></span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mode-exit row must carry the V13 'split' mode chip"</span></span>
+<span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a><span class="co"># The mode-exit row lands in the Navigation group (not its own header)</span></span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity check: only one Navigation header in the modal, and it contains Exit mode</span></span>
+<span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a>nav_count <span class="op">=</span> mode_html.count(<span class="st">"&gt;Navigation&lt;"</span>)</span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> nav_count <span class="op">==</span> <span class="dv">1</span>, <span class="ss">f"Manager-derived Navigation must remain a single header, got </span><span class="sc">{</span>nav_count<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Sentinel: hierarchy and mode-exit rows are decoupled ---</span></span>
+<span id="cb15-111"><a href="#cb15-111" aria-hidden="true" tabindex="-1"></a><span class="co"># A manager with BOTH activation wiring AND a mode emits BOTH rows.</span></span>
+<span id="cb15-112"><a href="#cb15-112" aria-hidden="true" tabindex="-1"></a>combo_zone <span class="op">=</span> FocusZone(</span>
+<span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a>    <span class="bu">id</span><span class="op">=</span><span class="st">"combo-z"</span>, item_selector<span class="op">=</span><span class="st">"li"</span>, navigation<span class="op">=</span>LinearVertical(),</span>
+<span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a>    activate_child_id<span class="op">=</span><span class="st">"hd-child-a"</span>,</span>
+<span id="cb15-115"><a href="#cb15-115" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a>combo_mgr <span class="op">=</span> ZoneManager(</span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a>    zones<span class="op">=</span>(combo_zone,),</span>
+<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a>    modes<span class="op">=</span>(split_mode,),</span>
+<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a>combo_modal, _, _ <span class="op">=</span> render_keyboard_hints_modal(combo_mgr)</span>
+<span id="cb15-121"><a href="#cb15-121" aria-hidden="true" tabindex="-1"></a>combo_html <span class="op">=</span> to_xml(combo_modal)</span>
+<span id="cb15-122"><a href="#cb15-122" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Activate panel"</span> <span class="kw">in</span> combo_html, <span class="op">\</span></span>
+<span id="cb15-123"><a href="#cb15-123" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Manager with activation wiring must surface activate row even when modes present"</span></span>
+<span id="cb15-124"><a href="#cb15-124" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="st">"Exit mode"</span> <span class="kw">in</span> combo_html, <span class="op">\</span></span>
+<span id="cb15-125"><a href="#cb15-125" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Manager with mode must surface mode-exit row even when activation wiring present"</span></span>
+<span id="cb15-126"><a href="#cb15-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-127"><a href="#cb15-127" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"L1 hierarchy + mode-exit row regression-guards passed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>L1 hierarchy + mode-exit row regression-guards passed</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/cj-mills\.github\.io\/cjm-fasthtml-keyboard-navigation");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cj-mills/cjm-fasthtml-keyboard-navigation/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
